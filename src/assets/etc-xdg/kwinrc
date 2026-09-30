@@ -1,0 +1,9 @@
+[org.kde.kdecoration2]
+library=org.kde.breeze
+ButtonsOnLeft=XIA
+ButtonsOnRight=
+[Desktops]
+Number=4
+Rows=1
+[Plugins]
+overviewEnabled=true

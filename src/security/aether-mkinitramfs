@@ -1,0 +1,92 @@
+#!/usr/bin/env python3
+"""Build an unlock initramfs from this Aether installation's binaries."""
+from pathlib import Path
+import os
+import re
+import shutil
+import stat
+import subprocess
+import sys
+import tempfile
+
+assert os.geteuid() == 0
+assert 'ID=aether' in Path('/etc/os-release').read_text().splitlines()
+if len(sys.argv) != 2:
+    raise SystemExit('Usage: aether-mkinitramfs /boot/initramfs-KERNEL.img')
+output = Path(sys.argv[1])
+if output.parent != Path('/boot') or output.is_symlink():
+    raise SystemExit('Output must be a regular file directly inside /boot.')
+match = re.fullmatch(r'initramfs-([A-Za-z0-9._+-]+)\.img', output.name)
+if not match:
+    raise SystemExit('Use /boot/initramfs-KERNEL_RELEASE.img so matching modules can be included.')
+release = match.group(1)
+with tempfile.TemporaryDirectory(prefix='aether-initramfs-') as directory:
+    root = Path(directory)
+    for d in ('bin', 'usr/bin', 'usr/sbin', 'dev', 'proc', 'sys', 'run', 'newroot', 'etc'):
+        (root / d).mkdir(parents=True, exist_ok=True)
+    os.mknod(root / 'dev/console', stat.S_IFCHR | 0o600, os.makedev(5, 1))
+    os.mknod(root / 'dev/null', stat.S_IFCHR | 0o666, os.makedev(1, 3))
+    def binary(path, destination=None):
+        path = Path(path)
+        target = root / (destination or str(path)).lstrip('/')
+        target.parent.mkdir(parents=True, exist_ok=True)
+        shutil.copy2(path, target, follow_symlinks=True)
+        result = subprocess.run(['ldd', str(path)], text=True, capture_output=True)
+        if result.returncode and 'not a dynamic executable' not in result.stderr + result.stdout:
+            raise RuntimeError(result.stderr + result.stdout)
+        if 'not found' in result.stdout:
+            raise RuntimeError(result.stdout)
+        for library in re.findall(r'(/[^\s()]+)', result.stdout):
+            dest = root / library.lstrip('/')
+            dest.parent.mkdir(parents=True, exist_ok=True)
+            shutil.copy2(library, dest, follow_symlinks=True)
+    binary('/usr/lib/aether-initramfs/busybox', '/bin/busybox')
+    binary('/usr/sbin/cryptsetup')
+    binary('/usr/sbin/blkid')
+    binary('/usr/sbin/modprobe')
+    module_root = Path('/lib/modules') / release
+    dependency_output = subprocess.check_output(
+        ['modprobe', '--set-version', release, '--show-depends', 'dm_crypt'], text=True)
+    destination = root / 'lib/modules' / release
+    destination.mkdir(parents=True)
+    for metadata in module_root.glob('modules.*'):
+        if metadata.is_file():
+            shutil.copy2(metadata, destination / metadata.name)
+    for line in dependency_output.splitlines():
+        fields = line.split()
+        if not fields or fields[0] == 'builtin':
+            continue
+        if fields[0] != 'insmod' or len(fields) != 2:
+            raise RuntimeError('Unexpected encryption module dependency: ' + line)
+        module = Path(fields[1])
+        relative = module.relative_to(module_root)
+        target = destination / relative
+        target.parent.mkdir(parents=True, exist_ok=True)
+        shutil.copy2(module, target)
+    subprocess.run(['chroot', directory, '/usr/sbin/modprobe', '--set-version', release,
+                    '--show-depends', 'dm_crypt'], check=True)
+    (root / 'bin/sh').symlink_to('busybox')
+    shutil.copy2('/usr/lib/aether-initramfs/encrypted-init', root / 'init')
+    (root / 'init').chmod(0o755)
+    if Path('/usr/sbin/plymouthd').exists():
+        subprocess.run(['/usr/bin/python3', '/usr/lib/aether-initramfs/plymouth-assets.py', directory, release], check=True)
+    subprocess.run(['chroot', directory, '/bin/busybox', 'true'], check=True)
+    subprocess.run(['chroot', directory, '/bin/sh', '-n', '/init'], check=True)
+    names = ['.'] + [str(p.relative_to(root)) for p in root.rglob('*')]
+    with tempfile.TemporaryFile() as archive:
+        subprocess.run(['cpio', '--null', '--quiet', '-o', '--format=newc', '--owner=0:0'],
+                       input=('\0'.join(names) + '\0').encode(), stdout=archive, cwd=root, check=True)
+        archive.seek(0)
+        temporary = output.with_name(output.name + '.new')
+        if temporary.exists() or temporary.is_symlink():
+            raise SystemExit('Temporary output already exists; inspect before retrying.')
+        try:
+            with temporary.open('xb') as dest:
+                subprocess.run(['gzip', '-n', '-9'], stdin=archive, stdout=dest, check=True)
+                dest.flush()
+                os.fsync(dest.fileno())
+            temporary.chmod(0o600)
+            os.replace(temporary, output)
+        finally:
+            temporary.unlink(missing_ok=True)
+print('Created', output)

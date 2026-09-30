@@ -1,0 +1,102 @@
+name: Bug report
+description: Something in Aether is broken or wrong
+title: "[bug] "
+labels: ["bug", "needs triage"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        **Aether 0.3 is a work in progress.** Bugs are expected, and you are
+        not reporting a mistake. If something is *inaccurate rather than broken*,
+        say so in the "Documentation" section below.
+
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: What happened
+      description: What did you observe? Plain language is fine.
+      placeholder: |
+        The greeter accepted my password but the desktop never appeared.
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: What you expected instead
+    validations:
+      required: true
+
+  - type: textarea
+    id: reproduce
+    attributes:
+      label: Steps to reproduce
+      description: Start from a known state and list exact steps.
+      render: shell
+      placeholder: |
+        1. Boot the ISO on QEMU/VMware/VirtualBox
+        2. Log in as `aether`
+        3. Press Super+Space
+        4. Observe ...
+    validations:
+      required: true
+
+  - type: input
+    id: image
+    attributes:
+      label: ISO / VMDK SHA-256
+      description: >
+        If you are reporting against a specific artefact, its checksum pins
+        exactly what you tested. See docs/verification.md.
+      placeholder: 5d4fb3456592048ad4ebbe0c045f902ca9c850dec2eae8a2bd234dc66baf4d1b
+
+  - type: dropdown
+    id: environment
+    attributes:
+      label: Where did this happen
+      options:
+        - QEMU
+        - VMware Workstation
+        - VirtualBox
+        - Physical hardware
+        - Build host (not a running system)
+    validations:
+      required: true
+
+  - type: input
+    id: arch
+    attributes:
+      label: Architecture
+      description: >
+        Only x86_64 images exist. If you expected ARM64 or 32-bit support, this
+        is not a bug - see docs/roadmap.md.
+    default: x86_64
+
+  - type: textarea
+    id: logs
+    attributes:
+      label: Logs
+      description: >
+        Relevant output. Please redact passwords, keys and tokens.
+      render: shell
+
+  - type: textarea
+    id: checked
+    attributes:
+      label: Before you submit
+      value: |
+        - [ ] I searched existing issues for this.
+        - [ ] I removed passwords, SSH keys, tokens and credentials from anything I pasted.
+        - [ ] I am describing what I observed, not what I assume should happen.
+        - [ ] If this is a security vulnerability, I have NOT filed it publicly -
+              see SECURITY.md.
+
+  - type: checkboxes
+    id: security
+    attributes:
+      label: Security
+      options:
+        - label: >
+            This report describes a security vulnerability or an inaccurate
+            security claim, and I should contact the maintainer privately.
+          required: false

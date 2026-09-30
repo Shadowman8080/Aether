@@ -1,0 +1,148 @@
+#!/usr/bin/env python3
+"""Explicit setup and encrypted backups with restic. Never auto-prunes history."""
+from pathlib import Path
+import fcntl
+import getpass
+import json
+import os
+import shutil
+import subprocess
+import sys
+import tempfile
+import time
+
+CONFIG = Path('/etc/aether-security/backup.json')
+KEY = Path('/etc/aether-security/backup.key')
+STATE = Path('/var/lib/aether-security/backup-last.json')
+
+def atomic(path, data):
+    path.parent.mkdir(parents=True, exist_ok=True, mode=0o700)
+    fd, name = tempfile.mkstemp(dir=path.parent, prefix='.' + path.name)
+    try:
+        with os.fdopen(fd, 'w') as f:
+            f.write(data)
+            f.flush()
+            os.fsync(f.fileno())
+        os.replace(name, path)
+    finally:
+        if os.path.exists(name):
+            os.unlink(name)
+
+def mount_info(path):
+    data = subprocess.check_output(['findmnt', '-J', '-T', str(path), '-o', 'TARGET,SOURCE,FSTYPE'], text=True)
+    return json.loads(data)['filesystems'][0]
+
+def checked_config():
+    c = json.loads(CONFIG.read_text())
+    dest = Path(c['repository'])
+    if not dest.is_dir() or dest.is_symlink():
+        raise RuntimeError('Backup destination is absent or a symlink. Refusing a local fallback.')
+    info = mount_info(dest)
+    if info['target'] != c['mount'] or info['source'] != c['mount_source'] or not os.path.ismount(c['mount']):
+        raise RuntimeError('The selected backup filesystem is not mounted as configured.')
+    if KEY.is_symlink() or KEY.stat().st_mode & 0o077 or KEY.stat().st_uid != 0:
+        raise RuntimeError('Backup credential must be root-owned and mode 0600.')
+    return c
+
+def restic(c, args, **kwargs):
+    return subprocess.run(['/usr/bin/restic', '-r', c['repository'], '--password-file', str(KEY), *args], check=True, **kwargs)
+
+def setup():
+    if CONFIG.exists() or KEY.exists():
+        raise SystemExit('A backup configuration or key already exists. Preserve its recovery key before reconfiguration.')
+    print('Select a mounted independent drive or shared backup folder. All backup contents are encrypted by restic.')
+    print('Suggested VMware destination: /mnt/aether-shares/AetherEncryptedBackups')
+    print('For a VMware share, choose its host folder in the virtual machine settings before setup.')
+    print('Cloud sync is not immutable storage. Keep a separate offline copy and recovery passphrase.')
+    suggestion = Path('/etc/aether-security/backup-destination')
+    if suggestion.exists():
+        print('Destination selected during installation:', suggestion.read_text().strip())
+    folder = input('Mounted backup folder (or leave empty to cancel): ').strip()
+    if not folder:
+        return
+    dest = Path(folder)
+    vmware_share = folder == '/mnt/aether-shares/AetherEncryptedBackups'
+    if vmware_share:
+        kind = subprocess.run(['systemd-detect-virt', '--vm'], capture_output=True, text=True).stdout.strip()
+        if kind == 'vmware' and not os.path.ismount(dest):
+            subprocess.run(['systemctl', 'start', 'aether-backup-share.service'], check=True)
+            for _ in range(20):
+                if os.path.ismount(dest):
+                    break
+                time.sleep(1)
+    if not dest.is_absolute() or not dest.is_dir() or dest.is_symlink():
+        raise SystemExit('Choose an existing absolute directory on the backup filesystem.')
+    dest = dest.resolve()
+    info = mount_info(dest)
+    if info['target'] == '/' or not os.path.ismount(info['target']):
+        raise SystemExit('Choose an independently mounted destination; the running root filesystem is not an independent backup.')
+    repo = dest / 'Aether-restic'
+    if repo.exists() and any(repo.iterdir()):
+        raise SystemExit('This setup creates a new repository. Use restic with the existing recovery passphrase to adopt an existing repository.')
+    password = getpass.getpass('New backup passphrase (at least 12 characters): ')
+    if len(password) < 12 or '\n' in password or password != getpass.getpass('Confirm backup passphrase: '):
+        raise SystemExit('Passphrases did not match or were too short.')
+    print('Store this passphrase offline. Automatic backups keep a protected local copy; anyone controlling this unlocked machine can access it.')
+    if input('Have you stored the recovery passphrase safely? Type YES: ') != 'YES':
+        return
+    repo.mkdir(mode=0o700, exist_ok=True)
+    atomic(KEY, password + '\n')
+    del password
+    config = dict(repository=str(repo), mount=info['target'], mount_source=info['source'], sources=['/home', '/etc'])
+    try:
+        restic(config, ['init'])
+    except Exception:
+        # Keep the key for recovery if initialization wrote anything before failing.
+        raise RuntimeError('Repository initialization failed. Key retained at /etc/aether-security/backup.key; inspect before retrying.')
+    atomic(CONFIG, json.dumps(config, indent=2) + '\n')
+    if vmware_share:
+        atomic(Path('/etc/systemd/system/aether-backup.service.d/destination.conf'),
+               '[Unit]\nRequires=aether-backup-share.service\nAfter=aether-backup-share.service\n')
+        subprocess.run(['systemctl', 'daemon-reload'], check=True)
+        subprocess.run(['systemctl', 'enable', 'aether-backup-share.service'], check=True)
+    subprocess.run(['systemctl', 'enable', '--now', 'aether-backup.timer'], check=True)
+    print('Daily encrypted backups enabled. Run sudo aether-backup run, then sudo aether-backup check and test a restore.')
+
+def main():
+    os.umask(0o077)
+    if os.geteuid() != 0:
+        raise SystemExit('Use sudo aether-backup for backup administration.')
+    args = sys.argv[1:]
+    if args == ['setup']:
+        setup()
+        return
+    if args == ['status']:
+        print(STATE.read_text() if STATE.exists() else 'No backup result recorded.')
+        return
+    if args not in (['run'], ['check'], ['snapshots']) and not (len(args) == 3 and args[0] == 'restore'):
+        raise SystemExit('Usage: aether-backup setup|run|check|snapshots|status|restore SNAPSHOT NEW_DIRECTORY')
+    c = checked_config()
+    lockdir = Path('/run/aether-backup')
+    lockdir.mkdir(mode=0o700, exist_ok=True)
+    if lockdir.is_symlink() or lockdir.stat().st_uid != 0 or lockdir.stat().st_mode & 0o077:
+        raise SystemExit('Unsafe backup runtime directory.')
+    with open(lockdir / 'lock', 'w') as lock:
+        fcntl.flock(lock, fcntl.LOCK_EX | fcntl.LOCK_NB)
+        if args == ['run']:
+            try:
+                restic(c, ['backup', '--one-file-system', '--exclude', '/etc/aether-security/backup.key',
+                           '--exclude', '/home/*/.cache', '--exclude', '/home/*/.local/share/Trash',
+                           '--exclude', '/home/*/.local/share/baloo', '--', *c['sources']])
+            except subprocess.CalledProcessError as e:
+                atomic(STATE, json.dumps(dict(result='failed', time=time.time(), exit_code=e.returncode)) + '\n')
+                raise
+            atomic(STATE, json.dumps(dict(result='completed', time=time.time(), restore_test='not implied by backup success')) + '\n')
+        elif args == ['check']:
+            restic(c, ['check', '--read-data'])
+        elif args == ['snapshots']:
+            restic(c, ['snapshots'])
+        else:
+            target = Path(args[2])
+            if not target.is_absolute() or target.exists() or target.is_symlink() or not target.parent.is_dir():
+                raise SystemExit('Restore into a new absolute directory beneath an existing parent; never overwrite live files.')
+            target.mkdir(mode=0o700)
+            restic(c, ['restore', args[1], '--target', str(target), '--verify'])
+            print('Restored to a separate directory; compare files before replacing original data.')
+
+if __name__ == '__main__':
+    main()

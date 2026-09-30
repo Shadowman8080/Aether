@@ -1,0 +1,12 @@
+{
+  "KPlugin": {
+    "Id": "AetherAurora",
+    "Name": "Aether Aurora",
+    "License": "CC0-1.0",
+    "Authors": [
+      {
+        "Name": "Aether Linux"
+      }
+    ]
+  }
+}

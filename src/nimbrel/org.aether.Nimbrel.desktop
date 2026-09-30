@@ -1,0 +1,11 @@
+[Desktop Entry]
+Type=Application
+Name=Nimbrel
+GenericName=Self-hosted AI Assistant
+Comment=Chat, write, translate, code and explore documents with your own AI server
+Exec=nimbrel
+Icon=org.aether.Nimbrel
+Terminal=false
+Categories=Utility;Office;Development;
+Keywords=AI;assistant;chat;writing;translate;summary;coding;Nimbrel;
+StartupNotify=true

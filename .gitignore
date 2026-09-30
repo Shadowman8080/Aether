@@ -1,0 +1,193 @@
+# ---------------------------------------------------------------------------
+# Aether - never commit build products, images, or secrets.
+# ---------------------------------------------------------------------------
+
+# Disk images and installers - huge, and Releases handles ISOs only.
+*.iso
+*.vmdk
+*.vdi
+*.qcow2
+*.raw
+*.img
+*.ova
+*.ovf
+*.vmx
+*.vhd
+*.vhdx
+
+# ------------------------------------------------------------------ secrets
+# Absolutely nothing in this list may ever reach git.
+*.pem
+*.key
+*.asc
+*.gpg
+*.kdbx
+*.ppk
+*_rsa
+*_dsa
+*_ecdsa
+*_ed25519
+id_rsa*
+id_dsa*
+id_ecdsa*
+id_ed25519*
+
+# Known-hosts files. Broad on purpose: the build workspace names these with a
+# prefix (aether_known_hosts), so a leading "known_hosts*" would miss them.
+*known_hosts*
+*known_hosts.*
+
+# Credentials, tokens and publisher configuration
+*credential*
+*credentials*
+*secret*
+*secrets*
+*token*
+*r2*config*
+*publisher*config*
+*publisher*key*
+*.p12
+*.pfx
+*.jks
+secrets.json
+secrets.yaml
+secrets.yml
+.netrc
+.npmrc
+.pypirc
+.aws/
+.s3cfg
+*rclone*.conf
+
+# Environment
+.env
+.env.*
+*.env
+
+# Signing material produced by the update tooling
+trusted-root.json
+signers/
+online-signers/
+*signer*fingerprint*
+
+# ------------------------------------------------------------------- python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# Virtual environments
+.venv/
+venv/
+env/
+ENV/
+
+# Testing and type checking
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.tox/
+.nox/
+.coverage
+.coverage.*
+htmlcov/
+coverage.xml
+*.cover
+
+# ------------------------------------------------------------- build output
+/validation/
+/staging/
+/out/
+/output/
+/outputs/
+/release-*/
+/build-*/
+/scratch/
+*.o
+*.a
+*.so.*
+*.gcda
+*.gcno
+
+# Compiler dependency files (foo.d). MUST stay slash-anchored: a bare "*.d"
+# also matches any *directory* ending in .d, which silently excluded the
+# systemd drop-in directories (*.service.d/) that this repo ships.
+/*.d
+/**/CMakeFiles/
+
+# Archives and caches
+*.tar
+*.tar.*
+*.tgz
+*.zst
+*.zip
+*.7z
+*.rar
+*.bz2
+*.xz
+
+# Logs and diagnostics
+*.log
+*.ppm
+*.pgm
+*.pbm
+*.cache
+npm-debug.log*
+yarn-error.log*
+journal/
+*.journal
+
+# Screenshots captured during ad-hoc testing (curated media is committed)
+/media/screenshots/scratch-*
+/media/videos/scratch-*
+contact-sheet*.png
+
+# Model weights - pinned by digest in src/nimbrel/model.json, never in git.
+*.gguf
+*.bin
+*.safetensors
+*.pt
+*.pth
+*.onnx
+
+# ------------------------------------------------------------------- editors
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.\#*
+\#*\#
+
+# --------------------------------------------------------------------- OS
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# ------------------------------------------------------------------ local VM
+*.nvram
+*.log.bak
+vmware.log
+vmware-vmsuspend*.log

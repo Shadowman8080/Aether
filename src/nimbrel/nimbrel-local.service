@@ -1,0 +1,27 @@
+[Unit]
+Description=Nimbrel local desktop API
+After=nimbrel-engine.service
+Wants=nimbrel-engine.service
+[Service]
+User=nimbrel
+Group=nimbrel
+Restart=on-failure
+RestartSec=3
+NoNewPrivileges=yes
+PrivateTmp=yes
+PrivateDevices=yes
+ProtectSystem=strict
+ProtectHome=yes
+ProtectKernelTunables=yes
+ProtectControlGroups=yes
+RestrictAddressFamilies=AF_UNIX
+TasksMax=128
+UMask=0077
+RuntimeDirectory=nimbrel
+RuntimeDirectoryMode=0755
+StateDirectory=nimbrel
+StateDirectoryMode=0700
+ExecStart=/usr/bin/python3 /opt/nimbrel/local_server.py
+MemoryMax=256M
+[Install]
+WantedBy=multi-user.target

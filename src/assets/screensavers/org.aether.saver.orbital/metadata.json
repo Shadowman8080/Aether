@@ -1,0 +1,14 @@
+{
+  "KPackageStructure": "Plasma/Wallpaper",
+  "KPlugin": {
+    "Id": "org.aether.saver.orbital",
+    "Name": "Aether Orbital",
+    "Description": "Animated background for the desktop or secure lock screen",
+    "License": "GPL-2.0-or-later",
+    "Authors": [
+      {
+        "Name": "Aether Project"
+      }
+    ]
+  }
+}

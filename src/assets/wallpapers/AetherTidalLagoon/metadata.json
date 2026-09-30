@@ -1,0 +1,12 @@
+{
+  "KPlugin": {
+    "Id": "AetherTidalLagoon",
+    "Name": "Aether \u00b7 Tidal Lagoon",
+    "License": "CC0-1.0",
+    "Authors": [
+      {
+        "Name": "Aether Project"
+      }
+    ]
+  }
+}

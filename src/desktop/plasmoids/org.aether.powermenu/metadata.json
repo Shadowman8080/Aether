@@ -1,0 +1,14 @@
+{
+    "KPackageStructure": "Plasma/Applet",
+    "KPlugin": {
+        "Id": "org.aether.powermenu",
+        "Name": "Aether Power",
+        "Description": "Lock, sleep, restart, or shut down Aether",
+        "Icon": "system-shutdown",
+        "Version": "0.3.1",
+        "License": "GPL-2.0-or-later",
+        "Category": "System Information",
+        "Authors": [{"Name": "Aether Linux"}]
+    },
+    "X-Plasma-API-Minimum-Version": "6.0"
+}

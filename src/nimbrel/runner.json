@@ -1,0 +1,15 @@
+{
+  "KPlugin": {
+    "Id": "nimbrel",
+    "Name": "Nimbrel",
+    "Description": "Ask your self-hosted AI assistant",
+    "Icon": "org.aether.Nimbrel",
+    "License": "GPL-2.0-or-later",
+    "EnabledByDefault": true
+  },
+  "X-Plasma-Runner-Min-Letter-Count": 4,
+  "X-Plasma-Runner-Syntaxes": [
+    "ai :q:",
+    "nimbrel :q:"
+  ]
+}

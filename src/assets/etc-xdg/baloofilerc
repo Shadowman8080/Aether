@@ -1,0 +1,6 @@
+[Basic Settings]
+Indexing-Enabled=true
+[General]
+only basic indexing=true
+index hidden folders=false
+exclude filters=.git,node_modules,__pycache__,build,.cache

@@ -1,0 +1,10 @@
+[Daemon]
+Autolock=true
+LockOnResume=true
+Timeout=10
+RequirePassword=true
+Lock=true
+LockGrace=0
+
+[Greeter]
+WallpaperPlugin=org.aether.saver.aurora

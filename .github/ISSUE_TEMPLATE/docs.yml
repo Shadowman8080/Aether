@@ -1,0 +1,64 @@
+name: Documentation problem
+description: A claim, caveat or limitation in the docs is wrong or missing
+title: "[docs] "
+labels: ["documentation"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Aether is 0.3 and heavily caveated. Most valuable documentation fixes are
+        ones that make a limitation **more** accurate, not fewer.
+
+  - type: textarea
+    id: inaccurate
+    attributes:
+      label: Which claim is wrong or misleading?
+      description: Quote the exact wording and give the file.
+      placeholder: |
+        docs/verification.md says X, but on my machine Y.
+    validations:
+      required: true
+
+  - type: textarea
+    id: evidence
+    attributes:
+      label: How do you know?
+      description: >
+        What did you run, and what did it print? "I think so" is a hypothesis,
+        not evidence - and unverified claims are exactly the problem here.
+      render: shell
+    validations:
+      required: true
+
+  - type: dropdown
+    id: kind
+    attributes:
+      label: What kind of problem is this?
+      options:
+        - A claim is stated as verified but was not actually verified
+        - A limitation is missing or understated
+        - A limitation no longer applies (it has been fixed)
+        - Instructions do not work as written
+        - Wording, structure or formatting
+        - Broken link or dead reference
+    validations:
+      required: true
+
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Suggested change
+      description: |
+        A diff or replacement wording. Please keep caveats that remain true.
+
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: Before you submit
+      options:
+        - label: I did not remove a caveat simply because it is inconvenient.
+          required: true
+        - label: I did not add a certification or compliance claim.
+          required: true
+        - label: I quoted the exact text I am correcting.
+          required: true

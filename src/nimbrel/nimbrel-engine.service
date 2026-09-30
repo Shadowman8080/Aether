@@ -1,0 +1,24 @@
+[Unit]
+Description=Nimbrel on-device inference engine
+After=local-fs.target
+[Service]
+User=nimbrel
+Group=nimbrel
+Restart=on-failure
+RestartSec=3
+NoNewPrivileges=yes
+PrivateTmp=yes
+PrivateDevices=yes
+ProtectSystem=strict
+ProtectHome=yes
+ProtectKernelTunables=yes
+ProtectControlGroups=yes
+RestrictAddressFamilies=AF_UNIX
+TasksMax=128
+UMask=0077
+RuntimeDirectory=nimbrel-engine
+RuntimeDirectoryMode=0700
+ExecStart=/usr/libexec/nimbrel-engine-start
+MemoryMax=3G
+[Install]
+WantedBy=multi-user.target

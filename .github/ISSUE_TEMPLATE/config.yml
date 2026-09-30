@@ -1,0 +1,14 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Security vulnerability
+    url: https://github.com/Shadowman8080/Aether/blob/main/SECURITY.md
+    about: >
+      Do not open a public issue for a vulnerability. Read the policy first -
+      there is no published address yet, so use a private channel with the
+      maintainer.
+  - name: Documentation problem
+    url: https://github.com/Shadowman8080/Aether/issues/new?template=docs.yml
+    about: Report a wrong, missing or overstated claim.
+  - name: Ask a question
+    url: https://github.com/Shadowman8080/Aether/discussions
+    about: Usage questions, build help, and "how do I..." requests.

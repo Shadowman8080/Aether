@@ -1,0 +1,55 @@
+#!/bin/sh
+export PATH=/usr/sbin:/usr/bin:/sbin:/bin
+/bin/busybox --install -s /bin
+mount -t devtmpfs devtmpfs /dev
+mount -t proc proc /proc
+mount -t sysfs sysfs /sys
+mount -t tmpfs -o mode=0755 tmpfs /run
+[ ! -x /usr/lib/aether-initramfs/start-splash ] || /usr/lib/aether-initramfs/start-splash
+root_uuid=''
+luks_uuid=''
+for argument in $(cat /proc/cmdline); do
+    case "$argument" in
+        root=UUID=*) root_uuid=${argument#root=UUID=} ;;
+        aether.luks=*) luks_uuid=${argument#aether.luks=} ;;
+    esac
+done
+fail() {
+    /usr/bin/plymouth quit 2>/dev/null || :
+    echo "Aether could not unlock or mount the system disk. Reboot using recovery media."
+    echo "No unauthenticated recovery shell is started. Press Enter to reboot."
+    read answer
+    reboot -f
+    while :; do sleep 60; done
+}
+find_uuid() {
+    count=0
+    while [ "$count" -lt 60 ]; do
+        device=$(/usr/sbin/blkid -U "$1" 2>/dev/null)
+        if [ -n "$device" ] && [ -b "$device" ]; then echo "$device"; return 0; fi
+        sleep 1
+        count=$((count + 1))
+    done
+    return 1
+}
+if [ -n "$luks_uuid" ]; then
+    /usr/sbin/modprobe dm_crypt || fail
+    device=$(find_uuid "$luks_uuid") || fail
+    case "$device" in *[!a-zA-Z0-9/_-]*) fail ;; esac
+    if /usr/bin/plymouth --ping 2>/dev/null; then
+        /usr/bin/plymouth ask-for-password --prompt="Unlock Aether encrypted storage" --number-of-tries=3 --command="/usr/lib/aether-initramfs/unlock-root $device" || fail
+    else
+        echo "Unlock Aether encrypted storage (normal passphrase or recovery passphrase)."
+        /usr/sbin/cryptsetup open --type luks "$device" aether-root || fail
+    fi
+fi
+[ -n "$root_uuid" ] || fail
+device=$(find_uuid "$root_uuid") || fail
+mount -t ext4 -o rw "$device" /newroot || fail
+/usr/bin/udevadm control --exit 2>/dev/null || :
+/usr/bin/plymouth update-root-fs --new-root-dir=/newroot 2>/dev/null || :
+for directory in dev proc sys run; do
+    mkdir -p "/newroot/$directory"
+    mount --move "/$directory" "/newroot/$directory" || fail
+done
+exec switch_root /newroot /sbin/init

@@ -1,0 +1,8 @@
+[KDE]
+LookAndFeelPackage=org.aether.desktop.light
+SingleClick=false
+AnimationDurationFactor=0.75
+[General]
+ColorScheme=AetherLight
+[Icons]
+Theme=breeze

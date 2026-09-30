@@ -1,0 +1,5 @@
+#!/bin/sh
+set -eu
+export LD_LIBRARY_PATH=/opt/nimbrel/engine
+threads=$(nproc)
+exec /opt/nimbrel/engine/llama-server --model /usr/share/nimbrel/models/model.gguf --alias nimbrel-local --host /run/nimbrel-engine/engine.sock --ctx-size 8192 --threads "$threads" --threads-batch "$threads" --parallel 1 --n-gpu-layers 0 --log-disable

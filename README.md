@@ -84,6 +84,132 @@ inline calculation. **Vector** is Aether's own applications-and-files browser.
   <img src="media/screenshots/08-vector-applications.png" width="880" alt="Vector showing 23 installed Aether and KDE applications">
 </p>
 
+## Every screenshot and video
+
+Everything below was recorded from a **live Aether 0.3 virtual machine** — no
+mockups, no design files, no staged dialogs. Full provenance, capture method and
+per-file notes are in [`media/README.md`](media/README.md).
+
+### Videos
+
+<p align="center">
+  <video src="media/videos/01-nimbrel-on-device-ai.mp4" width="880" controls muted loop playsinline></video>
+  <br><sub>01 — Nimbrel answering on-device. 46 s. Nothing leaves the machine.</sub>
+</p>
+
+<p align="center">
+  <video src="media/videos/02-aurasearch-and-vector.mp4" width="880" controls muted loop playsinline></video>
+  <br><sub>02 — AuraSearch and Vector. 26 s. Real synthetic X11 input.</sub>
+</p>
+
+### Desktop sessions
+
+<p align="center">
+  <img src="media/screenshots/01-desktop.png" width="880" alt="Aether Plasma session, the hero image">
+</p>
+
+<p align="center">
+  <img src="media/screenshots/11-desktop-session.png" width="420" alt="A second desktop session">
+  <img src="media/screenshots/24-installed-desktop.png" width="420" alt="First boot from the installed disk">
+</p>
+<p align="center">
+  <img src="media/screenshots/25-desktop-panels.png" width="420" alt="Panel layout">
+  <img src="media/screenshots/32-kate-editor.png" width="420" alt="Kate text editor">
+</p>
+<p align="center">
+  <img src="media/screenshots/14-vmware-integration.png" width="420" alt="VMware guest integration in the panel">
+  <img src="media/screenshots/31-vector-dark.png" width="420" alt="Vector in the dark colour scheme">
+</p>
+
+### AuraSearch and Vector
+
+<p align="center">
+  <img src="media/screenshots/08-vector-applications.png" width="880" alt="Vector showing 23 installed applications">
+</p>
+
+<p align="center">
+  <img src="media/screenshots/02-aurasearch.png" width="420" alt="AuraSearch with an inline calculation">
+  <img src="media/screenshots/05-aurasearch-launch.png" width="420" alt="The AuraSearch launcher">
+</p>
+<p align="center">
+  <img src="media/screenshots/04-aurasearch-results.png" width="420" alt="AuraSearch results across apps, files and settings">
+  <img src="media/screenshots/07-vector-file-manager.png" width="420" alt="Vector browsing the home directory">
+</p>
+
+### Nimbrel
+
+<p align="center">
+  <img src="media/screenshots/03-nimbrel-ai.png" width="880" alt="A real on-device answer from Nimbrel">
+  <br><sub>Captured from video 01 — same pixels, not a staged capture. Note the
+  "Check important answers" label: 0.8B is a small model and it says so.</sub>
+</p>
+
+### Greeter, lock screen and power
+
+<p align="center">
+  <img src="media/screenshots/06-login-greeter.png" width="420" alt="Aether login greeter">
+  <img src="media/screenshots/33-greeter-current.png" width="420" alt="The greeter in its current form">
+</p>
+<p align="center">
+  <img src="media/screenshots/12-caps-lock-warning.png" width="420" alt="Caps Lock warning at the greeter">
+  <img src="media/screenshots/27-wrong-password.png" width="420" alt="Rejected sign-in">
+</p>
+<p align="center">
+  <img src="media/screenshots/26-lock-screen.png" width="420" alt="Lock screen clock and actions">
+  <img src="media/screenshots/09-power-menu.png" width="420" alt="Power menu with lock, sleep, restart, shut down">
+</p>
+<p align="center">
+  <img src="media/screenshots/10-login-power-menu.png" width="420" alt="Power menu reachable before login">
+  <img src="media/screenshots/13-shutdown-confirmation.png" width="420" alt="Shutdown countdown confirmation">
+</p>
+
+### Installer
+
+<p align="center">
+  <img src="media/screenshots/15-installer.png" width="880" alt="Installer welcome page stating the whole-disk limitation">
+</p>
+
+<p align="center">
+  <img src="media/screenshots/16-installer-welcome.png" width="420" alt="Installer welcome page">
+  <img src="media/screenshots/17-installer-region.png" width="420" alt="Region, keyboard and time zone">
+</p>
+<p align="center">
+  <img src="media/screenshots/18-installer-account.png" width="420" alt="Account, LUKS2 and recovery passphrases">
+  <img src="media/screenshots/19-installer-review.png" width="420" alt="Review page confirming erasure of the disk">
+</p>
+<p align="center">
+  <img src="media/screenshots/20-installer-complete.png" width="420" alt="Installation finished, GRUB installed for both platforms">
+</p>
+
+### Security and encrypted boot
+
+<p align="center">
+  <img src="media/screenshots/21-security-center.png" width="880" alt="Aether Security Center showing what is protected, unverified and unsupported">
+  <br><sub>The Security Center reports unverified items as unverified. That is
+  the point of it.</sub>
+</p>
+
+<p align="center">
+  <img src="media/screenshots/22-encrypted-unlock.png" width="420" alt="LUKS2 unlock prompt">
+  <img src="media/screenshots/23-security-encrypted-boot.png" width="420" alt="Kernel log from an encrypted boot with AppArmor and Landlock present">
+</p>
+
+### Boot
+
+<p align="center">
+  <img src="media/screenshots/30-boot-splash.png" width="420" alt="The Aether Plymouth boot splash">
+  <img src="media/screenshots/29-boot-menu.png" width="420" alt="The Aether GRUB menu with UEFI entries">
+</p>
+
+<details>
+<summary>Settings and screen savers</summary>
+
+<p align="center">
+  <img src="media/screenshots/28-screensavers.png" width="420" alt="Screen saver previews">
+</p>
+
+</details>
+
 ## Status
 
 > ### ⚠️ This is a development snapshot, not a distribution release.

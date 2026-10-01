@@ -1,0 +1,14 @@
+Aether Linux 0.3-x86_64-desktop build record
+
+Recorded: 2026-09-30T00:29:00Z
+Target: x86-64 desktop (Plasma 6.29.0)
+Build type: desktop pipeline
+Kernel: 6.18.54-aether
+Toolchain: GCC 16.2.0, Binutils 2.45.1, LLVM 22.1.8
+GLIBC: 2.44 (Buildroot base)
+Parallel build jobs: (varied by stage)
+
+Boot test results (recorded in logs):
+- experience-release-bios-test.log
+- experience-final-lock-bios.log
+- experience-quiet-uefi.log / experience-final-uefi.log

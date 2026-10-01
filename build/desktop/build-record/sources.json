@@ -1,0 +1,3016 @@
+[
+  {
+    "key": "cmake",
+    "url": "https://cmake.org/files/v4.4/cmake-4.4.2.tar.gz",
+    "filename": "cmake-4.4.2.tar.gz",
+    "md5": "6911f0379d901db23619413f092b99ef",
+    "group": "base",
+    "sha256": "1db9e61e60b6e0874c86386340b910382f3c5e75b9fbfb44d122063129a2789d"
+  },
+  {
+    "key": "git",
+    "url": "https://www.kernel.org/pub/software/scm/git/git-2.55.0.tar.xz",
+    "filename": "git-2.55.0.tar.xz",
+    "md5": "758c02a1b621cc0868ee0a0d99573e6b",
+    "group": "base",
+    "sha256": "457fdb04dc8728e007d4688695e6912e6f680727920f2a40bf11eacc17505357"
+  },
+  {
+    "key": "llvm",
+    "url": "https://github.com/llvm/llvm-project/releases/download/llvmorg-22.1.8/llvm-project-22.1.8.src.tar.xz",
+    "filename": "llvm-project-22.1.8.src.tar.xz",
+    "md5": "69065494ebcb1150b2a329c1b3db7584",
+    "group": "base",
+    "sha256": "922f1817a0df7b1489272d18134ee0087a8b068828f87ac63b9861b1a9965888"
+  },
+  {
+    "key": "wayland",
+    "url": "https://gitlab.freedesktop.org/wayland/wayland/-/releases/1.26.0/downloads/wayland-1.26.0.tar.xz",
+    "filename": "wayland-1.26.0.tar.xz",
+    "md5": "64c593ccf6820635765a952ec5f34fbb",
+    "group": "base",
+    "sha256": "64176eaa46e4969903e286f8e5ef8331affc17fdf03ac9b58381d2b23162b7a3"
+  },
+  {
+    "key": "wayland-protocols",
+    "url": "https://gitlab.freedesktop.org/wayland/wayland-protocols/-/releases/1.49/downloads/wayland-protocols-1.49.tar.xz",
+    "filename": "wayland-protocols-1.49.tar.xz",
+    "md5": "5685f769a227f2d4143d983ad07edaba",
+    "group": "base",
+    "sha256": "ec4c8f74942d6dff7ace8b4ce4764f0ef9ff618a935d974ea77edee2ad240b14"
+  },
+  {
+    "key": "libxkbcommon",
+    "url": "https://github.com/lfs-book/libxkbcommon/archive/v1.13.2/libxkbcommon-1.13.2.tar.gz",
+    "filename": "libxkbcommon-1.13.2.tar.gz",
+    "md5": "07f838f575d62c267cfc53eaf5ee739b",
+    "group": "base",
+    "sha256": "e5d5eff0ea09d82c44a96aec75c719b6969fdc602da82e6b1c9aa74cac5fd488"
+  },
+  {
+    "key": "libinput",
+    "url": "https://gitlab.freedesktop.org/libinput/libinput/-/archive/1.31.3/libinput-1.31.3.tar.gz",
+    "filename": "libinput-1.31.3.tar.gz",
+    "md5": "022aa3838b0cf8b932c0e4a4dbeac150",
+    "group": "base",
+    "sha256": "b6749bf6f1890f6631c0a70a027c35fec9d2e096a39f720548896e41474a9854"
+  },
+  {
+    "key": "mesa",
+    "url": "https://mesa.freedesktop.org/archive/mesa-26.1.7.tar.xz",
+    "filename": "mesa-26.1.7.tar.xz",
+    "md5": "1a3ea044abc823e2db8c6041e5adcc4f",
+    "group": "base",
+    "sha256": "25e0a669e6638c3563e7be32a0a09f1888317e6eed0d047dc41d49dc8de26c7d"
+  },
+  {
+    "key": "xcb-util",
+    "url": "https://xcb.freedesktop.org/dist/xcb-util-0.4.1.tar.xz",
+    "filename": "xcb-util-0.4.1.tar.xz",
+    "md5": "34d749eab0fd0ffd519ac64798d79847",
+    "group": "base",
+    "sha256": "5abe3bbbd8e54f0fa3ec945291b7e8fa8cfd3cccc43718f8758430f94126e512"
+  },
+  {
+    "key": "xcb-util-image",
+    "url": "https://xorg.freedesktop.org/archive/individual/lib/xcb-util-image-0.4.1.tar.xz",
+    "filename": "xcb-util-image-0.4.1.tar.xz",
+    "md5": "a67bfac2eff696170259ef1f5ce1b611",
+    "group": "base",
+    "sha256": "ccad8ee5dadb1271fd4727ad14d9bd77a64e505608766c4e98267d9aede40d3d"
+  },
+  {
+    "key": "xcb-util-keysyms",
+    "url": "https://xorg.freedesktop.org/archive/individual/lib/xcb-util-keysyms-0.4.1.tar.xz",
+    "filename": "xcb-util-keysyms-0.4.1.tar.xz",
+    "md5": "fbdc05f86f72f287ed71b162f1a9725a",
+    "group": "base",
+    "sha256": "7c260a5294412aed429df1da2f8afd3bd07b7cba3fec772fba15a613a6d5c638"
+  },
+  {
+    "key": "xcb-util-renderutil",
+    "url": "https://xorg.freedesktop.org/archive/individual/lib/xcb-util-renderutil-0.3.10.tar.xz",
+    "filename": "xcb-util-renderutil-0.3.10.tar.xz",
+    "md5": "193b890e2a89a53c31e2ece3afcbd55f",
+    "group": "base",
+    "sha256": "3e15d4f0e22d8ddbfbb9f5d77db43eacd7a304029bf25a6166cc63caa96d04ba"
+  },
+  {
+    "key": "xcb-util-wm",
+    "url": "https://xorg.freedesktop.org/archive/individual/lib/xcb-util-wm-0.4.2.tar.xz",
+    "filename": "xcb-util-wm-0.4.2.tar.xz",
+    "md5": "581b3a092e3c0c1b4de6416d90b969c3",
+    "group": "base",
+    "sha256": "62c34e21d06264687faea7edbf63632c9f04d55e72114aa4a57bb95e4f888a0b"
+  },
+  {
+    "key": "xcb-util-cursor",
+    "url": "https://xorg.freedesktop.org/archive/individual/lib/xcb-util-cursor-0.1.6.tar.xz",
+    "filename": "xcb-util-cursor-0.1.6.tar.xz",
+    "md5": "e85bccd1993992be07232f8b80a814c8",
+    "group": "base",
+    "sha256": "fdeb8bd127873519be5cc70dcd0d3b5d33b667877200f9925a59fdcad8f7a933"
+  },
+  {
+    "key": "xcb-util-errors",
+    "url": "https://xorg.freedesktop.org/archive/individual/lib/xcb-util-errors-1.0.1.tar.xz",
+    "filename": "xcb-util-errors-1.0.1.tar.xz",
+    "md5": "322cf9df283625223933ffcecb4a1cca",
+    "group": "base",
+    "sha256": "5628c87b984259ad927bacd8a42958319c36bdf4b065887803c9d820fb80f357"
+  },
+  {
+    "key": "libjpeg",
+    "url": "https://github.com/libjpeg-turbo/libjpeg-turbo/releases/download/3.2.0/libjpeg-turbo-3.2.0.tar.gz",
+    "filename": "libjpeg-turbo-3.2.0.tar.gz",
+    "md5": "a80f9f1c735b57d3cdd66daed1ba6bb4",
+    "group": "base",
+    "sha256": "6f30092cef9fb839779646608f4ee14ae3cbac989c47fa05e841b0841f09878e"
+  },
+  {
+    "key": "double-conversion",
+    "url": "https://github.com/google/double-conversion/archive/v3.4.0/double-conversion-3.4.0.tar.gz",
+    "filename": "double-conversion-3.4.0.tar.gz",
+    "md5": "cb2e555c32614f680ba928e962dda9be",
+    "group": "base",
+    "sha256": "42fd4d980ea86426e457b24bdfa835a6f5ad9517ddb01cdb42b99ab9c8dd5dc9"
+  },
+  {
+    "key": "icu",
+    "url": "https://github.com/unicode-org/icu/releases/download/release-78.3/icu4c-78.3-sources.tgz",
+    "filename": "icu4c-78.3-sources.tgz",
+    "md5": "a7b736b570ef0e180c96a31715a00c78",
+    "group": "base",
+    "sha256": "3a2e7a47604ba702f345878308e6fefeca612ee895cf4a5f222e7955fabfe0c0"
+  },
+  {
+    "key": "libwebp",
+    "url": "https://storage.googleapis.com/downloads.webmproject.org/releases/webp/libwebp-1.6.0.tar.gz",
+    "filename": "libwebp-1.6.0.tar.gz",
+    "md5": "cceb6447180f961473b181c9ef38b630",
+    "group": "base",
+    "sha256": "e4ab7009bf0629fd11982d4c2aa83964cf244cffba7347ecd39019a9e38c4564"
+  },
+  {
+    "key": "tiff",
+    "url": "https://download.osgeo.org/libtiff/tiff-4.7.2.tar.gz",
+    "filename": "tiff-4.7.2.tar.gz",
+    "md5": "a2a65ea450b8f469c667128848ffebfc",
+    "group": "base",
+    "sha256": "672bd7d10aee4606171afb864f3570b83340f6a33e2c186dc0512f7145ffdf6a"
+  },
+  {
+    "key": "extra-cmake-modules",
+    "url": "https://download.kde.org/stable/frameworks/6.29/extra-cmake-modules-6.29.0.tar.xz",
+    "filename": "extra-cmake-modules-6.29.0.tar.xz",
+    "md5": "b3795f9b843a58746ca5461713c088d8",
+    "group": "base",
+    "sha256": "aaf2542edd5c5af9ea56a46468892d38a7978af65f0f3518379fa8ce66cad2b8"
+  },
+  {
+    "key": "linux-pam",
+    "url": "https://github.com/linux-pam/linux-pam/releases/download/v1.7.2/Linux-PAM-1.7.2.tar.xz",
+    "filename": "Linux-PAM-1.7.2.tar.xz",
+    "md5": "934c26eca3fada956356a30489e86291",
+    "group": "base",
+    "sha256": "3d86b6383fb5fd9eb9578d2cd47d92801191f4bf3f9bc61419bfefc8aa1e531a"
+  },
+  {
+    "key": "polkit",
+    "url": "https://github.com/polkit-org/polkit/archive/127/polkit-127.tar.gz",
+    "filename": "polkit-127.tar.gz",
+    "md5": "2cc95f1b02fc1de6c9e52db986642ec4",
+    "group": "base",
+    "sha256": "9b7bc16f086479dcc626c575976568ba4a85d34297a750d8ab3d2e57f6d8b988"
+  },
+  {
+    "key": "libgudev",
+    "url": "https://download.gnome.org/sources/libgudev/238/libgudev-238.tar.xz",
+    "filename": "libgudev-238.tar.xz",
+    "md5": "46da30a1c69101c3a13fa660d9ab7b73",
+    "group": "base",
+    "sha256": "61266ab1afc9d73dbc60a8b2af73e99d2fdff47d99544d085760e4fa667b5dd1"
+  },
+  {
+    "key": "libwacom",
+    "url": "https://github.com/linuxwacom/libwacom/releases/download/libwacom-2.19.1/libwacom-2.19.1.tar.xz",
+    "filename": "libwacom-2.19.1.tar.xz",
+    "md5": "83baa1eb388d506b670d13a8a18ff224",
+    "group": "base",
+    "sha256": "a1e5b1e7ef60fa70ed05b55d888d980ec7e86bd15594857f3c48c529b661bf32"
+  },
+  {
+    "key": "libdisplay-info",
+    "url": "https://gitlab.freedesktop.org/emersion/libdisplay-info/-/releases/0.4.0/downloads/libdisplay-info-0.4.0.tar.xz",
+    "filename": "libdisplay-info-0.4.0.tar.xz",
+    "md5": "af9f07493bd5ff560a98b95ea4c5c129",
+    "group": "base",
+    "sha256": "43b180baa143e2035654759d84e2b2f5ee77d5fe817c423838c7fe59c0d68459"
+  },
+  {
+    "key": "seatd",
+    "url": "https://github.com/kennylevinsen/seatd/archive/0.9.3/seatd-0.9.3.tar.gz",
+    "filename": "seatd-0.9.3.tar.gz",
+    "md5": "c1cc200188d31214b88af015b1f19f7b",
+    "group": "base",
+    "sha256": "302564d54d8e28191fadfd734f2675ecb0c9e0615a58011b89ef15dfa4dbaa96"
+  },
+  {
+    "key": "xwayland",
+    "url": "https://www.x.org/pub/individual/xserver/xwayland-24.1.13.tar.xz",
+    "filename": "xwayland-24.1.13.tar.xz",
+    "md5": "f84a91c4d3aee2b18b1864fe2bbe78c3",
+    "group": "base",
+    "sha256": "173aea3d6f79609164c04528e1c8e4c9b60fcd59391c3c9dad4667297d727fb6"
+  },
+  {
+    "key": "libei",
+    "url": "https://gitlab.freedesktop.org/libinput/libei/-/archive/1.6.0/libei-1.6.0.tar.bz2",
+    "filename": "libei-1.6.0.tar.bz2",
+    "md5": "08186470213bdba5a4e58d322368f31d",
+    "group": "base",
+    "sha256": "5ed6078fa63afd554cc04b1001675615da0ed8fe23b80492ab63403140b5a830"
+  },
+  {
+    "key": "libepoxy",
+    "url": "https://download.gnome.org/sources/libepoxy/1.5/libepoxy-1.5.10.tar.xz",
+    "filename": "libepoxy-1.5.10.tar.xz",
+    "md5": "10c635557904aed5239a4885a7c4efb7",
+    "group": "base",
+    "sha256": "072cda4b59dd098bba8c2363a6247299db1fa89411dc221c8b81b8ee8192e623"
+  },
+  {
+    "key": "Mako",
+    "url": "https://files.pythonhosted.org/packages/source/M/Mako/mako-1.4.1.tar.gz",
+    "filename": "mako-1.4.1.tar.gz",
+    "md5": "9c09a897c23a34df7ba614ec2d7229e1",
+    "group": "base",
+    "sha256": "d7904710b662996425a21627710c4777c45053146942cf8a7aebf757c92b8c27"
+  },
+  {
+    "key": "PyYAML",
+    "url": "https://files.pythonhosted.org/packages/source/P/PyYAML/pyyaml-6.0.3.tar.gz",
+    "filename": "pyyaml-6.0.3.tar.gz",
+    "md5": "dbc6f815cd75160ccf12e470be1c8d6e",
+    "group": "base",
+    "sha256": "d76623373421df22fb4cf8817020cbb7ef15c725b9d5e45f17e189bfc384190f"
+  },
+  {
+    "key": "libxmlb",
+    "url": "https://github.com/hughsie/libxmlb/releases/download/0.3.29/libxmlb-0.3.29.tar.xz",
+    "filename": "libxmlb-0.3.29.tar.xz",
+    "md5": "83f87e2ce1fd6b34b25e7f5e1443293c",
+    "group": "base",
+    "sha256": "448294be33bfae62f00fa66e506f1cae80237ce71b7ab6530aefa75005eeb08a"
+  },
+  {
+    "key": "duktape",
+    "url": "https://duktape.org/duktape-2.7.0.tar.xz",
+    "filename": "duktape-2.7.0.tar.xz",
+    "md5": "b3200b02ab80125b694bae887d7c1ca6",
+    "group": "base",
+    "sha256": "90f8d2fa8b5567c6899830ddef2c03f3c27960b11aca222fa17aa7ac613c2890"
+  },
+  {
+    "key": "json-glib",
+    "url": "https://download.gnome.org/sources/json-glib/1.10/json-glib-1.10.8.tar.xz",
+    "filename": "json-glib-1.10.8.tar.xz",
+    "md5": "95c3d5dd56d4ada808480739889b75bc",
+    "group": "base",
+    "sha256": "55c5c141a564245b8f8fbe7698663c87a45a7333c2a2c56f06f811ab73b212dd"
+  },
+  {
+    "key": "breeze-icons",
+    "url": "https://download.kde.org/stable/frameworks/6.29/breeze-icons-6.29.0.tar.xz",
+    "filename": "breeze-icons-6.29.0.tar.xz",
+    "md5": "04a8c3e8651fdf4dead94221a3451f93",
+    "group": "base",
+    "sha256": "2948a313ffe35895b846dde5a93302a1fcd587ad8dfb860b8757629209586fe4"
+  },
+  {
+    "key": "libgpg-error",
+    "url": "https://www.gnupg.org/ftp/gcrypt/libgpg-error/libgpg-error-1.61.tar.bz2",
+    "filename": "libgpg-error-1.61.tar.bz2",
+    "md5": "c89a8c6825cb64c527d5c1c0fb36f245",
+    "group": "base",
+    "sha256": "7a85413f2bc354f4f8aa832b718af122e48965e9e0eb9012ee659c13c6385c93"
+  },
+  {
+    "key": "libgcrypt",
+    "url": "https://www.gnupg.org/ftp/gcrypt/libgcrypt/libgcrypt-1.12.2.tar.bz2",
+    "filename": "libgcrypt-1.12.2.tar.bz2",
+    "md5": "4e98430cfc16d842a7231026c32418da",
+    "group": "base",
+    "sha256": "7ce33c2492221a0436f96a8500215e9f3e3dcb5fd26a757cd415e7a843babd5e"
+  },
+  {
+    "key": "libassuan",
+    "url": "https://www.gnupg.org/ftp/gcrypt/libassuan/libassuan-3.0.2.tar.bz2",
+    "filename": "libassuan-3.0.2.tar.bz2",
+    "md5": "c6f1bf4bd2aaa79cd1635dcc070ba51a",
+    "group": "base",
+    "sha256": "d2931cdad266e633510f9970e1a2f346055e351bb19f9b78912475b8074c36f6"
+  },
+  {
+    "key": "npth",
+    "url": "https://www.gnupg.org/ftp/gcrypt/npth/npth-1.8.tar.bz2",
+    "filename": "npth-1.8.tar.bz2",
+    "md5": "cb4fc0402be5ba67544e499cb2c1a74d",
+    "group": "base",
+    "sha256": "8bd24b4f23a3065d6e5b26e98aba9ce783ea4fd781069c1b35d149694e90ca3e"
+  },
+  {
+    "key": "gnupg2",
+    "url": "https://www.gnupg.org/ftp/gcrypt/gnupg/gnupg-2.5.21.tar.bz2",
+    "filename": "gnupg-2.5.21.tar.bz2",
+    "md5": "39311d55044c9548b5eb8f53466a86b5",
+    "group": "base",
+    "sha256": "e3af2c8caa46a66a9329fa7c6880af260451914d819595beabc2c26597b31352"
+  },
+  {
+    "key": "gpgme",
+    "url": "https://www.gnupg.org/ftp/gcrypt/gpgme/gpgme-2.1.2.tar.bz2",
+    "filename": "gpgme-2.1.2.tar.bz2",
+    "md5": "58448073da13a22e878adfb22a988d4d",
+    "group": "base",
+    "sha256": "0687a95b299871c4141f507c0f740de6b429c9ac067d0fa4e062e3264df5fb77"
+  },
+  {
+    "key": "gpgmepp",
+    "url": "https://www.gnupg.org/ftp/gcrypt/gpgmepp/gpgmepp-2.1.0.tar.xz",
+    "filename": "gpgmepp-2.1.0.tar.xz",
+    "md5": "f3252524ba34c6a42455f30e226de1f5",
+    "group": "base",
+    "sha256": "57f804468f0204504b172c6b139cb05124b4263be7ad514932c7c4c5062a16e2"
+  },
+  {
+    "key": "libsecret",
+    "url": "https://download.gnome.org/sources/libsecret/0.21/libsecret-0.21.7.tar.xz",
+    "filename": "libsecret-0.21.7.tar.xz",
+    "md5": "7a938a802a3c17df441fbd0358866e99",
+    "group": "base",
+    "sha256": "6b452e4750590a2b5617adc40026f28d2f4903de15f1250e1d1c40bfd68ed55e"
+  },
+  {
+    "key": "lmdb",
+    "url": "https://git.openldap.org/openldap/openldap/-/archive/LMDB_1.0.1/openldap-LMDB_1.0.1.tar.bz2",
+    "filename": "openldap-LMDB_1.0.1.tar.bz2",
+    "md5": "f060b9e036cd5d998b7b3ca1498d7715",
+    "group": "base",
+    "sha256": "1ae17f11ebdeb0d69e53416bb6e0a7479a7d3d5b5ca443a474bff5b5f886a348"
+  },
+  {
+    "key": "libical",
+    "url": "https://github.com/libical/libical/releases/download/v4.0.5/libical-4.0.5.tar.gz",
+    "filename": "libical-4.0.5.tar.gz",
+    "md5": "9896781cc82bad3b9a2c6c1ee8177347",
+    "group": "base",
+    "sha256": "cc09a3ac41d60e6144e644bd3fcf97d47106d659c4a0b8965102581401e67c9c"
+  },
+  {
+    "key": "libqrencode",
+    "url": "https://github.com/fukuchi/libqrencode/archive/v4.1.1/libqrencode-4.1.1.tar.gz",
+    "filename": "libqrencode-4.1.1.tar.gz",
+    "md5": "486f879d1638d3fb58a4a5d45a88c600",
+    "group": "base",
+    "sha256": "5385bc1b8c2f20f3b91d258bf8ccc8cf62023935df2d2676b5b67049f31a049c"
+  },
+  {
+    "key": "libdmtx",
+    "url": "https://github.com/dmtx/libdmtx/archive/v0.7.8/libdmtx-0.7.8.tar.gz",
+    "filename": "libdmtx-0.7.8.tar.gz",
+    "md5": "2b4329190b65e2f8b23e4a329ec7d792",
+    "group": "base",
+    "sha256": "2394bf1d1d693a5a4ca3cfcc1bb28a4d878bdb831ea9ca8f3d5c995d274bdc39"
+  },
+  {
+    "key": "libogg",
+    "url": "https://downloads.xiph.org/releases/ogg/libogg-1.3.6.tar.xz",
+    "filename": "libogg-1.3.6.tar.xz",
+    "md5": "529275432dff072f63d4ed0f1f961384",
+    "group": "base",
+    "sha256": "5c8253428e181840cd20d41f3ca16557a9cc04bad4a3d04cce84808677fa1061"
+  },
+  {
+    "key": "libvorbis",
+    "url": "https://downloads.xiph.org/releases/vorbis/libvorbis-1.3.7.tar.xz",
+    "filename": "libvorbis-1.3.7.tar.xz",
+    "md5": "50902641d358135f06a8392e61c9ac77",
+    "group": "base",
+    "sha256": "b33cc4934322bcbf6efcbacf49e3ca01aadbea4114ec9589d1b1e9d20f72954b"
+  },
+  {
+    "key": "alsa-lib",
+    "url": "https://www.alsa-project.org/files/pub/lib/alsa-lib-1.2.16.1.tar.bz2",
+    "filename": "alsa-lib-1.2.16.1.tar.bz2",
+    "md5": "c14c9f94f78f76924c13668954997a33",
+    "group": "base",
+    "sha256": "f740db7f488255944ffd4428416ee3390a96742856916433df468c281436480e"
+  },
+  {
+    "key": "alsa-utils",
+    "url": "https://www.alsa-project.org/files/pub/utils/alsa-utils-1.2.16.tar.bz2",
+    "filename": "alsa-utils-1.2.16.tar.bz2",
+    "md5": "570a1627d47b70ad683ef9f2429ddfca",
+    "group": "base",
+    "sha256": "092399d5e8749a1d5e188e393157521cec4b75693b60ebb79bbce728cff2232c"
+  },
+  {
+    "key": "libcanberra",
+    "url": "https://0pointer.de/lennart/projects/libcanberra/libcanberra-0.30.tar.xz",
+    "filename": "libcanberra-0.30.tar.xz",
+    "md5": "34cb7e4430afaf6f447c4ebdb9b42072",
+    "group": "base",
+    "sha256": "c2b671e67e0c288a69fc33dc1b6f1b534d07882c2aceed37004bf48c601afa72"
+  },
+  {
+    "key": "libusb",
+    "url": "https://github.com/libusb/libusb/releases/download/v1.0.30/libusb-1.0.30.tar.bz2",
+    "filename": "libusb-1.0.30.tar.bz2",
+    "md5": "b0b0bacc2c6919515db8e863f0517db8",
+    "group": "base",
+    "sha256": "fea36f34f9156400209595e300840767ab1a385ede1dc7ee893015aea9c6dbaf"
+  },
+  {
+    "key": "libndp",
+    "url": "http://libndp.org/files/libndp-1.9.tar.gz",
+    "filename": "libndp-1.9.tar.gz",
+    "md5": "9d486750569e7025e5d0afdcc509b93c",
+    "group": "base",
+    "sha256": "a8ab214e01dc3a9b615276905395637f391298c84d77651f0cbf0b1082dd2dd4"
+  },
+  {
+    "key": "hwdata",
+    "url": "https://github.com/vcrhonek/hwdata/archive/v0.410/hwdata-0.410.tar.gz",
+    "filename": "hwdata-0.410.tar.gz",
+    "md5": "07f1de937ff5b830280f6157221164eb",
+    "group": "base",
+    "sha256": "2864b061b179b8ad8cb6a7339ca07678240a183d9cedce8677a4950acaf798e0"
+  },
+  {
+    "key": "cracklib",
+    "url": "https://github.com/cracklib/cracklib/releases/download/v2.10.3/cracklib-2.10.3.tar.xz",
+    "filename": "cracklib-2.10.3.tar.xz",
+    "md5": "e8ea2b86de774fc09fdd0f2829680b19",
+    "group": "base",
+    "sha256": "1d1b83676b5673051b9373e1ca0db81c1fa88faf9a195a3c1af984fd9c250d66"
+  },
+  {
+    "key": "libpwquality",
+    "url": "https://github.com/libpwquality/libpwquality/releases/download/libpwquality-1.4.5/libpwquality-1.4.5.tar.bz2",
+    "filename": "libpwquality-1.4.5.tar.bz2",
+    "md5": "6b70e355269aef0b9ddb2b9d17936f21",
+    "group": "base",
+    "sha256": "6fcf18b75d305d99d04d2e42982ed5b787a081af2842220ed63287a2d6a10988"
+  },
+  {
+    "key": "accountsservice",
+    "url": "https://gitlab.freedesktop.org/accountsservice/accountsservice/-/archive/26.27.3/accountsservice-26.27.3.tar.bz2",
+    "filename": "accountsservice-26.27.3.tar.bz2",
+    "md5": "61f56055b9d4564ad29bab799222e386",
+    "group": "base",
+    "sha256": "77e26080fd644df3e339fef561bb77f901e43557dc73e620afb6c10789b9a9e8"
+  },
+  {
+    "key": "upower",
+    "url": "https://gitlab.freedesktop.org/upower/upower/-/archive/v1.91.3/upower-v1.91.3.tar.bz2",
+    "filename": "upower-v1.91.3.tar.bz2",
+    "md5": "bf09da2eb695224e249e38077460414c",
+    "group": "base",
+    "sha256": "12227b3dcd34c5097bbda25984b192ea0bd5e11dce479358d9ef70415a38e4b6"
+  },
+  {
+    "key": "power-profiles-daemon",
+    "url": "https://gitlab.freedesktop.org/upower/power-profiles-daemon/-/archive/0.30/power-profiles-daemon-0.30.tar.gz",
+    "filename": "power-profiles-daemon-0.30.tar.gz",
+    "md5": "b72dbed7159cbeff972e9a20ddcc7388",
+    "group": "base",
+    "sha256": "90f2c95024861d9f4062abedd514084939224e7a49edd468f001af7260ec8e6c"
+  },
+  {
+    "key": "systemd",
+    "url": "https://github.com/systemd/systemd/archive/v261.2/systemd-261.2.tar.gz",
+    "filename": "systemd-261.2.tar.gz",
+    "md5": "e3f04ccc83a28ec5e80c5432bb8329f5",
+    "group": "base",
+    "sha256": "ed1059ff964f5df35b6056434cc17cc83f86dc913f10489948a0b19b6081c5ec"
+  },
+  {
+    "key": "shadow",
+    "url": "https://github.com/shadow-maint/shadow/releases/download/4.20.2/shadow-4.20.2.tar.xz",
+    "filename": "shadow-4.20.2.tar.xz",
+    "md5": "f52e717bd330818c67bd57c897ec5a8e",
+    "group": "base",
+    "sha256": "b89f432b75ae55a2d852b446d0365484795fdf533ab97d550e325fa15594a224"
+  },
+  {
+    "key": "pipewire",
+    "url": "https://gitlab.freedesktop.org/pipewire/pipewire/-/archive/1.6.8/pipewire-1.6.8.tar.bz2",
+    "filename": "pipewire-1.6.8.tar.bz2",
+    "md5": "9ae75812a76951c93210a26272c90ef3",
+    "group": "base",
+    "sha256": "efbaedf80450e5b08bb3196a4ca7ea17850d4a71ec1a8ae321e8937a7c95779e"
+  },
+  {
+    "key": "wireplumber",
+    "url": "https://gitlab.freedesktop.org/pipewire/wireplumber/-/archive/0.5.15/wireplumber-0.5.15.tar.bz2",
+    "filename": "wireplumber-0.5.15.tar.bz2",
+    "md5": "dba978afa67ba317d99ef03285ad4733",
+    "group": "base",
+    "sha256": "fb192f5d884155aedd6f01438e94cc12b263f482f0f39e5706c1e2cff9ad0c6d"
+  },
+  {
+    "key": "lua",
+    "url": "https://www.lua.org/ftp/lua-5.4.8.tar.gz",
+    "filename": "lua-5.4.8.tar.gz",
+    "md5": "81cf5265b8634967d8a7480d238168ce",
+    "group": "base",
+    "sha256": "4f18ddae154e793e46eeab727c59ef1c0c0c2b744e7b94219710d76f530629ae"
+  },
+  {
+    "key": "pulseaudio",
+    "url": "https://www.freedesktop.org/software/pulseaudio/releases/pulseaudio-17.0.tar.xz",
+    "filename": "pulseaudio-17.0.tar.xz",
+    "md5": "c4a3596a26ff4b9dcd0c394dd1d4f8ee",
+    "group": "base",
+    "sha256": "053794d6671a3e397d849e478a80b82a63cb9d8ca296bd35b73317bb5ceb87b5"
+  },
+  {
+    "key": "libsndfile",
+    "url": "https://github.com/libsndfile/libsndfile/releases/download/1.2.2/libsndfile-1.2.2.tar.xz",
+    "filename": "libsndfile-1.2.2.tar.xz",
+    "md5": "04e2e6f726da7c5dc87f8cf72f250d04",
+    "group": "base",
+    "sha256": "3799ca9924d3125038880367bf1468e53a1b7e3686a934f098b7e1d286cdb80e"
+  },
+  {
+    "key": "flac",
+    "url": "https://github.com/xiph/flac/releases/download/1.5.0/flac-1.5.0.tar.xz",
+    "filename": "flac-1.5.0.tar.xz",
+    "md5": "0bb45bcf74338b00efeec121fff27367",
+    "group": "base",
+    "sha256": "f2c1c76592a82ffff8413ba3c4a1299b6c7ab06c734dee03fd88630485c2b920"
+  },
+  {
+    "key": "opus",
+    "url": "https://downloads.xiph.org/releases/opus/opus-1.6.1.tar.gz",
+    "filename": "opus-1.6.1.tar.gz",
+    "md5": "67cafc438c430aa74eeb605eef670886",
+    "group": "base",
+    "sha256": "6ffcb593207be92584df15b32466ed64bbec99109f007c82205f0194572411a1"
+  },
+  {
+    "key": "sbc",
+    "url": "https://www.kernel.org/pub/linux/bluetooth/sbc-2.2.tar.xz",
+    "filename": "sbc-2.2.tar.xz",
+    "md5": "f3f1a4e69249241801bc8ddd6050de23",
+    "group": "base",
+    "sha256": "a1ada76ef35e5af9c2fbd063754dc9e37a8d989417c6eb1ecebb089b1383ae9e"
+  },
+  {
+    "key": "speexdsp",
+    "url": "https://downloads.xiph.org/releases/speex/speexdsp-1.2.1.tar.gz",
+    "filename": "speexdsp-1.2.1.tar.gz",
+    "md5": "e6eb5ddef743a362c8018f260b91dca5",
+    "group": "base",
+    "sha256": "8c777343e4a6399569c72abc38a95b24db56882c83dbdb6c6424a5f4aeb54d3d"
+  },
+  {
+    "key": "json-c",
+    "url": "https://s3.amazonaws.com/json-c_releases/releases/json-c-0.19.tar.gz",
+    "filename": "json-c-0.19.tar.gz",
+    "md5": "5678f1373ba51e0041b574c0411c696b",
+    "group": "base",
+    "sha256": "37ad0249902e301bd9052bf712e511fcc6acff4ecaad4b5900aad9ce564e26de"
+  },
+  {
+    "key": "dbus-glib",
+    "url": "https://dbus.freedesktop.org/releases/dbus-glib/dbus-glib-0.114.tar.gz",
+    "filename": "dbus-glib-0.114.tar.gz",
+    "md5": "188792077e880a8c0359288d7819dab3",
+    "group": "base",
+    "sha256": "c09c5c085b2a0e391b8ee7d783a1d63fe444e96717cc1814d61b5e8fc2827a7c"
+  },
+  {
+    "key": "bluez",
+    "url": "https://www.kernel.org/pub/linux/bluetooth/bluez-5.87.tar.xz",
+    "filename": "bluez-5.87.tar.xz",
+    "md5": "6c6f8445ec3d2fa3cc570a671ccea9fa",
+    "group": "base",
+    "sha256": "26bdcf2cebd7310c6f598850606b037ef0c515fe6608ebc54d22c50c4c32b35f"
+  },
+  {
+    "key": "wpa_supplicant",
+    "url": "https://w1.fi/releases/wpa_supplicant-2.12.tar.gz",
+    "filename": "wpa_supplicant-2.12.tar.gz",
+    "md5": "3f1af56655ebca941d2035358331bbc9",
+    "group": "base",
+    "sha256": "08e23937e16d0155e55cab2b51f51fbe10d80a1aa91c4e15442645059b737ef6"
+  },
+  {
+    "key": "networkmanager",
+    "url": "https://gitlab.freedesktop.org/NetworkManager/NetworkManager/-/releases/1.58.1/downloads/NetworkManager-1.58.1.tar.xz",
+    "filename": "NetworkManager-1.58.1.tar.xz",
+    "md5": "7b06b1dd7b56adffc1dbbf3d04bedf8e",
+    "group": "base",
+    "sha256": "262864cfd198123d3e5dbe91937441b97ee9059d6d712e1a5bfbb1c54668d14d"
+  },
+  {
+    "key": "libsass",
+    "url": "https://github.com/sass/libsass/archive/3.6.6/libsass-3.6.6.tar.gz",
+    "filename": "libsass-3.6.6.tar.gz",
+    "md5": "afda97284d75a030cabadf5b9f998a3b",
+    "group": "base",
+    "sha256": "11f0bb3709a4f20285507419d7618f3877a425c0131ea8df40fe6196129df15d"
+  },
+  {
+    "key": "sassc",
+    "url": "https://github.com/sass/sassc/archive/3.6.2/sassc-3.6.2.tar.gz",
+    "filename": "sassc-3.6.2.tar.gz",
+    "md5": "4c3b06ce2979f2a9f0a35093e501d8bb",
+    "group": "base",
+    "sha256": "608dc9002b45a91d11ed59e352469ecc05e4f58fc1259fc9a9f5b8f0f8348a03"
+  },
+  {
+    "key": "utfcpp",
+    "url": "https://github.com/nemtrif/utfcpp/archive/v4.1.1/utfcpp-4.1.1.tar.gz",
+    "filename": "utfcpp-4.1.1.tar.gz",
+    "md5": "2b439bf8f222cd85bac0d2603265a246",
+    "group": "base",
+    "sha256": "1ca68016f0abc24172998e39ce0d8f8e2b7a26f7579a0ff85d4e1b9a7aea56f8"
+  },
+  {
+    "key": "taglib",
+    "url": "https://taglib.org/releases/taglib-2.3.1.tar.gz",
+    "filename": "taglib-2.3.1.tar.gz",
+    "md5": "b189dcfcf284179c04b97a89887e0ce6",
+    "group": "base",
+    "sha256": "a19d90e6fd41d09a0281ec0fe762d51491d7a6ccffc923c4f7868c5e647ca230"
+  },
+  {
+    "key": "libqalculate",
+    "url": "https://github.com/Qalculate/libqalculate/releases/download/v5.12.0/libqalculate-5.12.0.tar.gz",
+    "filename": "libqalculate-5.12.0.tar.gz",
+    "md5": "46f93f638b6ce747f17dba955f95c9cf",
+    "group": "base",
+    "sha256": "f3dfdcf97d5a9e3a5bc0ebe66afd184721b606276eee3ba0ada8c92a5e71d44c"
+  },
+  {
+    "key": "qcoro",
+    "url": "https://github.com/danvratil/qcoro/archive/v0.13.0/qcoro-0.13.0.tar.gz",
+    "filename": "qcoro-0.13.0.tar.gz",
+    "md5": "1cc2b522b90d8d0842523f751e75c99b",
+    "group": "base",
+    "sha256": "4bff7513c5c8e301b66308df05795043b1792ed16381a484e5c990171b8ff19e"
+  },
+  {
+    "key": "qtkeychain",
+    "url": "https://github.com/frankosterfeld/qtkeychain/archive/0.16.0/qtkeychain-0.16.0.tar.gz",
+    "filename": "qtkeychain-0.16.0.tar.gz",
+    "md5": "f97ec6ec37a465abdea63c2def01f280",
+    "group": "base",
+    "sha256": "3be26ec4ae30eecf0c2ff7572ba83799791b157c76e15a05ef35f23dc25e4054"
+  },
+  {
+    "key": "phonon",
+    "url": "https://download.kde.org/stable/phonon/4.12.0/phonon-4.12.0.tar.xz",
+    "filename": "phonon-4.12.0.tar.xz",
+    "md5": "e80e9c73967080016bdb3c0ee514ceab",
+    "group": "base",
+    "sha256": "3287ffe0fbcc2d4aa1363f9e15747302d0b080090fe76e5f211d809ecb43f39a"
+  },
+  {
+    "key": "polkit-qt",
+    "url": "https://download.kde.org/stable/polkit-qt-1/polkit-qt-1-0.201.1.tar.xz",
+    "filename": "polkit-qt-1-0.201.1.tar.xz",
+    "md5": "0b255fb033de543c3010ebec33f4d233",
+    "group": "base",
+    "sha256": "95d8e2cae530c546d9437459deb8a1bea38d572f0f9772cc2860dc143637f256"
+  },
+  {
+    "key": "plasma-wayland-protocols",
+    "url": "https://download.kde.org/stable/plasma-wayland-protocols/plasma-wayland-protocols-1.21.0.tar.xz",
+    "filename": "plasma-wayland-protocols-1.21.0.tar.xz",
+    "md5": "9a2f58d154a6cb514f60c59311e14559",
+    "group": "base",
+    "sha256": "698a7b28b711270314e396e248ae86087cfeaed01372009063995be6e1dc85ba"
+  },
+  {
+    "key": "kirigami-addons",
+    "url": "https://download.kde.org/stable/kirigami-addons/kirigami-addons-1.13.1.tar.xz",
+    "filename": "kirigami-addons-1.13.1.tar.xz",
+    "md5": "d3a1944cb0dddcea3f441f04ee54c0d0",
+    "group": "base",
+    "sha256": "76026f0abe8c948208ce75a02a9ecac60c618ac5288ca546e09da64bc4af7050"
+  },
+  {
+    "key": "kquickimageeditor",
+    "url": "https://github.com/KDE/kquickimageeditor/archive/v0.6.2.1/kquickimageeditor-0.6.2.1.tar.gz",
+    "filename": "kquickimageeditor-0.6.2.1.tar.gz",
+    "md5": "3ae93b786dfb9e2586f3142cb859d5d8",
+    "group": "base",
+    "sha256": "1e3f3639d3282a0a4b1734dd9f7700b95328899a4619eaeb5672a57c62cedc50"
+  },
+  {
+    "key": "xdg-utils",
+    "url": "https://gitlab.freedesktop.org/xdg/xdg-utils/-/archive/v1.2.1/xdg-utils-v1.2.1.tar.gz",
+    "filename": "xdg-utils-v1.2.1.tar.gz",
+    "md5": "4c72585a98ba8f775cb9e72b066cc0df",
+    "group": "base",
+    "sha256": "f6b648c064464c2636884c05746e80428110a576f8daacf46ef2e554dcfdae75"
+  },
+  {
+    "key": "xdg-desktop-portal",
+    "url": "https://github.com/flatpak/xdg-desktop-portal/releases/download/1.22.1/xdg-desktop-portal-1.22.1.tar.xz",
+    "filename": "xdg-desktop-portal-1.22.1.tar.xz",
+    "md5": "edfbfffe55a35920a303404b6c5d49a0",
+    "group": "base",
+    "sha256": "d4879ddb3d65ff1a8f19187497e6f13dc5d267bcac404a5d501218be355753d3"
+  },
+  {
+    "key": "libportal",
+    "url": "https://github.com/flatpak/libportal/releases/download/0.9.1/libportal-0.9.1.tar.xz",
+    "filename": "libportal-0.9.1.tar.xz",
+    "md5": "0c63ee25d2e2986ce4df544fe8149046",
+    "group": "base",
+    "sha256": "de801ee349ed3c255a9af3c01b1a401fab5b3fc1c35eb2fd7dfb35d4b8194d7f"
+  },
+  {
+    "key": "libnl",
+    "url": "https://github.com/thom311/libnl/releases/download/libnl3_12_0/libnl-3.12.0.tar.gz",
+    "filename": "libnl-3.12.0.tar.gz",
+    "md5": "f9112ca215807fe65eecd583d8f180cc",
+    "group": "base",
+    "sha256": "fc51ca7196f1a3f5fdf6ffd3864b50f4f9c02333be28be4eeca057e103c0dd18"
+  },
+  {
+    "key": "libksba",
+    "url": "https://www.gnupg.org/ftp/gcrypt/libksba/libksba-1.8.0.tar.bz2",
+    "filename": "libksba-1.8.0.tar.bz2",
+    "md5": "182951961170c12f6569454717a1383a",
+    "group": "base",
+    "sha256": "296b9db9095749f2aa104202d7ab7fd09ad10710e00780a709c9754b1a1d9292"
+  },
+  {
+    "key": "nettle",
+    "url": "https://ftpmirror.gnu.org/nettle/nettle-4.0.tar.gz",
+    "filename": "nettle-4.0.tar.gz",
+    "md5": "144401453f9f35e53938bcacfc59800e",
+    "group": "base",
+    "sha256": "3addbc00da01846b232fb3bc453538ea5468da43033f21bb345cb1e9073f5094"
+  },
+  {
+    "key": "gnutls",
+    "url": "https://www.gnupg.org/ftp/gcrypt/gnutls/v3.8/gnutls-3.8.13.tar.xz",
+    "filename": "gnutls-3.8.13.tar.xz",
+    "md5": "a97671c1839340c6b43c23ccb3237180",
+    "group": "base",
+    "sha256": "ffed8ec1bf09c2426d4f14aae377de4753b53e537d685e604e99a8b16ca9c97e"
+  },
+  {
+    "key": "pinentry",
+    "url": "https://www.gnupg.org/ftp/gcrypt/pinentry/pinentry-1.3.3.tar.bz2",
+    "filename": "pinentry-1.3.3.tar.bz2",
+    "md5": "59a65644180ac2a43a1235d698515b36",
+    "group": "base",
+    "sha256": "c2970f16d6afb66ecddfca767d743936c86239bff936eed7fd7597a678414b63"
+  },
+  {
+    "key": "docbook-45-xml",
+    "url": "https://archive.docbook.org/xml/4.5/docbook-xml-4.5.zip",
+    "filename": "docbook-xml-4.5.zip",
+    "md5": "03083e288e87a7e829e437358da7ef9e",
+    "group": "base",
+    "sha256": "4e4e037a2b83c98c6c94818390d4bdd3f6e10f6ec62dd79188594e26190dc7b4"
+  },
+  {
+    "key": "docbook-xsl",
+    "url": "https://github.com/docbook/xslt10-stylesheets/releases/download/release/1.79.2/docbook-xsl-nons-1.79.2.tar.bz2",
+    "filename": "docbook-xsl-nons-1.79.2.tar.bz2",
+    "md5": "2666d1488d6ced1551d15f31d7ed8c38",
+    "group": "base",
+    "sha256": "ee8b9eca0b7a8f89075832a2da7534bce8c5478fc8fc2676f512d5d87d832102"
+  },
+  {
+    "key": "itstool",
+    "url": "https://github.com/itstool/itstool/archive/2.0.7/itstool-2.0.7.tar.gz",
+    "filename": "itstool-2.0.7.tar.gz",
+    "md5": "e759b258617a912acce630de3fa43957",
+    "group": "base",
+    "sha256": "fba78a37dc3535e4686c7f57407b97d03c676e3a57beac5fb2315162b0cc3176"
+  },
+  {
+    "key": "libxslt",
+    "url": "https://download.gnome.org/sources/libxslt/1.1/libxslt-1.1.45.tar.xz",
+    "filename": "libxslt-1.1.45.tar.xz",
+    "md5": "84bb3f6ba7f5ee98af5dcd72e828c73e",
+    "group": "base",
+    "sha256": "9acfe68419c4d06a45c550321b3212762d92f41465062ca4ea19e632ee5d216e"
+  },
+  {
+    "key": "avahi",
+    "url": "https://github.com/lathiat/avahi/archive/v0.9-rc5/avahi-0.9-rc5.tar.gz",
+    "filename": "avahi-0.9-rc5.tar.gz",
+    "md5": "d2b4bd13a4dba40a7b56c3da8bf50fd2",
+    "group": "base",
+    "sha256": "5b0a9d88110b0fc8aaafc5cc0a26e83e7d2a4aca3a36bc27c9b626db7ead27b0"
+  },
+  {
+    "key": "libdaemon",
+    "url": "https://0pointer.de/lennart/projects/libdaemon/libdaemon-0.14.tar.gz",
+    "filename": "libdaemon-0.14.tar.gz",
+    "md5": "509dc27107c21bcd9fbf2f95f5669563",
+    "group": "base",
+    "sha256": "fd23eb5f6f986dcc7e708307355ba3289abe03cc381fc47a80bca4a50aa6b834"
+  },
+  {
+    "key": "curl",
+    "url": "https://curl.se/download/curl-8.21.0.tar.xz",
+    "filename": "curl-8.21.0.tar.xz",
+    "md5": "230131079987135cbe1eadb77a04af57",
+    "group": "base",
+    "sha256": "aa1b66a70eace83dc624508745646c08ae561de512ab403adffb93ac87fc72e6"
+  },
+  {
+    "key": "pciutils",
+    "url": "https://mj.ucw.cz/download/linux/pci/pciutils-3.15.0.tar.gz",
+    "filename": "pciutils-3.15.0.tar.gz",
+    "md5": "20b8e936cce9784444961088c8801f68",
+    "group": "base",
+    "sha256": "a42e6e3f76fb6b1f6ac2e08cdd151f6bf78bc4f6312c591f4b6ec197582ede3a"
+  },
+  {
+    "key": "lm_sensors",
+    "url": "https://github.com/hramrach/lm-sensors/archive/V3-6-2/lm-sensors-3-6-2.tar.gz",
+    "filename": "lm-sensors-3-6-2.tar.gz",
+    "md5": "44c733f509cd4a31494fd3e355152b0a",
+    "group": "base",
+    "sha256": "c6a0587e565778a40d88891928bf8943f27d353f382d5b745a997d635978a8f0"
+  },
+  {
+    "key": "zxing-cpp",
+    "url": "https://github.com/zxing-cpp/zxing-cpp/releases/download/v3.1.1/zxing-cpp-3.1.1.tar.gz",
+    "filename": "zxing-cpp-3.1.1.tar.gz",
+    "md5": "40092c87b4a87b2f46a54d1371866966",
+    "group": "base",
+    "sha256": "c3c02c29c0b519de7bd4e25b376e606e87f0761befd1282815642a2246613d14"
+  },
+  {
+    "key": "boost",
+    "url": "https://github.com/boostorg/boost/releases/download/boost-1.92.0/boost-1.92.0-b2-nodocs.tar.xz",
+    "filename": "boost-1.92.0-b2-nodocs.tar.xz",
+    "md5": "01f7ba6534c21e1b49dc9f69524bf5e4",
+    "group": "base",
+    "sha256": "ea7b982002cc9dfbe59b0b217b206f470dc75f3de0bb2973d844118934d82411"
+  },
+  {
+    "key": "ffmpeg",
+    "url": "https://ffmpeg.org/releases/ffmpeg-9.0.1.tar.xz",
+    "filename": "ffmpeg-9.0.1.tar.xz",
+    "md5": "3ed2aab5ce5d18a3c5e0d22d8ca3fadb",
+    "group": "base",
+    "sha256": "cf38e0e28c7e5605942c4a77755349b0145804a397af37eb1fb4c77cb237f635"
+  },
+  {
+    "key": "libcap",
+    "url": "https://www.kernel.org/pub/linux/libs/security/linux-privs/libcap2/libcap-2.78.tar.xz",
+    "filename": "libcap-2.78.tar.xz",
+    "md5": "0ff11419aa4813c0a0f84fe67bf3b39e",
+    "group": "base",
+    "sha256": "0d621e562fd932ccf67b9660fb018e468a683d7b827541df27813228c996bb11"
+  },
+  {
+    "key": "vulkan-headers",
+    "url": "https://github.com/KhronosGroup/Vulkan-Headers/archive/vulkan-sdk-1.4.357.0/Vulkan-Headers-vulkan-sdk-1.4.357.0.tar.gz",
+    "filename": "Vulkan-Headers-vulkan-sdk-1.4.357.0.tar.gz",
+    "md5": "64a23bb12e95a2017004d72569132929",
+    "group": "base",
+    "sha256": "e87dce08116151f6b6d7de6b6faf41498e87e6cf848ff16fa3bd5402190ad4a3"
+  },
+  {
+    "key": "vulkan-loader",
+    "url": "https://github.com/KhronosGroup/Vulkan-Loader/archive/vulkan-sdk-1.4.357.0/Vulkan-Loader-vulkan-sdk-1.4.357.0.tar.gz",
+    "filename": "Vulkan-Loader-vulkan-sdk-1.4.357.0.tar.gz",
+    "md5": "ce35f16bee47e9faf0a50d682a2db77d",
+    "group": "base",
+    "sha256": "54f2537df22313768da0317dda2abdaaab7711b4081c48c869a79db343d0ae70"
+  },
+  {
+    "key": "lcms2",
+    "url": "https://github.com/mm2/Little-CMS/releases/download/lcms2.19.1/lcms2-2.19.1.tar.gz",
+    "filename": "lcms2-2.19.1.tar.gz",
+    "md5": "541978f73749499e9e0277bfe5a3c868",
+    "group": "base",
+    "sha256": "bfc54f7bab59fbc921012014a8032e4cba4abd46db47d46b76416a8c0b2815c8"
+  },
+  {
+    "key": "corrosion",
+    "url": "https://github.com/corrosion-rs/corrosion/archive/v0.6.1/corrosion-0.6.1.tar.gz",
+    "filename": "corrosion-0.6.1.tar.gz",
+    "md5": "060ee79a6bf7c5a2e4e810370fbb7b61",
+    "group": "base",
+    "sha256": "e9e95b1ee2bad52681f347993fb1a5af5cce458c5ce8a2636c9e476e4babf8e3"
+  },
+  {
+    "key": "nasm",
+    "url": "https://www.nasm.us/pub/nasm/releasebuilds/3.02/nasm-3.02.tar.xz",
+    "filename": "nasm-3.02.tar.xz",
+    "md5": "31ba022fff8de3065b5bc5ad5559188c",
+    "group": "base",
+    "sha256": "87336eba53b4acfe917424ab5d500d2b0054d9f5148d35c2273ccf2cfb712f0d"
+  },
+  {
+    "key": "libvpx",
+    "url": "https://github.com/webmproject/libvpx/archive/v1.16.0/libvpx-1.16.0.tar.gz",
+    "filename": "libvpx-1.16.0.tar.gz",
+    "md5": "fb51551487ecfdec93f3d243b7fb1a67",
+    "group": "base",
+    "sha256": "7a479a3c66b9f5d5542a4c6a1b7d3768a983b1e5c14c60a9396edc9b649e015c"
+  },
+  {
+    "key": "dolphin",
+    "url": "https://download.kde.org/stable/release-service/26.04.3/src/dolphin-26.04.3.tar.xz",
+    "filename": "dolphin-26.04.3.tar.xz",
+    "md5": "d16879ed6c66dbaff6e9123916c781c0",
+    "group": "base",
+    "sha256": "d18579587f841ca5a571c3614bda0beed6e53bf5ded4d456009e187cbb9d0b44"
+  },
+  {
+    "key": "konsole",
+    "url": "https://download.kde.org/stable/release-service/26.04.3/src/konsole-26.04.3.tar.xz",
+    "filename": "konsole-26.04.3.tar.xz",
+    "md5": "4b71ab15411e01ba88c94017731221cd",
+    "group": "base",
+    "sha256": "fe54d0297c24a52b2ec8ebf45bf75b22736f65301663846b8f3539044943e1ac"
+  },
+  {
+    "key": "kate",
+    "url": "https://download.kde.org/stable/release-service/26.04.3/src/kate-26.04.3.tar.xz",
+    "filename": "kate-26.04.3.tar.xz",
+    "md5": "2b5b0f7071088586f4424d53b5148a6d",
+    "group": "base",
+    "sha256": "cb95426cba170f994761e509e342d523e53a62a80a252248b38efcbe8abff623"
+  },
+  {
+    "key": "ark",
+    "url": "https://download.kde.org/stable/release-service/26.04.3/src/ark-26.04.3.tar.xz",
+    "filename": "ark-26.04.3.tar.xz",
+    "md5": "d716cf45066ca14705e7227267c31e08",
+    "group": "base",
+    "sha256": "8018fec69668aac35e5ab7ce4e51ce04de6ab7f56a3996322b016f41c31d5a01"
+  },
+  {
+    "key": "gwenview",
+    "url": "https://download.kde.org/stable/release-service/26.04.3/src/gwenview-26.04.3.tar.xz",
+    "filename": "gwenview-26.04.3.tar.xz",
+    "md5": "e5f5de769772d49975243e24dd95f3af",
+    "group": "base",
+    "sha256": "dabd48e172cf78f4b42de7423de56ed474d241abb080b4d2b632c5d4d4e8dbaf"
+  },
+  {
+    "key": "okular",
+    "url": "https://download.kde.org/stable/release-service/26.04.3/src/okular-26.04.3.tar.xz",
+    "filename": "okular-26.04.3.tar.xz",
+    "md5": "aad3a5d01cf615cb22b2a9ef3eb120ef",
+    "group": "base",
+    "sha256": "a6e4a571acd3b70bb67eec476834b009f710540b793091f51f707b53b6facbca"
+  },
+  {
+    "key": "kio-extras",
+    "url": "https://download.kde.org/stable/release-service/26.04.3/src/kio-extras-26.04.3.tar.xz",
+    "filename": "kio-extras-26.04.3.tar.xz",
+    "md5": "eafb6c828a1ec58eff5902ba8cbecd09",
+    "group": "base",
+    "sha256": "8448075fdedd1e5ae43b865337f5ac3ca39037726dd0deaa061797fa84d31d63"
+  },
+  {
+    "key": "pyatspi2",
+    "url": "https://download.gnome.org/sources/pyatspi/2.58/pyatspi-2.58.2.tar.xz",
+    "filename": "pyatspi-2.58.2.tar.xz",
+    "md5": "f7e9e8434159258031661ef9b86cc081",
+    "group": "base",
+    "sha256": "24590e5b60fec8dfb59fcd27d2a90de7034060be318ca3f7770e0f984f1f94e2"
+  },
+  {
+    "key": "dbus-python",
+    "url": "https://dbus.freedesktop.org/releases/dbus-python/dbus-python-1.4.0.tar.xz",
+    "filename": "dbus-python-1.4.0.tar.xz",
+    "md5": "edca335d1c80f338e3255455eb876b72",
+    "group": "base",
+    "sha256": "c36b28f10ffcc8f1f798aca973bcc132f91f33eb9b6b8904381b4077766043d5"
+  },
+  {
+    "key": "poppler",
+    "url": "https://poppler.freedesktop.org/poppler-26.08.0.tar.xz",
+    "filename": "poppler-26.08.0.tar.xz",
+    "md5": "0c7953c55c449f20d97adbe355bcf49d",
+    "group": "base",
+    "sha256": "dc906e68cea698109706ac6aa3d2c9d4512fcfcac42d90b8afcda486d1b9abd0"
+  },
+  {
+    "key": "exiv2",
+    "url": "https://github.com/Exiv2/exiv2/archive/v0.28.8/exiv2-0.28.8.tar.gz",
+    "filename": "exiv2-0.28.8.tar.gz",
+    "md5": "3f3b2d9c3e73880ea8e6bd78c67ea56a",
+    "group": "base",
+    "sha256": "ea51b0609f58a9afa063b60daa1539948b62247721e154f4fff0ad3aec9f9756"
+  },
+  {
+    "key": "aspell",
+    "url": "https://ftpmirror.gnu.org/aspell/aspell-0.60.8.2.tar.gz",
+    "filename": "aspell-0.60.8.2.tar.gz",
+    "md5": "bc3f30321db5d44f112ab66084421225",
+    "group": "base",
+    "sha256": "57fe4863eae6048f72245a8575b44b718fb85ca14b9f8c0afc41b254dfd76919"
+  },
+  {
+    "key": "libarchive",
+    "url": "https://github.com/libarchive/libarchive/releases/download/v3.8.9/libarchive-3.8.9.tar.xz",
+    "filename": "libarchive-3.8.9.tar.xz",
+    "md5": "535e3afec5f61d493f0b1b9e8bcf7539",
+    "group": "base",
+    "sha256": "888c934f9d95648ecb9163dc8e23ab80a476ecb81a8f1154704a227b5b676dde"
+  },
+  {
+    "key": "libblockdev",
+    "url": "https://github.com/storaged-project/libblockdev/releases/download/3.5.0/libblockdev-3.5.0.tar.gz",
+    "filename": "libblockdev-3.5.0.tar.gz",
+    "md5": "68448042ea0a2073098fc4ae37b01cbf",
+    "group": "base",
+    "sha256": "bccd30e6b5d11504de60d9889ff6a2a25b07a4ec8f04070f2387e168301b3e3a"
+  },
+  {
+    "key": "udisks2",
+    "url": "https://github.com/storaged-project/udisks/releases/download/udisks-2.11.2/udisks-2.11.2.tar.bz2",
+    "filename": "udisks-2.11.2.tar.bz2",
+    "md5": "9e8e8c7f43257bc501b4896f43db9eb8",
+    "group": "base",
+    "sha256": "18630a8aad806bea0bc626ce97e71e50ec82c742956ac1c834a4275f8f22207b"
+  },
+  {
+    "key": "spirv-headers",
+    "url": "https://github.com/KhronosGroup/SPIRV-Headers/archive/vulkan-sdk-1.4.357.0/SPIRV-Headers-vulkan-sdk-1.4.357.0.tar.gz",
+    "filename": "SPIRV-Headers-vulkan-sdk-1.4.357.0.tar.gz",
+    "md5": "085dd07d487c165c0ca7713d726eb6de",
+    "group": "base",
+    "sha256": "4d703067a7e06331ccb37bdfed3f9b7879cc61969a2689ae95c95db34a47ff07"
+  },
+  {
+    "key": "spirv-tools",
+    "url": "https://github.com/KhronosGroup/SPIRV-Tools/archive/vulkan-sdk-1.4.357.0/SPIRV-Tools-vulkan-sdk-1.4.357.0.tar.gz",
+    "filename": "SPIRV-Tools-vulkan-sdk-1.4.357.0.tar.gz",
+    "md5": "c357eec1e33bc95e650aa4c8efdd3b13",
+    "group": "base",
+    "sha256": "d31e7109b6ef3559067e53e520870eafed7c9534d00db9728814b6df03fa4a5e"
+  },
+  {
+    "key": "spirv-llvm-translator",
+    "url": "https://github.com/KhronosGroup/SPIRV-LLVM-Translator/archive/v22.1.5/SPIRV-LLVM-Translator-22.1.5.tar.gz",
+    "filename": "SPIRV-LLVM-Translator-22.1.5.tar.gz",
+    "md5": "8bdf03a2f7d90da52e358ac78b3e9959",
+    "group": "base",
+    "sha256": "3c6dffb4b8d67f5c544370e0c869ec7d22c013d4bb798f24655ec903f26cc5d5"
+  },
+  {
+    "key": "dconf",
+    "url": "https://download.gnome.org/sources/dconf/0.49/dconf-0.49.0.tar.xz",
+    "filename": "dconf-0.49.0.tar.xz",
+    "md5": "1a3ff8a464a4d9ebbaf112005bfed95a",
+    "group": "base",
+    "sha256": "16a47e49a58156dbb96578e1708325299e4c19eea9be128d5bd12fd0963d6c36"
+  },
+  {
+    "key": "gsettings-desktop-schemas",
+    "url": "https://download.gnome.org/sources/gsettings-desktop-schemas/50/gsettings-desktop-schemas-50.1.tar.xz",
+    "filename": "gsettings-desktop-schemas-50.1.tar.xz",
+    "md5": "b3851a1d2dd684f7ea1a1d032e2a7dfb",
+    "group": "base",
+    "sha256": "0a2aa25082672585d16fcdab61c7b0e33f035fb87476505c794f29565afa485b"
+  },
+  {
+    "key": "opencv",
+    "url": "https://github.com/opencv/opencv/archive/4.13.0/opencv-4.13.0.tar.gz",
+    "filename": "opencv-4.13.0.tar.gz",
+    "md5": "f33c0ace3add57aba7b9d3fe3c41feb4",
+    "group": "base",
+    "sha256": "1d40ca017ea51c533cf9fd5cbde5b5fe7ae248291ddf2af99d4c17cf8e13017d"
+  },
+  {
+    "key": "cups",
+    "url": "https://github.com/OpenPrinting/cups/releases/download/v2.4.19/cups-2.4.19-source.tar.gz",
+    "filename": "cups-2.4.19-source.tar.gz",
+    "md5": "06b7a3921812988cdb3198ff74ae381d",
+    "group": "base",
+    "sha256": "820984b12a67f98705785aae2dd1347fe0ac097828001d4583ff64574aed6389"
+  },
+  {
+    "key": "libxcvt",
+    "url": "https://www.x.org/pub/individual/lib/libxcvt-0.1.3.tar.xz",
+    "filename": "libxcvt-0.1.3.tar.xz",
+    "md5": "7fb9c51d33a680f724f34da41768b1d0",
+    "group": "base",
+    "sha256": "a929998a8767de7dfa36d6da4751cdbeef34ed630714f2f4a767b351f2442e01"
+  },
+  {
+    "key": "sound-theme-freedesktop",
+    "url": "https://people.freedesktop.org/~mccann/dist/sound-theme-freedesktop-0.8.tar.bz2",
+    "filename": "sound-theme-freedesktop-0.8.tar.bz2",
+    "md5": "d7387912cfd275282d1ec94483cb2f62",
+    "group": "base",
+    "sha256": "cb518b20eef05ec2e82dda1fa89a292c1760dc023aba91b8aa69bafac85e8a14"
+  },
+  {
+    "key": "modemmanager",
+    "url": "https://gitlab.freedesktop.org/mobile-broadband/ModemManager/-/archive/1.24.2/ModemManager-1.24.2.tar.gz",
+    "filename": "ModemManager-1.24.2.tar.gz",
+    "md5": "b72860c54670f362e947edba160fa98e",
+    "group": "base",
+    "sha256": "fbc75adcc0d7b0565f256e7ff4e8872b0a37c4413ff576665f7470932d9c1b68"
+  },
+  {
+    "key": "libmbim",
+    "url": "https://gitlab.freedesktop.org/mobile-broadband/libmbim/-/archive/1.34.0/libmbim-1.34.0.tar.gz",
+    "filename": "libmbim-1.34.0.tar.gz",
+    "md5": "e5c2b38c6a79a047b93cb0c9510bd91f",
+    "group": "base",
+    "sha256": "55bb88df358f8a36b6e01e63877500d7c6420f5907d2d3101812b4912eabe08f"
+  },
+  {
+    "key": "libqmi",
+    "url": "https://gitlab.freedesktop.org/mobile-broadband/libqmi/-/archive/1.38.0/libqmi-1.38.0.tar.gz",
+    "filename": "libqmi-1.38.0.tar.gz",
+    "md5": "4ed2c13150611007f56f84b896449d46",
+    "group": "base",
+    "sha256": "8ee3b3a9002f2b45c825deade85710db006e01674f5f9359d351c192cc926015"
+  },
+  {
+    "key": "bubblewrap",
+    "url": "https://github.com/containers/bubblewrap/releases/download/v0.11.2/bubblewrap-0.11.2.tar.xz",
+    "filename": "bubblewrap-0.11.2.tar.xz",
+    "md5": "6376255e2e505100e01b20c2dafa7faf",
+    "group": "base",
+    "sha256": "69abc30005d2186baf7737feacd8da35633b93cf5af38838ecff17c5f8e924f6"
+  },
+  {
+    "key": "pulseaudio-qt",
+    "url": "https://download.kde.org/stable/pulseaudio-qt/pulseaudio-qt-1.8.1.tar.xz",
+    "filename": "pulseaudio-qt-1.8.1.tar.xz",
+    "md5": "fa37fbba12097a6ff276f0a29ddec20f",
+    "group": "base",
+    "sha256": "79619c55b94808aa7d307fb234ad39a1096d088f21f806be0e788be79a76b3c9"
+  },
+  {
+    "key": "kcolorpicker",
+    "url": "https://github.com/ksnip/kColorPicker/archive/v0.3.1/kColorPicker-0.3.1.tar.gz",
+    "filename": "kColorPicker-0.3.1.tar.gz",
+    "md5": "1efc91252446af0d7e5c467ea7d517e7",
+    "group": "base",
+    "sha256": "e78c785ec4a8a22a48a91835c97601f5704b5076b154415353b0d2697dc0b4f7"
+  },
+  {
+    "key": "kimageannotator",
+    "url": "https://github.com/ksnip/kImageAnnotator/archive/v0.7.2/kImageAnnotator-0.7.2.tar.gz",
+    "filename": "kImageAnnotator-0.7.2.tar.gz",
+    "md5": "12811a2611613152b8dccc266a8f4804",
+    "group": "base",
+    "sha256": "7eb593d975b1590a184354ef68dbc3c26479d58eaea00de461d73695176f623c"
+  },
+  {
+    "key": "openjpeg2",
+    "url": "https://github.com/uclouvain/openjpeg/archive/v2.5.4/openjpeg-2.5.4.tar.gz",
+    "filename": "openjpeg-2.5.4.tar.gz",
+    "md5": "6160de075bb5191e482bc0f024b375e4",
+    "group": "base",
+    "sha256": "a695fbe19c0165f295a8531b1e4e855cd94d0875d2f88ec4b61080677e27188a"
+  },
+  {
+    "key": "perl-xml-parser",
+    "url": "https://www.cpan.org/authors/id/T/TO/TODDR/XML-Parser-2.59.tar.gz",
+    "filename": "XML-Parser-2.59.tar.gz",
+    "md5": "f483e6b8541d60a84e4bf50803e476bc",
+    "group": "base",
+    "sha256": "a358fd7c49f5e27717a644a9102bd21dc7fc25a415983279c59b1580e2b62a58"
+  },
+  {
+    "key": "intltool",
+    "url": "http://launchpad.net/intltool/trunk/0.51.0/+download/intltool-0.51.0.tar.gz",
+    "filename": "intltool-0.51.0.tar.gz",
+    "md5": "12e517cac2b57a0121cda351570f1e63",
+    "group": "base",
+    "sha256": "67c74d94196b153b774ab9f89b2fa6c6ba79352407037c8c14d5aeb334e959cd"
+  },
+  {
+    "key": "iso-codes",
+    "url": "https://salsa.debian.org/iso-codes-team/iso-codes/-/archive/v4.20.1/iso-codes-v4.20.1.tar.gz",
+    "filename": "iso-codes-v4.20.1.tar.gz",
+    "md5": "a8f16a62662ec13e55ca255a7c036ee3",
+    "group": "base",
+    "sha256": "2d7d9f6084ab9ce6c534ce71a3dd5144b6e474f3c97616459a88f73f44a64bff"
+  },
+  {
+    "key": "libxklavier",
+    "url": "https://people.freedesktop.org/~svu/libxklavier-5.4.tar.bz2",
+    "filename": "libxklavier-5.4.tar.bz2",
+    "md5": "13af74dcb6011ecedf1e3ed122bd31fa",
+    "group": "base",
+    "sha256": "17a34194df5cbcd3b7bfd0f561d95d1f723aa1c87fca56bc2c209514460a9320"
+  },
+  {
+    "key": "glib2",
+    "url": "https://download.gnome.org/sources/glib/2.88/glib-2.88.3.tar.xz",
+    "filename": "glib-2.88.3.tar.xz",
+    "md5": "b61c04cfbf55b0d24fbe64e4ac9e9d56",
+    "group": "base",
+    "sha256": "ab24d24e698dfa1e408b7bcdb508f4aafc906185a8b8ce72fdf79bbbdc9b383b"
+  },
+  {
+    "key": "harfbuzz",
+    "url": "https://github.com/harfbuzz/harfbuzz/releases/download/14.3.1/harfbuzz-14.3.1.tar.xz",
+    "filename": "harfbuzz-14.3.1.tar.xz",
+    "md5": "4baccda978c92e5f27702ed8b3ceefa7",
+    "group": "base",
+    "sha256": "9dae9538aae2ffdf70cec31f2c27bf68e2aaeeae3112688467697d5faf6194f7"
+  },
+  {
+    "key": "pango",
+    "url": "https://download.gnome.org/sources/pango/1.58/pango-1.58.2.tar.xz",
+    "filename": "pango-1.58.2.tar.xz",
+    "md5": "7b5640fd9adfa24554a88b2b9a6cd3f3",
+    "group": "base",
+    "sha256": "342385b6ca3b7c73455d7c80a13b7dbe4489e00bc3bd4c5bd6ed4dce421e374a"
+  },
+  {
+    "key": "gdk-pixbuf",
+    "url": "https://download.gnome.org/sources/gdk-pixbuf/2.44/gdk-pixbuf-2.44.7.tar.xz",
+    "filename": "gdk-pixbuf-2.44.7.tar.xz",
+    "md5": "2a12da2133476b7b36fbfcadd7133315",
+    "group": "base",
+    "sha256": "172f80e3626ec31520a970400f1a3694e04718f6c2cd2885f75250fb5a6995a4"
+  },
+  {
+    "key": "at-spi2-core",
+    "url": "https://download.gnome.org/sources/at-spi2-core/2.60/at-spi2-core-2.60.6.tar.xz",
+    "filename": "at-spi2-core-2.60.6.tar.xz",
+    "md5": "1082626c9a82694b7900f8283b20dfac",
+    "group": "base",
+    "sha256": "a89b64a8b217a8042bdf0e35cbfab629ceee35640dba75df578afde9aa789d57"
+  },
+  {
+    "key": "pycairo",
+    "url": "https://github.com/pygobject/pycairo/releases/download/v1.29.1/pycairo-1.29.1.tar.gz",
+    "filename": "pycairo-1.29.1.tar.gz",
+    "md5": "fc7c3b4104e88df7dea34af4314b9d12",
+    "group": "base",
+    "sha256": "4fbd26b4af24c9787d84cf5448e34eb8dca064b732479aaecd03109520eebd5f"
+  },
+  {
+    "key": "pygobject3",
+    "url": "https://download.gnome.org/sources/pygobject/3.56/pygobject-3.56.3.tar.gz",
+    "filename": "pygobject-3.56.3.tar.gz",
+    "md5": "7fe8fa9ff801a010eca0f0c79f59232b",
+    "group": "base",
+    "sha256": "12760e4a0e3d04b6eb95e06f7a27e362c826d567ea613373a92c003b6c70d2d6"
+  },
+  {
+    "key": "lxml",
+    "url": "https://files.pythonhosted.org/packages/source/l/lxml/lxml-6.1.1.tar.gz",
+    "filename": "lxml-6.1.1.tar.gz",
+    "md5": "6bbd3674ecba1340b08c9180afef1829",
+    "group": "base",
+    "sha256": "ba96ae44888e0185281e937633a743ea90d5a196c6000f82565ebb0580012d40"
+  },
+  {
+    "key": "perl-class-inspector",
+    "url": "https://cpan.metacpan.org/authors/id/P/PL/PLICEASE/Class-Inspector-1.36.tar.gz",
+    "filename": "Class-Inspector-1.36.tar.gz",
+    "md5": "084c3aeec023639d21ecbaf7d4460b21",
+    "group": "base",
+    "sha256": "cc295d23a472687c24489d58226ead23b9fdc2588e522f0b5f0747741700694e"
+  },
+  {
+    "key": "perl-file-sharedir-install",
+    "url": "https://cpan.metacpan.org/authors/id/E/ET/ETHER/File-ShareDir-Install-0.14.tar.gz",
+    "filename": "File-ShareDir-Install-0.14.tar.gz",
+    "md5": "bac4d924f3d863b00648ab56ec0dcbdc",
+    "group": "base",
+    "sha256": "8f9533b198f2d4a9a5288cbc7d224f7679ad05a7a8573745599789428bc5aea0"
+  },
+  {
+    "key": "perl-file-sharedir",
+    "url": "https://cpan.metacpan.org/authors/id/R/RE/REHSACK/File-ShareDir-1.118.tar.gz",
+    "filename": "File-ShareDir-1.118.tar.gz",
+    "md5": "0084f730f4e3d4d89703d92b3ea82f54",
+    "group": "base",
+    "sha256": "3bb2a20ba35df958dc0a4f2306fc05d903d8b8c4de3c8beefce17739d281c958"
+  },
+  {
+    "key": "lm-sensors",
+    "url": "https://github.com/hramrach/lm-sensors/archive/V3-6-2/lm-sensors-3-6-2.tar.gz",
+    "filename": "lm-sensors-3-6-2.tar.gz",
+    "md5": "44c733f509cd4a31494fd3e355152b0a",
+    "group": "base",
+    "sha256": "c6a0587e565778a40d88891928bf8943f27d353f382d5b745a997d635978a8f0"
+  },
+  {
+    "key": "libva",
+    "url": "https://github.com/intel/libva/archive/2.24.1/libva-2.24.1.tar.gz",
+    "filename": "libva-2.24.1.tar.gz",
+    "md5": "6de86c7c9d47963108c52a51af9ac191",
+    "group": "base",
+    "sha256": "0b4a3649ee8d683b9cce2ef094df4fb039d276c0cef7e49337c43d3b297b9f42"
+  },
+  {
+    "key": "libpcap",
+    "url": "https://www.tcpdump.org/release/libpcap-1.10.6.tar.gz",
+    "filename": "libpcap-1.10.6.tar.gz",
+    "md5": "f49b1c1877dcbb3b7f5147429aa047f9",
+    "group": "base",
+    "sha256": "872dd11337fe1ab02ad9d4fee047c9da244d695c6ddf34e2ebb733efd4ed8aa9"
+  },
+  {
+    "key": "brotli",
+    "url": "https://github.com/google/brotli/archive/v1.2.0/brotli-1.2.0.tar.gz",
+    "filename": "brotli-1.2.0.tar.gz",
+    "md5": "8fbfae9a5ecbc278ae7f761ecb6d1285",
+    "group": "base",
+    "sha256": "816c96e8e8f193b40151dad7e8ff37b1221d019dbcb9c35cd3fadbfe6477dfec"
+  },
+  {
+    "key": "gstreamer10",
+    "url": "https://gstreamer.freedesktop.org/src/gstreamer/gstreamer-1.28.6.tar.xz",
+    "filename": "gstreamer-1.28.6.tar.xz",
+    "md5": "3d16d7912727ea85ab90b9e5f3bc6e8a",
+    "group": "base",
+    "sha256": "62b6b9f0ad3147a6dd6420ac64a91180b14e990695bddd353b96041611d052ca"
+  },
+  {
+    "key": "gst10-plugins-base",
+    "url": "https://gstreamer.freedesktop.org/src/gst-plugins-base/gst-plugins-base-1.28.6.tar.xz",
+    "filename": "gst-plugins-base-1.28.6.tar.xz",
+    "md5": "cd0b2bd13e8196d5bfb20459c12a5d9b",
+    "group": "base",
+    "sha256": "0ba699c7c6c66f4ba640be78cb38a24715add9683f3e3a199f5369dc5a4f04ac"
+  },
+  {
+    "key": "gst10-plugins-good",
+    "url": "https://gstreamer.freedesktop.org/src/gst-plugins-good/gst-plugins-good-1.28.6.tar.xz",
+    "filename": "gst-plugins-good-1.28.6.tar.xz",
+    "md5": "d84c17388909e98e7f7d81bb2717327c",
+    "group": "base",
+    "sha256": "b0c620a4b18b6ee931b4c43bbf1760d308666dc37f730a7e7f1ad327e59ce2df"
+  },
+  {
+    "key": "perl-uri",
+    "url": "https://www.cpan.org/authors/id/O/OA/OALDERS/URI-5.35.tar.gz",
+    "filename": "URI-5.35.tar.gz",
+    "md5": "77df061af47e25e3c53d18bd2d562ad8",
+    "group": "base",
+    "sha256": "89648964ce5ae006726951f42f718576fbefe9e98a41bd2212d57386163092d2"
+  },
+  {
+    "key": "sdl2",
+    "url": "https://www.libsdl.org/release/sdl2-compat-2.32.70.tar.gz",
+    "filename": "sdl2-compat-2.32.70.tar.gz",
+    "md5": "ba9179f09652a6395b3673e4ce8c473b",
+    "group": "base",
+    "sha256": "998fa62557eb46ffe7e5c3e2c123bc332f7df9d9f593b3ceed88ed1158428a44"
+  },
+  {
+    "key": "x7driver-libinput",
+    "url": "https://www.x.org/pub/individual/driver/xf86-input-libinput-1.5.0.tar.xz",
+    "filename": "xf86-input-libinput-1.5.0.tar.xz",
+    "md5": "f8d0fb6987d843e688d597c2b66ec824",
+    "group": "base",
+    "sha256": "2524c35f196554ea11aef3bba1cf324759454e1d49f98ac026ace2f6003580e6"
+  },
+  {
+    "key": "sdl3",
+    "url": "https://www.libsdl.org/release/SDL3-3.4.14.tar.gz",
+    "filename": "SDL3-3.4.14.tar.gz",
+    "md5": "32968d1180d29903e70cd3f7fc38470b",
+    "group": "base",
+    "sha256": "30d4aa2b3037718142b32dffd4e72f917ebb6cc5227150e7bb9c45efb2153aeb"
+  },
+  {
+    "key": "leptonica",
+    "url": "https://github.com/DanBloomberg/leptonica/releases/download/1.87.0/leptonica-1.87.0.tar.gz",
+    "filename": "leptonica-1.87.0.tar.gz",
+    "md5": "d523d2c883b71850a46af2517d8915bf",
+    "group": "base",
+    "sha256": "c73363397f96eb1295602bf44d708a994ad42046c791bf03ea0505d829bdb6a7"
+  },
+  {
+    "key": "tesseract",
+    "url": "https://github.com/tesseract-ocr/tesseract/archive/5.5.3/tesseract-5.5.3.tar.gz",
+    "filename": "tesseract-5.5.3.tar.gz",
+    "md5": "561b6b104238fffa1d00362ac72ea397",
+    "group": "base",
+    "sha256": "9218e62793116d42a9f6d14cd9348518b27f382096eea3d0f2d1a24616bb5884"
+  },
+  {
+    "key": "libproxy",
+    "url": "https://github.com/libproxy/libproxy/archive/0.5.12/libproxy-0.5.12.tar.gz",
+    "filename": "libproxy-0.5.12.tar.gz",
+    "md5": "db615bbae5c20eb209a2cdbfe62e0fa3",
+    "group": "base",
+    "sha256": "a1fa55991998b80a567450a9e84382421a7176a84446c95caaa8b72cf09fa86f"
+  },
+  {
+    "key": "clang",
+    "url": "https://github.com/llvm/llvm-project/releases/download/llvmorg-22.1.8/llvm-project-22.1.8.src.tar.xz",
+    "filename": "llvm-project-22.1.8.src.tar.xz",
+    "md5": "69065494ebcb1150b2a329c1b3db7584",
+    "group": "base",
+    "sha256": "922f1817a0df7b1489272d18134ee0087a8b068828f87ac63b9861b1a9965888"
+  },
+  {
+    "key": "attica",
+    "url": "https://download.kde.org/stable/frameworks/6.29/attica-6.29.0.tar.xz",
+    "filename": "attica-6.29.0.tar.xz",
+    "md5": "04136d69a5f340514fad6352629adb28",
+    "group": "frameworks",
+    "sha256": "b980fc74c3657efb840322ef35956c0caec07d9efa576cd52d86488937dcc815"
+  },
+  {
+    "key": "extra-cmake-modules",
+    "url": "https://download.kde.org/stable/frameworks/6.29/extra-cmake-modules-6.29.0.tar.xz",
+    "filename": "extra-cmake-modules-6.29.0.tar.xz",
+    "md5": "b3795f9b843a58746ca5461713c088d8",
+    "group": "frameworks",
+    "sha256": "aaf2542edd5c5af9ea56a46468892d38a7978af65f0f3518379fa8ce66cad2b8"
+  },
+  {
+    "key": "kapidox",
+    "url": "https://download.kde.org/stable/frameworks/6.29/kapidox-6.29.0.tar.xz",
+    "filename": "kapidox-6.29.0.tar.xz",
+    "md5": "c1888280d30447724d491e688e03cf45",
+    "group": "frameworks",
+    "sha256": "838d31fa327b6a4ea502536b60f2b2a42f08ef5383248c0c32d481bc01a44725"
+  },
+  {
+    "key": "karchive",
+    "url": "https://download.kde.org/stable/frameworks/6.29/karchive-6.29.0.tar.xz",
+    "filename": "karchive-6.29.0.tar.xz",
+    "md5": "e897f5323b32c6bdd477369a61972b2e",
+    "group": "frameworks",
+    "sha256": "3d66cd9d71fbbebc3cea68757111002666b366898b01178b6fa7203715574287"
+  },
+  {
+    "key": "kcodecs",
+    "url": "https://download.kde.org/stable/frameworks/6.29/kcodecs-6.29.0.tar.xz",
+    "filename": "kcodecs-6.29.0.tar.xz",
+    "md5": "03a439a6c3d78eebd5484cf69c5c41a3",
+    "group": "frameworks",
+    "sha256": "0480fc5319346b0e24c6e363abce883a889735a7b71ad56d75eae2f7ae553d99"
+  },
+  {
+    "key": "kconfig",
+    "url": "https://download.kde.org/stable/frameworks/6.29/kconfig-6.29.0.tar.xz",
+    "filename": "kconfig-6.29.0.tar.xz",
+    "md5": "194b8c40c5c7e143b44ee2f8dadae775",
+    "group": "frameworks",
+    "sha256": "a0e902865763fd4cd1c86973c316069f210492923d7b8065d5052c539ae46b91"
+  },
+  {
+    "key": "kcoreaddons",
+    "url": "https://download.kde.org/stable/frameworks/6.29/kcoreaddons-6.29.0.tar.xz",
+    "filename": "kcoreaddons-6.29.0.tar.xz",
+    "md5": "9513021c1335227ec38b7cc7b92152f2",
+    "group": "frameworks",
+    "sha256": "771f7fee754a356fa284d0ad7b8b159b890cbbfac082e49ce441b43d4943027e"
+  },
+  {
+    "key": "kdbusaddons",
+    "url": "https://download.kde.org/stable/frameworks/6.29/kdbusaddons-6.29.0.tar.xz",
+    "filename": "kdbusaddons-6.29.0.tar.xz",
+    "md5": "a566661bbfde2500f39c3bfe6fd700e2",
+    "group": "frameworks",
+    "sha256": "a3d2de669bfad5de3f86cc8c6448a02f7567e4ad04aa6099ccfaa2df5f07e8f8"
+  },
+  {
+    "key": "kdnssd",
+    "url": "https://download.kde.org/stable/frameworks/6.29/kdnssd-6.29.0.tar.xz",
+    "filename": "kdnssd-6.29.0.tar.xz",
+    "md5": "47784b5619d1864be4d19621b9da67a2",
+    "group": "frameworks",
+    "sha256": "c48b0c7a06bbcc27e181d9d6f7aeafc2c8bcd4d828497a1e4ddeb252f6fd9674"
+  },
+  {
+    "key": "kguiaddons",
+    "url": "https://download.kde.org/stable/frameworks/6.29/kguiaddons-6.29.0.tar.xz",
+    "filename": "kguiaddons-6.29.0.tar.xz",
+    "md5": "9f1d2a5324752fc1e376f1a44d82e59f",
+    "group": "frameworks",
+    "sha256": "6d0c4a4ddc7d4833ae537b1bf146896beba76135ec4b8bcf2a9525e33e39b3a4"
+  },
+  {
+    "key": "ki18n",
+    "url": "https://download.kde.org/stable/frameworks/6.29/ki18n-6.29.0.tar.xz",
+    "filename": "ki18n-6.29.0.tar.xz",
+    "md5": "e15d397fe3e5d6a17f16c04d0a013e04",
+    "group": "frameworks",
+    "sha256": "9037f3caa67768869f00ee257dbb35b81febe6ad600ed0bd3ffdf293c36252ba"
+  },
+  {
+    "key": "kidletime",
+    "url": "https://download.kde.org/stable/frameworks/6.29/kidletime-6.29.0.tar.xz",
+    "filename": "kidletime-6.29.0.tar.xz",
+    "md5": "212c502ef7cf38f31ec3aea352a7e401",
+    "group": "frameworks",
+    "sha256": "484002b1da719c72e6b6859422cf0d4351fbb61665aab04c3c2451edc320946b"
+  },
+  {
+    "key": "kimageformats",
+    "url": "https://download.kde.org/stable/frameworks/6.29/kimageformats-6.29.0.tar.xz",
+    "filename": "kimageformats-6.29.0.tar.xz",
+    "md5": "791f33fe494e4295e411b3ecd5920015",
+    "group": "frameworks",
+    "sha256": "87014461a9a8ae8f110864a9ccd3002080fe395b5ff164b11f0c6ed01f1c426b"
+  },
+  {
+    "key": "kitemmodels",
+    "url": "https://download.kde.org/stable/frameworks/6.29/kitemmodels-6.29.0.tar.xz",
+    "filename": "kitemmodels-6.29.0.tar.xz",
+    "md5": "eda9e59655995a0e037a3bc42eb1a9e8",
+    "group": "frameworks",
+    "sha256": "517040fbadcd8206d04f63c190ebc2c2300c17c868becb4b8f0b54eac69303b9"
+  },
+  {
+    "key": "kitemviews",
+    "url": "https://download.kde.org/stable/frameworks/6.29/kitemviews-6.29.0.tar.xz",
+    "filename": "kitemviews-6.29.0.tar.xz",
+    "md5": "82038eec5c422b3b138507ab8964ad9e",
+    "group": "frameworks",
+    "sha256": "9e6355cf1264756d3b38254181e46e3103e531f0f1613ae1c158d4f9e541576e"
+  },
+  {
+    "key": "kplotting",
+    "url": "https://download.kde.org/stable/frameworks/6.29/kplotting-6.29.0.tar.xz",
+    "filename": "kplotting-6.29.0.tar.xz",
+    "md5": "356da5eb2050defa1aed5c206eb834c0",
+    "group": "frameworks",
+    "sha256": "2666c7608349e109ae5e0a39d6e336ddec61d5a02a2a0a2edcfb6fefaef3ea92"
+  },
+  {
+    "key": "kwidgetsaddons",
+    "url": "https://download.kde.org/stable/frameworks/6.29/kwidgetsaddons-6.29.0.tar.xz",
+    "filename": "kwidgetsaddons-6.29.0.tar.xz",
+    "md5": "ced1d43c0ca814defbca2a91ed700fcc",
+    "group": "frameworks",
+    "sha256": "76285d03cdc06f0647afbbc89f31ab5aa766cbc3c6eb177e3f8a0441444e3068"
+  },
+  {
+    "key": "kwindowsystem",
+    "url": "https://download.kde.org/stable/frameworks/6.29/kwindowsystem-6.29.0.tar.xz",
+    "filename": "kwindowsystem-6.29.0.tar.xz",
+    "md5": "d996373ba3aeda5299c92d9b9f05244a",
+    "group": "frameworks",
+    "sha256": "d2717dcf501707b14736faecf7a2d3381f09fc3e4b7a1b77fc298e4aa9f8368e"
+  },
+  {
+    "key": "networkmanager-qt",
+    "url": "https://download.kde.org/stable/frameworks/6.29/networkmanager-qt-6.29.0.tar.xz",
+    "filename": "networkmanager-qt-6.29.0.tar.xz",
+    "md5": "0348f0661a6c347f02a7416acdfa5aec",
+    "group": "frameworks",
+    "sha256": "23f2736fb8f3f0a3ee2f2f1944720206a4d5c532cf7a0a00c8f73aa69d75f588"
+  },
+  {
+    "key": "solid",
+    "url": "https://download.kde.org/stable/frameworks/6.29/solid-6.29.0.tar.xz",
+    "filename": "solid-6.29.0.tar.xz",
+    "md5": "7098fdaa4c55a369813a70a2c952a7cc",
+    "group": "frameworks",
+    "sha256": "1f46e8a508cc39ae20736861b2d19a73148333f2e23495c115aa2680538a86c2"
+  },
+  {
+    "key": "sonnet",
+    "url": "https://download.kde.org/stable/frameworks/6.29/sonnet-6.29.0.tar.xz",
+    "filename": "sonnet-6.29.0.tar.xz",
+    "md5": "1d4ad3f264af279d92a0d7228726bda3",
+    "group": "frameworks",
+    "sha256": "45501e804f242a93779402f87dbb422981699b91b5ecde97c67fd11f4f19e2ad"
+  },
+  {
+    "key": "threadweaver",
+    "url": "https://download.kde.org/stable/frameworks/6.29/threadweaver-6.29.0.tar.xz",
+    "filename": "threadweaver-6.29.0.tar.xz",
+    "md5": "3e14a2b5cb689cc9583f4d9838e2c1e2",
+    "group": "frameworks",
+    "sha256": "0d61797f9400acea7c94a0998e21954685f2de0b2c57760b85186560819fd5cc"
+  },
+  {
+    "key": "kauth",
+    "url": "https://download.kde.org/stable/frameworks/6.29/kauth-6.29.0.tar.xz",
+    "filename": "kauth-6.29.0.tar.xz",
+    "md5": "ff94c0e5bbdaf953d4615106557e6074",
+    "group": "frameworks",
+    "sha256": "40a7ec156aa1842216e1377b327efe173a737c0e6434b1dda66d2b098a307824"
+  },
+  {
+    "key": "kcompletion",
+    "url": "https://download.kde.org/stable/frameworks/6.29/kcompletion-6.29.0.tar.xz",
+    "filename": "kcompletion-6.29.0.tar.xz",
+    "md5": "5ea24f2fb7026f0d63cdba7afb8acac4",
+    "group": "frameworks",
+    "sha256": "b039608f79f445a6ccc383ce57bd240699e334613814374006c8a01dc6bc1250"
+  },
+  {
+    "key": "kcrash",
+    "url": "https://download.kde.org/stable/frameworks/6.29/kcrash-6.29.0.tar.xz",
+    "filename": "kcrash-6.29.0.tar.xz",
+    "md5": "eb5be13f4db87848f962f45beadb8911",
+    "group": "frameworks",
+    "sha256": "decb363261fe5f6df984fa0cfa42243aca9eea352045b18ffe1b86a0bd5b1736"
+  },
+  {
+    "key": "kdoctools",
+    "url": "https://download.kde.org/stable/frameworks/6.29/kdoctools-6.29.0.tar.xz",
+    "filename": "kdoctools-6.29.0.tar.xz",
+    "md5": "af09e18cebf69e98630e4d06440b5707",
+    "group": "frameworks",
+    "sha256": "1e1cb8bbf53e4f0482a916e1db9e202c8a8e8f4f2264dbcf98e837876ef83fae"
+  },
+  {
+    "key": "kpty",
+    "url": "https://download.kde.org/stable/frameworks/6.29/kpty-6.29.0.tar.xz",
+    "filename": "kpty-6.29.0.tar.xz",
+    "md5": "64f0223b5b3d8d0c87d5951787a844cf",
+    "group": "frameworks",
+    "sha256": "e0ae0fe539a94cf9a01d3526c17eb74bfe1fc7a263bb780b33e0b6b005deb607"
+  },
+  {
+    "key": "kunitconversion",
+    "url": "https://download.kde.org/stable/frameworks/6.29/kunitconversion-6.29.0.tar.xz",
+    "filename": "kunitconversion-6.29.0.tar.xz",
+    "md5": "1dbc1a568c3991bfd9c8780659c61558",
+    "group": "frameworks",
+    "sha256": "cfb2bc59a293dd4895dc07504b6b80ce29855222206fcc76d9c4ff8f4be5c5ec"
+  },
+  {
+    "key": "kcolorscheme",
+    "url": "https://download.kde.org/stable/frameworks/6.29/kcolorscheme-6.29.0.tar.xz",
+    "filename": "kcolorscheme-6.29.0.tar.xz",
+    "md5": "f316ed426e1df0616143a9f4bc43554a",
+    "group": "frameworks",
+    "sha256": "a868d9c62d402474ba063735f674967826aa905f0b9a5a176999588cde57d662"
+  },
+  {
+    "key": "kconfigwidgets",
+    "url": "https://download.kde.org/stable/frameworks/6.29/kconfigwidgets-6.29.0.tar.xz",
+    "filename": "kconfigwidgets-6.29.0.tar.xz",
+    "md5": "21d71db72c242423c2758c84e8d2ebfd",
+    "group": "frameworks",
+    "sha256": "449d7b4df04209669b8ad00c74fbf7e0d14cb103fbfa12a642995057cc56b35d"
+  },
+  {
+    "key": "kservice",
+    "url": "https://download.kde.org/stable/frameworks/6.29/kservice-6.29.0.tar.xz",
+    "filename": "kservice-6.29.0.tar.xz",
+    "md5": "52d2f3b7108240e1a745a6dd2058eb72",
+    "group": "frameworks",
+    "sha256": "0ebde9435d0c0badecec2f96daef972de7b5600d92dddbfc1f5f81c01cfff87c"
+  },
+  {
+    "key": "kglobalaccel",
+    "url": "https://download.kde.org/stable/frameworks/6.29/kglobalaccel-6.29.0.tar.xz",
+    "filename": "kglobalaccel-6.29.0.tar.xz",
+    "md5": "4d90ee680058f485acf896fa222f0f6b",
+    "group": "frameworks",
+    "sha256": "71f4b08dfa993a1cfaccee004401234ba21754d48955733fc9be13ccc940b444"
+  },
+  {
+    "key": "kpackage",
+    "url": "https://download.kde.org/stable/frameworks/6.29/kpackage-6.29.0.tar.xz",
+    "filename": "kpackage-6.29.0.tar.xz",
+    "md5": "ba00e16aba965de53ed0493d45aba61c",
+    "group": "frameworks",
+    "sha256": "aee3405475bfed6187abc483df6baf48e89b2b2505ee0acc1c8d37728fb9c786"
+  },
+  {
+    "key": "kdesu",
+    "url": "https://download.kde.org/stable/frameworks/6.29/kdesu-6.29.0.tar.xz",
+    "filename": "kdesu-6.29.0.tar.xz",
+    "md5": "b90309874fe6bc26298c4114401bb9ca",
+    "group": "frameworks",
+    "sha256": "9c128248f6259ed8f6be8ab9fd670ab10efa9ab6b500429b98f7df25d169c312"
+  },
+  {
+    "key": "kiconthemes",
+    "url": "https://download.kde.org/stable/frameworks/6.29/kiconthemes-6.29.0.tar.xz",
+    "filename": "kiconthemes-6.29.0.tar.xz",
+    "md5": "38c9b27fadd91131092df1ac17484a4b",
+    "group": "frameworks",
+    "sha256": "233de4cd2fef5b7b4ce1e317196407d25300b767614a93e160b45ac34710223d"
+  },
+  {
+    "key": "knotifications",
+    "url": "https://download.kde.org/stable/frameworks/6.29/knotifications-6.29.0.tar.xz",
+    "filename": "knotifications-6.29.0.tar.xz",
+    "md5": "95a52444c959d82e83d8506756b1498d",
+    "group": "frameworks",
+    "sha256": "883e0139fcbc692070287e47de5368c78eb91c8bdbb52fb6f8398183f6aace8f"
+  },
+  {
+    "key": "kjobwidgets",
+    "url": "https://download.kde.org/stable/frameworks/6.29/kjobwidgets-6.29.0.tar.xz",
+    "filename": "kjobwidgets-6.29.0.tar.xz",
+    "md5": "d6434be49817654e9d878fa3f8862539",
+    "group": "frameworks",
+    "sha256": "062cdb2ed80ee1fdba5dddd3e267f90259460d1e91871d340da80c44ae458609"
+  },
+  {
+    "key": "ktextwidgets",
+    "url": "https://download.kde.org/stable/frameworks/6.29/ktextwidgets-6.29.0.tar.xz",
+    "filename": "ktextwidgets-6.29.0.tar.xz",
+    "md5": "32155a4d6ca2ffbb79980b51d034d480",
+    "group": "frameworks",
+    "sha256": "d245721f27078e00f1241e7471ca2a4e46c6ccaa50bb33201869054e37be4ae0"
+  },
+  {
+    "key": "kxmlgui",
+    "url": "https://download.kde.org/stable/frameworks/6.29/kxmlgui-6.29.0.tar.xz",
+    "filename": "kxmlgui-6.29.0.tar.xz",
+    "md5": "43aec19a04194118ade54d584691fe3c",
+    "group": "frameworks",
+    "sha256": "3e143362bf0f646cecf39fc0a59eb322de7fd8379966ae46eeecf41e4cf2719b"
+  },
+  {
+    "key": "kbookmarks",
+    "url": "https://download.kde.org/stable/frameworks/6.29/kbookmarks-6.29.0.tar.xz",
+    "filename": "kbookmarks-6.29.0.tar.xz",
+    "md5": "ab9726b47279b62fba2b02d1be1e7f8e",
+    "group": "frameworks",
+    "sha256": "9e9ec69110c2427a262c9afb0fc46a8bea7387a8386d7b51b80a9805b8327aa4"
+  },
+  {
+    "key": "kwallet",
+    "url": "https://download.kde.org/stable/frameworks/6.29/kwallet-6.29.0.tar.xz",
+    "filename": "kwallet-6.29.0.tar.xz",
+    "md5": "87babe498d81765fe042f334e5af63fe",
+    "group": "frameworks",
+    "sha256": "66a47fc170ea074cce8b916fa313f309d7c9497bd2132e0598d4b63bbad2ac88"
+  },
+  {
+    "key": "kded",
+    "url": "https://download.kde.org/stable/frameworks/6.29/kded-6.29.0.tar.xz",
+    "filename": "kded-6.29.0.tar.xz",
+    "md5": "2a8f180ed2a5ce15f0652c71a0250bbd",
+    "group": "frameworks",
+    "sha256": "cb0d1ebc1e96cd90dbd6733e875e1f66e6d99fad9c40cbd3c41c5c3b3e11b882"
+  },
+  {
+    "key": "kio",
+    "url": "https://download.kde.org/stable/frameworks/6.29/kio-6.29.0.tar.xz",
+    "filename": "kio-6.29.0.tar.xz",
+    "md5": "f8c4b4fa54a4e4ab590b7eb2303bf383",
+    "group": "frameworks",
+    "sha256": "9f06313cd7d6cdde8db43067126d650fc5cc904b6f0b89159274a03e4805a91a"
+  },
+  {
+    "key": "kdeclarative",
+    "url": "https://download.kde.org/stable/frameworks/6.29/kdeclarative-6.29.0.tar.xz",
+    "filename": "kdeclarative-6.29.0.tar.xz",
+    "md5": "eb444e38b4fd327c22d34486f21b42b6",
+    "group": "frameworks",
+    "sha256": "2051e7a9c357106617ae0c666d2c4331c59f3b07b54a55a1063e7af705d82100"
+  },
+  {
+    "key": "kirigami",
+    "url": "https://download.kde.org/stable/frameworks/6.29/kirigami-6.29.0.tar.xz",
+    "filename": "kirigami-6.29.0.tar.xz",
+    "md5": "e3ea9add856c983ae55a5e88675f5cd9",
+    "group": "frameworks",
+    "sha256": "ec5943b4d7efdc18c506ea0db543acdcd5313452615c66d72a1d5ff8d428296a"
+  },
+  {
+    "key": "kcmutils",
+    "url": "https://download.kde.org/stable/frameworks/6.29/kcmutils-6.29.0.tar.xz",
+    "filename": "kcmutils-6.29.0.tar.xz",
+    "md5": "47eb021fa35e71e4f73bff439748f0cc",
+    "group": "frameworks",
+    "sha256": "762943ea8eff8c27a5b89bc483aef0af5955b716270b0820e0addae2c38392a6"
+  },
+  {
+    "key": "syndication",
+    "url": "https://download.kde.org/stable/frameworks/6.29/syndication-6.29.0.tar.xz",
+    "filename": "syndication-6.29.0.tar.xz",
+    "md5": "b3d793178f7c51b5b5cec6ef5c47c186",
+    "group": "frameworks",
+    "sha256": "f5a00d13eaf0401e9e4f3ffccda4876e2bcf84fb8dc2613a5d087971b377df1f"
+  },
+  {
+    "key": "knewstuff",
+    "url": "https://download.kde.org/stable/frameworks/6.29/knewstuff-6.29.0.tar.xz",
+    "filename": "knewstuff-6.29.0.tar.xz",
+    "md5": "807986b129cdab88939191fc8c3f11d9",
+    "group": "frameworks",
+    "sha256": "30e59a8f2c592177b255034c6320da9f3211377e97a8fdbe16be8bef3a356567"
+  },
+  {
+    "key": "frameworkintegration",
+    "url": "https://download.kde.org/stable/frameworks/6.29/frameworkintegration-6.29.0.tar.xz",
+    "filename": "frameworkintegration-6.29.0.tar.xz",
+    "md5": "233ebeb1da81ad27819f61aa6adb3b3b",
+    "group": "frameworks",
+    "sha256": "be01225efe9063e4c4a23dae47ebafed437f1cd06d73ab2de77dfb99e35785b8"
+  },
+  {
+    "key": "kparts",
+    "url": "https://download.kde.org/stable/frameworks/6.29/kparts-6.29.0.tar.xz",
+    "filename": "kparts-6.29.0.tar.xz",
+    "md5": "10caf984c5962c1f28a733a5e6e88bc5",
+    "group": "frameworks",
+    "sha256": "379d6b0fa84eb9614f7677e93b43c5ff52481e19ac83a7a158233810a39e75a7"
+  },
+  {
+    "key": "syntax-highlighting",
+    "url": "https://download.kde.org/stable/frameworks/6.29/syntax-highlighting-6.29.0.tar.xz",
+    "filename": "syntax-highlighting-6.29.0.tar.xz",
+    "md5": "1b572fc268b2a120734889176449b654",
+    "group": "frameworks",
+    "sha256": "924c4cfab4043ede9a40bc55721a62515c7b83c6b84c0bdcc29cd3cdf89b09b4"
+  },
+  {
+    "key": "ktexteditor",
+    "url": "https://download.kde.org/stable/frameworks/6.29/ktexteditor-6.29.0.tar.xz",
+    "filename": "ktexteditor-6.29.0.tar.xz",
+    "md5": "3fdffb930818a22986a83089face1c48",
+    "group": "frameworks",
+    "sha256": "ab28187332c2e4af1706999bc1fb51256f32dc2ebd28bc21081062b8ff1e4ce7"
+  },
+  {
+    "key": "modemmanager-qt",
+    "url": "https://download.kde.org/stable/frameworks/6.29/modemmanager-qt-6.29.0.tar.xz",
+    "filename": "modemmanager-qt-6.29.0.tar.xz",
+    "md5": "3bbc95743bf4670bdd23d3c092483bf9",
+    "group": "frameworks",
+    "sha256": "4af60497e5331b41a3b34e194c1fb4293cd5eae7b50b5ecf5959a9718b223b47"
+  },
+  {
+    "key": "kcontacts",
+    "url": "https://download.kde.org/stable/frameworks/6.29/kcontacts-6.29.0.tar.xz",
+    "filename": "kcontacts-6.29.0.tar.xz",
+    "md5": "0adc3ad17ebdf1aae35c4c8af2c94fc1",
+    "group": "frameworks",
+    "sha256": "08f8bfe83c5d4516b5c76877ac51aba8e7001242cd56d1e2a987bc8410af53fd"
+  },
+  {
+    "key": "kpeople",
+    "url": "https://download.kde.org/stable/frameworks/6.29/kpeople-6.29.0.tar.xz",
+    "filename": "kpeople-6.29.0.tar.xz",
+    "md5": "065da273e8f478c3745f52faed468034",
+    "group": "frameworks",
+    "sha256": "cb8900532f6c1ba6a4711b3d98e4d2b1c23bf2deb5588262f35554344fe574ca"
+  },
+  {
+    "key": "bluez-qt",
+    "url": "https://download.kde.org/stable/frameworks/6.29/bluez-qt-6.29.0.tar.xz",
+    "filename": "bluez-qt-6.29.0.tar.xz",
+    "md5": "c0ee97a3f6b78782eb378ca05a89a653",
+    "group": "frameworks",
+    "sha256": "15e2ae85d0e3e205cd17c3c5f079d2263abc4a341fbf223b2561510f69382a2b"
+  },
+  {
+    "key": "kfilemetadata",
+    "url": "https://download.kde.org/stable/frameworks/6.29/kfilemetadata-6.29.0.tar.xz",
+    "filename": "kfilemetadata-6.29.0.tar.xz",
+    "md5": "77f3350bffaa76b4a73b10912c5ac183",
+    "group": "frameworks",
+    "sha256": "c8a4bbbb3e6876caa9357a151afbd66e06336f7a4a27b54a94497cf4cafa96ac"
+  },
+  {
+    "key": "baloo",
+    "url": "https://download.kde.org/stable/frameworks/6.29/baloo-6.29.0.tar.xz",
+    "filename": "baloo-6.29.0.tar.xz",
+    "md5": "5b6c49bc217f4450dfee982188621f90",
+    "group": "frameworks",
+    "sha256": "be0f85dc22ed8a6ffe06b2b260b739da15bbeed95064a4f663632701e3170ed0"
+  },
+  {
+    "key": "breeze-icons",
+    "url": "https://download.kde.org/stable/frameworks/6.29/breeze-icons-6.29.0.tar.xz",
+    "filename": "breeze-icons-6.29.0.tar.xz",
+    "md5": "04a8c3e8651fdf4dead94221a3451f93",
+    "group": "frameworks",
+    "sha256": "2948a313ffe35895b846dde5a93302a1fcd587ad8dfb860b8757629209586fe4"
+  },
+  {
+    "key": "oxygen-icons",
+    "url": "https://download.kde.org/stable/frameworks/6.29/oxygen-icons-6.29.0.tar.xz",
+    "filename": "oxygen-icons-6.29.0.tar.xz",
+    "md5": "cd2fc88992a0da5b7b9bd16288e2f36f",
+    "group": "frameworks",
+    "sha256": "3d365f052087de1b5f870a4ecee083a6eb6e5f9174925152331110025113367a"
+  },
+  {
+    "key": "krunner",
+    "url": "https://download.kde.org/stable/frameworks/6.29/krunner-6.29.0.tar.xz",
+    "filename": "krunner-6.29.0.tar.xz",
+    "md5": "1ac31cccd071ea20a3a01fbc5c328ffc",
+    "group": "frameworks",
+    "sha256": "163129f8d3e768cd531d21277c7a643600634eb01a5ea275a9170cdef51ac125"
+  },
+  {
+    "key": "prison",
+    "url": "https://download.kde.org/stable/frameworks/6.29/prison-6.29.0.tar.xz",
+    "filename": "prison-6.29.0.tar.xz",
+    "md5": "24db2c46e60ef7354a915f36c4b10d9e",
+    "group": "frameworks",
+    "sha256": "8d34da7a7a55d35bcc5824245e2dbec2611977d164d57bef2dcccee6004443a7"
+  },
+  {
+    "key": "qqc2-desktop-style",
+    "url": "https://download.kde.org/stable/frameworks/6.29/qqc2-desktop-style-6.29.0.tar.xz",
+    "filename": "qqc2-desktop-style-6.29.0.tar.xz",
+    "md5": "4ab0da283adbfdb5e1ae48bf03d63871",
+    "group": "frameworks",
+    "sha256": "dfb815380b4297c28ef9e4bc8e3ab350b6fbf7b78e0677c3e2e3d4ca319ae336"
+  },
+  {
+    "key": "kholidays",
+    "url": "https://download.kde.org/stable/frameworks/6.29/kholidays-6.29.0.tar.xz",
+    "filename": "kholidays-6.29.0.tar.xz",
+    "md5": "74e7b660e4f6993cd95e9fd961e34d0b",
+    "group": "frameworks",
+    "sha256": "bcb204c0cca063b071e4bc986ef418b03b57e28cfc7fea45e368d1cb8b56b3f2"
+  },
+  {
+    "key": "purpose",
+    "url": "https://download.kde.org/stable/frameworks/6.29/purpose-6.29.0.tar.xz",
+    "filename": "purpose-6.29.0.tar.xz",
+    "md5": "c69b4b08b3ef3bffe0feceece70ed5e3",
+    "group": "frameworks",
+    "sha256": "743445e6a1b3aee156aec6e84ac8d36161124784f9e5730b69b868fdd6fb79c2"
+  },
+  {
+    "key": "kcalendarcore",
+    "url": "https://download.kde.org/stable/frameworks/6.29/kcalendarcore-6.29.0.tar.xz",
+    "filename": "kcalendarcore-6.29.0.tar.xz",
+    "md5": "de97d121b2f24c03e9bce05edb7a6294",
+    "group": "frameworks",
+    "sha256": "0c5801f9c50d4fea4a183876a887068a4b73d9f5545453dbcd1cd17ec46e2300"
+  },
+  {
+    "key": "kquickcharts",
+    "url": "https://download.kde.org/stable/frameworks/6.29/kquickcharts-6.29.0.tar.xz",
+    "filename": "kquickcharts-6.29.0.tar.xz",
+    "md5": "b7c39a611d24d8083014dfbb69c41d99",
+    "group": "frameworks",
+    "sha256": "a72a2188605ad765b0f3dd5aae2c9c8863fa0b27a0010a0a7756f92cff53d380"
+  },
+  {
+    "key": "knotifyconfig",
+    "url": "https://download.kde.org/stable/frameworks/6.29/knotifyconfig-6.29.0.tar.xz",
+    "filename": "knotifyconfig-6.29.0.tar.xz",
+    "md5": "e59ca085f17cde7cc6c3ff0cbc180073",
+    "group": "frameworks",
+    "sha256": "f0e75a0fa498fb0eccd5540257177e47da212095eb0b5ed4fc66935d42375b4e"
+  },
+  {
+    "key": "kdav",
+    "url": "https://download.kde.org/stable/frameworks/6.29/kdav-6.29.0.tar.xz",
+    "filename": "kdav-6.29.0.tar.xz",
+    "md5": "73c667bd31a69d3f5b24dac9f5b9f9cc",
+    "group": "frameworks",
+    "sha256": "0a4d5c21bace495004571b626a14ae864362a069caea153d8a149a911524cd08"
+  },
+  {
+    "key": "kstatusnotifieritem",
+    "url": "https://download.kde.org/stable/frameworks/6.29/kstatusnotifieritem-6.29.0.tar.xz",
+    "filename": "kstatusnotifieritem-6.29.0.tar.xz",
+    "md5": "5fcdedf1670d11de1ef3ed3ee0195802",
+    "group": "frameworks",
+    "sha256": "b2c9375edc219425b2ffc90b443e686fc48699a0ee0408b6a4e55a5f345dde2e"
+  },
+  {
+    "key": "ksvg",
+    "url": "https://download.kde.org/stable/frameworks/6.29/ksvg-6.29.0.tar.xz",
+    "filename": "ksvg-6.29.0.tar.xz",
+    "md5": "8ae0ac197fffbc36dc1fba0634d3b0c9",
+    "group": "frameworks",
+    "sha256": "1c9cf9e9d286c1682cecba41d2a44898009da3d01d54c3403c40c4868d8c19dc"
+  },
+  {
+    "key": "ktexttemplate",
+    "url": "https://download.kde.org/stable/frameworks/6.29/ktexttemplate-6.29.0.tar.xz",
+    "filename": "ktexttemplate-6.29.0.tar.xz",
+    "md5": "f382cd12656952d85178985ae92be71b",
+    "group": "frameworks",
+    "sha256": "6ca3b4be8a76fff109297a5c6b1d23f5d55fa4b4110575d4c3287ee8b10619a9"
+  },
+  {
+    "key": "kuserfeedback",
+    "url": "https://download.kde.org/stable/frameworks/6.29/kuserfeedback-6.29.0.tar.xz",
+    "filename": "kuserfeedback-6.29.0.tar.xz",
+    "md5": "182e7df4d6a35c2e0dd0cf9f50d99b85",
+    "group": "frameworks",
+    "sha256": "36fd747bd0c8a22e3e542a4d0f05e4a85101953e19d80839a3c9cd67b5d1ac9f"
+  },
+  {
+    "key": "kmime",
+    "url": "https://download.kde.org/stable/frameworks/6.29/kmime-6.29.0.tar.xz",
+    "filename": "kmime-6.29.0.tar.xz",
+    "md5": "8163ee41e712b70f72a52f6547975e35",
+    "group": "frameworks",
+    "sha256": "86e838ff10c8b5867826bf2aff802bacf8c90dcfab67cad79d9cf2b0dbc215fc"
+  },
+  {
+    "key": "kdecoration",
+    "url": "https://download.kde.org/stable/plasma/6.7.4/kdecoration-6.7.4.tar.xz",
+    "filename": "kdecoration-6.7.4.tar.xz",
+    "md5": "2a668e675bdf8dd5ae06b1e8b68a1f7e",
+    "group": "plasma",
+    "sha256": "af366baba8694e16226844a94b4772a63a7e8d8d43e4c1950215eb163b4ca590"
+  },
+  {
+    "key": "libkscreen",
+    "url": "https://download.kde.org/stable/plasma/6.7.4/libkscreen-6.7.4.tar.xz",
+    "filename": "libkscreen-6.7.4.tar.xz",
+    "md5": "227422d0896d13924d99a74707b3e05c",
+    "group": "plasma",
+    "sha256": "f40bfbd83147a7c7ff387ffe5053cc2ea000bdb21555a0b3d06da3c59d7b4977"
+  },
+  {
+    "key": "libksysguard",
+    "url": "https://download.kde.org/stable/plasma/6.7.4/libksysguard-6.7.4.tar.xz",
+    "filename": "libksysguard-6.7.4.tar.xz",
+    "md5": "190204011ed963eed51d1bde7a2fdf8f",
+    "group": "plasma",
+    "sha256": "3882fe735a00113d6fc754d5d425703bab42b6bbbff16788e95adb4ef11bb04c"
+  },
+  {
+    "key": "breeze",
+    "url": "https://download.kde.org/stable/plasma/6.7.4/breeze-6.7.4.tar.xz",
+    "filename": "breeze-6.7.4.tar.xz",
+    "md5": "b5684af3d9c5f65056ce4b64e0c59a3c",
+    "group": "plasma",
+    "sha256": "31dc88f924a5f5c979f09275ccc897cb0001bda45604561c8f18eb35b2e38b5a"
+  },
+  {
+    "key": "breeze-gtk",
+    "url": "https://download.kde.org/stable/plasma/6.7.4/breeze-gtk-6.7.4.tar.xz",
+    "filename": "breeze-gtk-6.7.4.tar.xz",
+    "md5": "a6501aa2fbd1b520e3cdb3122e7f3a60",
+    "group": "plasma",
+    "sha256": "f30fc5ae6080037ad8e402e59087f76aa5270aebc7fa0d5d1bb7440abab4b2ce"
+  },
+  {
+    "key": "layer-shell-qt",
+    "url": "https://download.kde.org/stable/plasma/6.7.4/layer-shell-qt-6.7.4.tar.xz",
+    "filename": "layer-shell-qt-6.7.4.tar.xz",
+    "md5": "34f89e74bc586c7e280ac512f8474691",
+    "group": "plasma",
+    "sha256": "6a5b064619739c6f4a2de70c56abfbadfc334dcb626152a1e8188a807ca86567"
+  },
+  {
+    "key": "plasma-activities",
+    "url": "https://download.kde.org/stable/plasma/6.7.4/plasma-activities-6.7.4.tar.xz",
+    "filename": "plasma-activities-6.7.4.tar.xz",
+    "md5": "6a331108a351cee3c3c4649bdf880501",
+    "group": "plasma",
+    "sha256": "f990e8871586c7bafe3545609b071b14c3021105cc90f603dacf45e2e0185c2a"
+  },
+  {
+    "key": "libplasma",
+    "url": "https://download.kde.org/stable/plasma/6.7.4/libplasma-6.7.4.tar.xz",
+    "filename": "libplasma-6.7.4.tar.xz",
+    "md5": "d968787e8579337c7749bcabb860e5e9",
+    "group": "plasma",
+    "sha256": "8f187850ea0cd46e545b33787619fa28f682388e4b828d090a0692874a7c9955"
+  },
+  {
+    "key": "kscreenlocker",
+    "url": "https://download.kde.org/stable/plasma/6.7.4/kscreenlocker-6.7.4.tar.xz",
+    "filename": "kscreenlocker-6.7.4.tar.xz",
+    "md5": "70129667dcb43f4ee8c9a12240a7850d",
+    "group": "plasma",
+    "sha256": "f9cd525d501f08931f2c0b4d08f5384588967bc89fac62e39ed4ae2da2925a39"
+  },
+  {
+    "key": "kglobalacceld",
+    "url": "https://download.kde.org/stable/plasma/6.7.4/kglobalacceld-6.7.4.tar.xz",
+    "filename": "kglobalacceld-6.7.4.tar.xz",
+    "md5": "60664e1402c27654632456362613fa12",
+    "group": "plasma",
+    "sha256": "538f883e7b04397d0c5b1756e750117022fe6a03a43ba890f65d62e2cf45e783"
+  },
+  {
+    "key": "kwayland",
+    "url": "https://download.kde.org/stable/plasma/6.7.4/kwayland-6.7.4.tar.xz",
+    "filename": "kwayland-6.7.4.tar.xz",
+    "md5": "020f2d5ae392678298050babb4e60337",
+    "group": "plasma",
+    "sha256": "2cb3ad260a0fc07533b1e0e9e294da2ec9be83095a901140e9fab16fa17a550d"
+  },
+  {
+    "key": "aurorae",
+    "url": "https://download.kde.org/stable/plasma/6.7.4/aurorae-6.7.4.tar.xz",
+    "filename": "aurorae-6.7.4.tar.xz",
+    "md5": "e3117b48474022601917b1643f629656",
+    "group": "plasma",
+    "sha256": "b1ceea196fc95adb141917e230fb2609920d420a9db2451eb8a69039b4c96623"
+  },
+  {
+    "key": "knighttime",
+    "url": "https://download.kde.org/stable/plasma/6.7.4/knighttime-6.7.4.tar.xz",
+    "filename": "knighttime-6.7.4.tar.xz",
+    "md5": "b035d3a464916c60a21b8a57d0698612",
+    "group": "plasma",
+    "sha256": "df367488f087897156523ea98cd239297642de10e5e053b8e7255e94e7935ede"
+  },
+  {
+    "key": "plasma-keyboard",
+    "url": "https://download.kde.org/stable/plasma/6.7.4/plasma-keyboard-6.7.4.tar.xz",
+    "filename": "plasma-keyboard-6.7.4.tar.xz",
+    "md5": "c3d800536ee56ecda08019fe1226b301",
+    "group": "plasma",
+    "sha256": "7bbcf6df3e4f3aa2f0c59e33fdc5cfc93377c04369283f1900be8f7b8fe194a1"
+  },
+  {
+    "key": "kwin",
+    "url": "https://download.kde.org/stable/plasma/6.7.4/kwin-6.7.4.tar.xz",
+    "filename": "kwin-6.7.4.tar.xz",
+    "md5": "b5b51b6b7568329a8cf1190bdeba6e4a",
+    "group": "plasma",
+    "sha256": "db7a7dba71aaca1e5218733b80f90a998d84e2ab36e4d62d0e3ea00376c5802d"
+  },
+  {
+    "key": "kwin-x11",
+    "url": "https://download.kde.org/stable/plasma/6.7.4/kwin-x11-6.7.4.tar.xz",
+    "filename": "kwin-x11-6.7.4.tar.xz",
+    "md5": "e53ce629f3c963b3b17a236a0bd867b2",
+    "group": "plasma",
+    "sha256": "2c471ec076532b657a101761a3505ae4521aca3d90c86d783c813f42622a1e2e"
+  },
+  {
+    "key": "plasma5support",
+    "url": "https://download.kde.org/stable/plasma/6.7.4/plasma5support-6.7.4.tar.xz",
+    "filename": "plasma5support-6.7.4.tar.xz",
+    "md5": "649967c3120b2eacf73969528d7f6191",
+    "group": "plasma",
+    "sha256": "793fd67604547f34c6ecc89104c9d39c56d388b6b73181302e5c8d775782e6dd"
+  },
+  {
+    "key": "plasma-activities-stats",
+    "url": "https://download.kde.org/stable/plasma/6.7.4/plasma-activities-stats-6.7.4.tar.xz",
+    "filename": "plasma-activities-stats-6.7.4.tar.xz",
+    "md5": "bc863afab26218d4105eff8d39ecadca",
+    "group": "plasma",
+    "sha256": "98b888372c7f74c60b02af6e1ca8b18fe8262748febf5e0480bd0ecc9e2bddef"
+  },
+  {
+    "key": "kpipewire",
+    "url": "https://download.kde.org/stable/plasma/6.7.4/kpipewire-6.7.4.tar.xz",
+    "filename": "kpipewire-6.7.4.tar.xz",
+    "md5": "4d1b0c26f8b55e117388ccf8c48a6f14",
+    "group": "plasma",
+    "sha256": "2020a6a94bb7726ec68004c7946ad7f6ed450dcee8f4e8b710c3680755afb1ab"
+  },
+  {
+    "key": "plasma-workspace",
+    "url": "https://download.kde.org/stable/plasma/6.7.4/plasma-workspace-6.7.4.tar.xz",
+    "filename": "plasma-workspace-6.7.4.tar.xz",
+    "md5": "05560389f2f05f669e009c2fd0ebe59f",
+    "group": "plasma",
+    "sha256": "21ec3c002929eb65377a1ae0eb105b9ab6f608049dac5493e188f51bd50398d5"
+  },
+  {
+    "key": "plasma-disks",
+    "url": "https://download.kde.org/stable/plasma/6.7.4/plasma-disks-6.7.4.tar.xz",
+    "filename": "plasma-disks-6.7.4.tar.xz",
+    "md5": "a8cc96ebd2c5151d36d442ccc11a8733",
+    "group": "plasma",
+    "sha256": "232d7f6343e5c8a5c5cfcff4e0f80fdfd0063e4aba79ebd8a431c66d9a58c13a"
+  },
+  {
+    "key": "bluedevil",
+    "url": "https://download.kde.org/stable/plasma/6.7.4/bluedevil-6.7.4.tar.xz",
+    "filename": "bluedevil-6.7.4.tar.xz",
+    "md5": "572ef1ebb4acd46b0f6b8dcecff97993",
+    "group": "plasma",
+    "sha256": "8a3bb7d3005b0a01af171bdb41bececd5848de75c4a4d68d399a49c517791652"
+  },
+  {
+    "key": "kde-gtk-config",
+    "url": "https://download.kde.org/stable/plasma/6.7.4/kde-gtk-config-6.7.4.tar.xz",
+    "filename": "kde-gtk-config-6.7.4.tar.xz",
+    "md5": "1938ec7c3ddd15229974f319bede1400",
+    "group": "plasma",
+    "sha256": "52eab1e9f71e0a92d542ee1cc655895ed4b999a9e394d468f4ef2c838f0c739b"
+  },
+  {
+    "key": "kmenuedit",
+    "url": "https://download.kde.org/stable/plasma/6.7.4/kmenuedit-6.7.4.tar.xz",
+    "filename": "kmenuedit-6.7.4.tar.xz",
+    "md5": "f0b635c72c777d56f4d0e129f350304f",
+    "group": "plasma",
+    "sha256": "bc8daed5c859904e580ca8415b88836fcde198957fa672b5b28de4017398b0c3"
+  },
+  {
+    "key": "kscreen",
+    "url": "https://download.kde.org/stable/plasma/6.7.4/kscreen-6.7.4.tar.xz",
+    "filename": "kscreen-6.7.4.tar.xz",
+    "md5": "4ac0f5f96942c954bb1e2c5d9022775e",
+    "group": "plasma",
+    "sha256": "8918c970ae363c7c1b8db76b21dc969162b5f41353fd88bde8667b46536eb8a6"
+  },
+  {
+    "key": "kwallet-pam",
+    "url": "https://download.kde.org/stable/plasma/6.7.4/kwallet-pam-6.7.4.tar.xz",
+    "filename": "kwallet-pam-6.7.4.tar.xz",
+    "md5": "e6073ba97e05a06c0ee3d6141e2cf387",
+    "group": "plasma",
+    "sha256": "24430ef5bef8b7c06b8f6770058afaab8fbbc166392535408b4e1d9e99a1ca9c"
+  },
+  {
+    "key": "kwrited",
+    "url": "https://download.kde.org/stable/plasma/6.7.4/kwrited-6.7.4.tar.xz",
+    "filename": "kwrited-6.7.4.tar.xz",
+    "md5": "3f7e64d7ad382a5c4fc9a4cc83d6c0a4",
+    "group": "plasma",
+    "sha256": "e556bb6aa096ccc146c4cddf8c1ea3f99d76c283f99f1d61d49d4ec2b0e9eab6"
+  },
+  {
+    "key": "milou",
+    "url": "https://download.kde.org/stable/plasma/6.7.4/milou-6.7.4.tar.xz",
+    "filename": "milou-6.7.4.tar.xz",
+    "md5": "3060fbba5172818f9020cb58d4954ec4",
+    "group": "plasma",
+    "sha256": "88ed9119b777c7107657b47b68af34a2c2de422f709d1409b7c2d7721463e247"
+  },
+  {
+    "key": "plasma-nm",
+    "url": "https://download.kde.org/stable/plasma/6.7.4/plasma-nm-6.7.4.tar.xz",
+    "filename": "plasma-nm-6.7.4.tar.xz",
+    "md5": "2dd1ab12f435d709e055b635629f5c14",
+    "group": "plasma",
+    "sha256": "c4d49e08072510ed1d2ea9e124dcf493a86458391c756d14aaac28c2c0a7e484"
+  },
+  {
+    "key": "plasma-pa",
+    "url": "https://download.kde.org/stable/plasma/6.7.4/plasma-pa-6.7.4.tar.xz",
+    "filename": "plasma-pa-6.7.4.tar.xz",
+    "md5": "7060baf2c23ac660cfd410dd1966199f",
+    "group": "plasma",
+    "sha256": "419c3cfe15f2f3093c4255d84a24708dd7ad28da2ce80cfee3521f761ba6937e"
+  },
+  {
+    "key": "plasma-workspace-wallpapers",
+    "url": "https://download.kde.org/stable/plasma/6.7.4/plasma-workspace-wallpapers-6.7.4.tar.xz",
+    "filename": "plasma-workspace-wallpapers-6.7.4.tar.xz",
+    "md5": "c5d1d25a57d6c15a489b01874faa6328",
+    "group": "plasma",
+    "sha256": "d0bab9b0182480a41fe0c677a1f5d4d1c3088e0f3aa6883a0bc25423d94ecfd0"
+  },
+  {
+    "key": "polkit-kde-agent",
+    "url": "https://download.kde.org/stable/plasma/6.7.4/polkit-kde-agent-1-6.7.4.tar.xz",
+    "filename": "polkit-kde-agent-1-6.7.4.tar.xz",
+    "md5": "318152d6ed611fc6ad5d4b865736f91f",
+    "group": "plasma",
+    "sha256": "d80699575c08824af81fc0e2adc1c48c5e9aa466a9b80bc296e0394936736e0a"
+  },
+  {
+    "key": "powerdevil",
+    "url": "https://download.kde.org/stable/plasma/6.7.4/powerdevil-6.7.4.tar.xz",
+    "filename": "powerdevil-6.7.4.tar.xz",
+    "md5": "b22d49f39d68c06fa0dccd1f0b020d0b",
+    "group": "plasma",
+    "sha256": "cfd53172f168b5a80cba7ab85e7b929f6d7c7e0fa80ed0d48da140b5a7d698e3"
+  },
+  {
+    "key": "plasma-desktop",
+    "url": "https://download.kde.org/stable/plasma/6.7.4/plasma-desktop-6.7.4.tar.xz",
+    "filename": "plasma-desktop-6.7.4.tar.xz",
+    "md5": "ac1a9aac994ae3cb85eaa99188669ecf",
+    "group": "plasma",
+    "sha256": "c2f0c2b7ab70cbd99ef17ffad4c3117dab12ef6a71790da33e39688386474962"
+  },
+  {
+    "key": "kgamma",
+    "url": "https://download.kde.org/stable/plasma/6.7.4/kgamma-6.7.4.tar.xz",
+    "filename": "kgamma-6.7.4.tar.xz",
+    "md5": "6a491e214b16835c855776bc2ddad64e",
+    "group": "plasma",
+    "sha256": "b08d2eba7148677980d3b607b240ffc70b5ed0ae1449457290be5e5b11b3d886"
+  },
+  {
+    "key": "ksshaskpass",
+    "url": "https://download.kde.org/stable/plasma/6.7.4/ksshaskpass-6.7.4.tar.xz",
+    "filename": "ksshaskpass-6.7.4.tar.xz",
+    "md5": "b1788bd5285df58b80f74f8430b1e43a",
+    "group": "plasma",
+    "sha256": "d3843061584f25269771b2cf72ba4a930f6b21e3da697b0ef9d569a99e995c67"
+  },
+  {
+    "key": "plasma-sdk",
+    "url": "https://download.kde.org/stable/plasma/6.7.4/plasma-sdk-6.7.4.tar.xz",
+    "filename": "plasma-sdk-6.7.4.tar.xz",
+    "md5": "93fa4cc83b05e191730df4525c724774",
+    "group": "plasma",
+    "sha256": "9c97c3efd821e8bd214f1d393e1f9b26242aab9b8099146d37eaaddf09d91070"
+  },
+  {
+    "key": "sddm-kcm",
+    "url": "https://download.kde.org/stable/plasma/6.7.4/sddm-kcm-6.7.4.tar.xz",
+    "filename": "sddm-kcm-6.7.4.tar.xz",
+    "md5": "317ca68615ef017390275a222b15ce9d",
+    "group": "plasma",
+    "sha256": "e29498674bf54140dfec8480186cdd0da515a2e6292c733208adeb4175512969"
+  },
+  {
+    "key": "discover",
+    "url": "https://download.kde.org/stable/plasma/6.7.4/discover-6.7.4.tar.xz",
+    "filename": "discover-6.7.4.tar.xz",
+    "md5": "35282b0e26bbe89b7da2f136ebd43fe1",
+    "group": "plasma",
+    "sha256": "f8b809c9aaa25c1d636b0bdf144d87a3ee659d5d80f26961d3116a627fef859d"
+  },
+  {
+    "key": "breeze-grub",
+    "url": "https://download.kde.org/stable/plasma/6.7.4/breeze-grub-6.7.4.tar.xz",
+    "filename": "breeze-grub-6.7.4.tar.xz",
+    "md5": "7de6ed35df494409cc27142696c3dd84",
+    "group": "plasma",
+    "sha256": "a571d157d242b71560f46c30fc06e4b9de03065080caf0974da24b00e82d05a8"
+  },
+  {
+    "key": "breeze-plymouth",
+    "url": "https://download.kde.org/stable/plasma/6.7.4/breeze-plymouth-6.7.4.tar.xz",
+    "filename": "breeze-plymouth-6.7.4.tar.xz",
+    "md5": "cf245907c918bc9530e4ab9349f55c23",
+    "group": "plasma",
+    "sha256": "2fde45a96cfe1d730a4e99dcc891567197532d2184ec82c718d38892c739b6ac"
+  },
+  {
+    "key": "kactivitymanagerd",
+    "url": "https://download.kde.org/stable/plasma/6.7.4/kactivitymanagerd-6.7.4.tar.xz",
+    "filename": "kactivitymanagerd-6.7.4.tar.xz",
+    "md5": "4fac322a8f29f9368c2dc4df8ac1550a",
+    "group": "plasma",
+    "sha256": "b2e9c2537ddcc243774d41355428335167c2bb8e9fc48143c4e467528536c87f"
+  },
+  {
+    "key": "plasma-integration",
+    "url": "https://download.kde.org/stable/plasma/6.7.4/plasma-integration-6.7.4.tar.xz",
+    "filename": "plasma-integration-6.7.4.tar.xz",
+    "md5": "270a34cd1483afba2295c18ee09c5da7",
+    "group": "plasma",
+    "sha256": "54e65b1170499ccc567f9bb7586809d4739ea728efcf1bc877d1709db6e7347a"
+  },
+  {
+    "key": "plymouth-kcm",
+    "url": "https://download.kde.org/stable/plasma/6.7.4/plymouth-kcm-6.7.4.tar.xz",
+    "filename": "plymouth-kcm-6.7.4.tar.xz",
+    "md5": "e5a59138ebef078776c9c8a5957f5cc4",
+    "group": "plasma",
+    "sha256": "cc65651949319c99da40bc9871e2fe67ca3d91bf414e73784ffa076cc874cb35"
+  },
+  {
+    "key": "xdg-desktop-portal-kde",
+    "url": "https://download.kde.org/stable/plasma/6.7.4/xdg-desktop-portal-kde-6.7.4.tar.xz",
+    "filename": "xdg-desktop-portal-kde-6.7.4.tar.xz",
+    "md5": "3973cb7ade619898813fbb17a6dd39a1",
+    "group": "plasma",
+    "sha256": "bb4b955e2f52a832f221d3fb7182cebf920653a0ad1e3201abd29f134d4c33f3"
+  },
+  {
+    "key": "drkonqi",
+    "url": "https://download.kde.org/stable/plasma/6.7.4/drkonqi-6.7.4.tar.xz",
+    "filename": "drkonqi-6.7.4.tar.xz",
+    "md5": "cc4b7b53165f9b458743a3e732c7eebf",
+    "group": "plasma",
+    "sha256": "c7f9402b7a32e077b23d34d083926bc7a78f18b93184510def3fcc32532d6959"
+  },
+  {
+    "key": "plasma-vault",
+    "url": "https://download.kde.org/stable/plasma/6.7.4/plasma-vault-6.7.4.tar.xz",
+    "filename": "plasma-vault-6.7.4.tar.xz",
+    "md5": "bed38426773005100e6059874e8f1d54",
+    "group": "plasma",
+    "sha256": "6f18b85c9bda68cc271a90d2f275bfad414f588825c32431e26b843f8fc57113"
+  },
+  {
+    "key": "plasma-browser-integration",
+    "url": "https://download.kde.org/stable/plasma/6.7.4/plasma-browser-integration-6.7.4.tar.xz",
+    "filename": "plasma-browser-integration-6.7.4.tar.xz",
+    "md5": "3c985ed775c64cb4eaf7047098a515fc",
+    "group": "plasma",
+    "sha256": "298ee5e14c935dd811ad3686a2a6422fe8d2ea7f0b6946595268c6ac6b252325"
+  },
+  {
+    "key": "kde-cli-tools",
+    "url": "https://download.kde.org/stable/plasma/6.7.4/kde-cli-tools-6.7.4.tar.xz",
+    "filename": "kde-cli-tools-6.7.4.tar.xz",
+    "md5": "2c6f6683c45669f1a7a3bb297f6a16b6",
+    "group": "plasma",
+    "sha256": "9b93730cbea9eecd2b17c84603c1496d18d08749d2861f87a7552f463d7aecb0"
+  },
+  {
+    "key": "systemsettings",
+    "url": "https://download.kde.org/stable/plasma/6.7.4/systemsettings-6.7.4.tar.xz",
+    "filename": "systemsettings-6.7.4.tar.xz",
+    "md5": "23e88b2df1b3ddf58022ce658a831d1c",
+    "group": "plasma",
+    "sha256": "5a254bcf7cbeed04ee3f407b5e86609992f978d8734e76fa24b4afafbd66383c"
+  },
+  {
+    "key": "plasma-mobile",
+    "url": "https://download.kde.org/stable/plasma/6.7.4/plasma-mobile-6.7.4.tar.xz",
+    "filename": "plasma-mobile-6.7.4.tar.xz",
+    "md5": "f51e98d278d37b99cb260fd11141f12b",
+    "group": "plasma",
+    "sha256": "378085f75cb0378a46fa12cc678a0e87f2bf9f1771eb514730da8b0a617e8bec"
+  },
+  {
+    "key": "plasma-nano",
+    "url": "https://download.kde.org/stable/plasma/6.7.4/plasma-nano-6.7.4.tar.xz",
+    "filename": "plasma-nano-6.7.4.tar.xz",
+    "md5": "a7e2f1cd72faf3dd3c988337d1f730db",
+    "group": "plasma",
+    "sha256": "03ea97b57856df1bab618595b8777e519d8e244c6f2d9d77fdafcf553c7d5885"
+  },
+  {
+    "key": "plasma-firewall",
+    "url": "https://download.kde.org/stable/plasma/6.7.4/plasma-firewall-6.7.4.tar.xz",
+    "filename": "plasma-firewall-6.7.4.tar.xz",
+    "md5": "b2d5232b994b197a0524f1982069715c",
+    "group": "plasma",
+    "sha256": "7f26c2a3bfc935dde9936f1cc611dac4cf936d7d7d3cb3ea41f141064ebaac56"
+  },
+  {
+    "key": "plasma-systemmonitor",
+    "url": "https://download.kde.org/stable/plasma/6.7.4/plasma-systemmonitor-6.7.4.tar.xz",
+    "filename": "plasma-systemmonitor-6.7.4.tar.xz",
+    "md5": "71e9c21163c2304bea2cbf1c013811d1",
+    "group": "plasma",
+    "sha256": "80694f9d683a3720116197f7899e47a0b10f01a46a66af65ee079e2145897a8d"
+  },
+  {
+    "key": "qqc2-breeze-style",
+    "url": "https://download.kde.org/stable/plasma/6.7.4/qqc2-breeze-style-6.7.4.tar.xz",
+    "filename": "qqc2-breeze-style-6.7.4.tar.xz",
+    "md5": "97bd995296967e15827b872e7d8d2466",
+    "group": "plasma",
+    "sha256": "3ae0c98d3bdbe3d1909f866e731b4a0971f90b8c274353d67e581d231474ca98"
+  },
+  {
+    "key": "ksystemstats",
+    "url": "https://download.kde.org/stable/plasma/6.7.4/ksystemstats-6.7.4.tar.xz",
+    "filename": "ksystemstats-6.7.4.tar.xz",
+    "md5": "cc47c85067e1db3b084c94e07e650398",
+    "group": "plasma",
+    "sha256": "919f2436ff8da8ff6ea7d2c007bdaf6bcd8a2f096d0544ba450124ffac56dc94"
+  },
+  {
+    "key": "oxygen-sounds",
+    "url": "https://download.kde.org/stable/plasma/6.7.4/oxygen-sounds-6.7.4.tar.xz",
+    "filename": "oxygen-sounds-6.7.4.tar.xz",
+    "md5": "a3673682283357c8f04e89606af11d93",
+    "group": "plasma",
+    "sha256": "4e7b942544e5ebdecda5eb23a6858ac2a9429c0c54ffba8a2455f1ff4b9ca9de"
+  },
+  {
+    "key": "kdeplasma-addons",
+    "url": "https://download.kde.org/stable/plasma/6.7.4/kdeplasma-addons-6.7.4.tar.xz",
+    "filename": "kdeplasma-addons-6.7.4.tar.xz",
+    "md5": "fface9f4ea1a88a2e37b01edd8757db5",
+    "group": "plasma",
+    "sha256": "5098c28b7e4e0c1c9320db28c2e778f3ecd5c62d655c95983993f66003980ec1"
+  },
+  {
+    "key": "flatpak-kcm",
+    "url": "https://download.kde.org/stable/plasma/6.7.4/flatpak-kcm-6.7.4.tar.xz",
+    "filename": "flatpak-kcm-6.7.4.tar.xz",
+    "md5": "368e89588052aad475f25468996d432d",
+    "group": "plasma",
+    "sha256": "1133b40e4d7fad2349a84b5e0f12acaaa22a0940fa4fc1500e2c79482535e219"
+  },
+  {
+    "key": "plasma-welcome",
+    "url": "https://download.kde.org/stable/plasma/6.7.4/plasma-welcome-6.7.4.tar.xz",
+    "filename": "plasma-welcome-6.7.4.tar.xz",
+    "md5": "3085f2d5441d8be0e1f68ec2408afcd5",
+    "group": "plasma",
+    "sha256": "d9862440a16820ca00abb22363be57e9b156adc76db692d4d04cabd3e862ab3d"
+  },
+  {
+    "key": "ocean-sound-theme",
+    "url": "https://download.kde.org/stable/plasma/6.7.4/ocean-sound-theme-6.7.4.tar.xz",
+    "filename": "ocean-sound-theme-6.7.4.tar.xz",
+    "md5": "6096363f350019ccb5a269779d3837d5",
+    "group": "plasma",
+    "sha256": "3d0368e992388fce0015e3622778062a67827b660bae6ab551e873ae18a3045c"
+  },
+  {
+    "key": "print-manager",
+    "url": "https://download.kde.org/stable/plasma/6.7.4/print-manager-6.7.4.tar.xz",
+    "filename": "print-manager-6.7.4.tar.xz",
+    "md5": "7e54089100df8684ce3e421f0f85b26e",
+    "group": "plasma",
+    "sha256": "4bce095c6dc9607b20551b0ea5c5ebcb56a49510ee0c02d344572604d7416868"
+  },
+  {
+    "key": "wacomtablet",
+    "url": "https://download.kde.org/stable/plasma/6.7.4/wacomtablet-6.7.4.tar.xz",
+    "filename": "wacomtablet-6.7.4.tar.xz",
+    "md5": "6b25901d6278559630a849b1e10a1fcc",
+    "group": "plasma",
+    "sha256": "236c67147b2da701e42bd9e3ea99cc444e0615393d020e029083c04acd586569"
+  },
+  {
+    "key": "kwayland-integration",
+    "url": "https://download.kde.org/stable/plasma/6.7.4/kwayland-integration-6.7.4.tar.xz",
+    "filename": "kwayland-integration-6.7.4.tar.xz",
+    "md5": "98b9ab5cce0e6f15b94c5473437c776b",
+    "group": "plasma",
+    "sha256": "81f0e65271648c612c6899a7d2d3a0d17b77896de096934e0e793b1337546282"
+  },
+  {
+    "key": "krdp",
+    "url": "https://download.kde.org/stable/plasma/6.7.4/krdp-6.7.4.tar.xz",
+    "filename": "krdp-6.7.4.tar.xz",
+    "md5": "2e4786a19dcba04d94c3bff46a167eef",
+    "group": "plasma",
+    "sha256": "dd952892bfafd06281fd9fd239fb5f3b5807f3f346be456554061183881abf8b"
+  },
+  {
+    "key": "oxygen",
+    "url": "https://download.kde.org/stable/plasma/6.7.4/oxygen-6.7.4.tar.xz",
+    "filename": "oxygen-6.7.4.tar.xz",
+    "md5": "360d670ed2bb8aa1286d466539011106",
+    "group": "plasma",
+    "sha256": "9e64ac80a01ed904110b88232e509c7ae920d6d8b1202880ff557e5c621919af"
+  },
+  {
+    "key": "plasma-dialer",
+    "url": "https://download.kde.org/stable/plasma/6.7.4/plasma-dialer-6.7.4.tar.xz",
+    "filename": "plasma-dialer-6.7.4.tar.xz",
+    "md5": "895f1aff8fb4d347e935237d9c83c1ee",
+    "group": "plasma",
+    "sha256": "bef22243d64bb6b3eddec3db1334d9b3deebc0ea065e71e058aefad1350eb587"
+  },
+  {
+    "key": "spacebar",
+    "url": "https://download.kde.org/stable/plasma/6.7.4/spacebar-6.7.4.tar.xz",
+    "filename": "spacebar-6.7.4.tar.xz",
+    "md5": "974b77c0b9a1af2864ade856c0b42b51",
+    "group": "plasma",
+    "sha256": "04b70db86fc0028b33b646218525c3bf081480b10049c8cfb4a4f5236954e92e"
+  },
+  {
+    "key": "spectacle",
+    "url": "https://download.kde.org/stable/plasma/6.7.4/spectacle-6.7.4.tar.xz",
+    "filename": "spectacle-6.7.4.tar.xz",
+    "md5": "49398c5c4d5cef31ffb07b4cc36a4a8e",
+    "group": "plasma",
+    "sha256": "5c61ffd9b37ca6384b754d44a051c8f979ab77984f92e7ddf3a1c15156d65665"
+  },
+  {
+    "key": "plasma-login-manager",
+    "url": "https://download.kde.org/stable/plasma/6.7.4/plasma-login-manager-6.7.4.tar.xz",
+    "filename": "plasma-login-manager-6.7.4.tar.xz",
+    "md5": "fcf0d9b0b50d85000135646e97a1296d",
+    "group": "plasma",
+    "sha256": "8ba5f9a5b31b2cb09d6846c590d09891dadb9a5625426b8552577299093b67fd"
+  },
+  {
+    "key": "plasma-setup",
+    "url": "https://download.kde.org/stable/plasma/6.7.4/plasma-setup-6.7.4.tar.xz",
+    "filename": "plasma-setup-6.7.4.tar.xz",
+    "md5": "001cae1a7e6326074643dde0f097498e",
+    "group": "plasma",
+    "sha256": "d8d761c78c4ea51eb7e2b9342f10fbe0b46d4cedfeeeb5150c9d387b2eb79d03"
+  },
+  {
+    "key": "kinfocenter",
+    "url": "https://download.kde.org/stable/plasma/6.7.4/kinfocenter-6.7.4.tar.xz",
+    "filename": "kinfocenter-6.7.4.tar.xz",
+    "md5": "780166b539d9c9800ad096d9f3ca48ad",
+    "group": "plasma",
+    "sha256": "b82f7fae6941ab9e0327a0579ada51b12ad3c5a4fa5fcd8272c70aea09a1ff23"
+  },
+  {
+    "key": "plasma-thunderbolt",
+    "url": "https://download.kde.org/stable/plasma/6.7.4/plasma-thunderbolt-6.7.4.tar.xz",
+    "filename": "plasma-thunderbolt-6.7.4.tar.xz",
+    "md5": "b9129e3342abb80f4b43d160d26dcb15",
+    "group": "plasma",
+    "sha256": "cc40625fc51d1d1576e02e7411f2426fef61f78ff6e7bc14db3f2818032a5309"
+  },
+  {
+    "key": "plasma-bigscreen",
+    "url": "https://download.kde.org/stable/plasma/6.7.4/plasma-bigscreen-6.7.4.tar.xz",
+    "filename": "plasma-bigscreen-6.7.4.tar.xz",
+    "md5": "936d3d9689ea25070f356aa0c4b64c40",
+    "group": "plasma",
+    "sha256": "5fb76e3777ce03bd4ded119fb169efeb308a38f43dec009197158abec134441c"
+  },
+  {
+    "key": "union",
+    "url": "https://download.kde.org/stable/plasma/6.7.4/union-6.7.4.tar.xz",
+    "filename": "union-6.7.4.tar.xz",
+    "md5": "60fecb60b6d7c0117a637a5d7eabf714",
+    "group": "plasma",
+    "sha256": "b1a83dc6b831fb3e46d18d4c6441822c94e386299ef37b816148215480d325ac"
+  },
+  {
+    "key": "qtbase",
+    "url": "https://download.qt.io/official_releases/qt/6.11/6.11.2/submodules/qtbase-everywhere-src-6.11.2.tar.xz",
+    "filename": "qtbase-everywhere-src-6.11.2.tar.xz",
+    "md5": null,
+    "group": "qt",
+    "sha256": "5b2e00eccaf5a4d8c14134ffa0ea8dfd0a35ae1ffc7f8d87fa4305a1ed23cf22"
+  },
+  {
+    "key": "qtshadertools",
+    "url": "https://download.qt.io/official_releases/qt/6.11/6.11.2/submodules/qtshadertools-everywhere-src-6.11.2.tar.xz",
+    "filename": "qtshadertools-everywhere-src-6.11.2.tar.xz",
+    "md5": null,
+    "group": "qt",
+    "sha256": "805046b8b7757665586890b375940047e874ae3ab00adb6d3f2b38fc6b200b1c"
+  },
+  {
+    "key": "qtdeclarative",
+    "url": "https://download.qt.io/official_releases/qt/6.11/6.11.2/submodules/qtdeclarative-everywhere-src-6.11.2.tar.xz",
+    "filename": "qtdeclarative-everywhere-src-6.11.2.tar.xz",
+    "md5": null,
+    "group": "qt",
+    "sha256": "215b7b70517e380123eabc6b92243f3c47b6f016a91d126057dbe53551c6b430"
+  },
+  {
+    "key": "qtwayland",
+    "url": "https://download.qt.io/official_releases/qt/6.11/6.11.2/submodules/qtwayland-everywhere-src-6.11.2.tar.xz",
+    "filename": "qtwayland-everywhere-src-6.11.2.tar.xz",
+    "md5": null,
+    "group": "qt",
+    "sha256": "8eb7615e39332a10f506e8dd70f02d5954bb5949ff54f6dcbf8bd6168222f9df"
+  },
+  {
+    "key": "qtsvg",
+    "url": "https://download.qt.io/official_releases/qt/6.11/6.11.2/submodules/qtsvg-everywhere-src-6.11.2.tar.xz",
+    "filename": "qtsvg-everywhere-src-6.11.2.tar.xz",
+    "md5": null,
+    "group": "qt",
+    "sha256": "d594337feca84c26fb67fe87b85e6a5c12fda404b611d905f9d138210c311876"
+  },
+  {
+    "key": "qtimageformats",
+    "url": "https://download.qt.io/official_releases/qt/6.11/6.11.2/submodules/qtimageformats-everywhere-src-6.11.2.tar.xz",
+    "filename": "qtimageformats-everywhere-src-6.11.2.tar.xz",
+    "md5": null,
+    "group": "qt",
+    "sha256": "cecd8900f34b6550076309bc94f62f828008b633a4239e0a08c86788f41001f8"
+  },
+  {
+    "key": "qttools",
+    "url": "https://download.qt.io/official_releases/qt/6.11/6.11.2/submodules/qttools-everywhere-src-6.11.2.tar.xz",
+    "filename": "qttools-everywhere-src-6.11.2.tar.xz",
+    "md5": null,
+    "group": "qt",
+    "sha256": "9ea75af35c512f7e09e61c8c3af3997f13b4d43bb099cf43fcec470126b4041e"
+  },
+  {
+    "key": "qttranslations",
+    "url": "https://download.qt.io/official_releases/qt/6.11/6.11.2/submodules/qttranslations-everywhere-src-6.11.2.tar.xz",
+    "filename": "qttranslations-everywhere-src-6.11.2.tar.xz",
+    "md5": null,
+    "group": "qt",
+    "sha256": "021684c1a7937a9fabc3b056a6698ad5978794caf9ac190fd6cc11399e67c014"
+  },
+  {
+    "key": "qt5compat",
+    "url": "https://download.qt.io/official_releases/qt/6.11/6.11.2/submodules/qt5compat-everywhere-src-6.11.2.tar.xz",
+    "filename": "qt5compat-everywhere-src-6.11.2.tar.xz",
+    "md5": null,
+    "group": "qt",
+    "sha256": "68c320fe3391096a9f2d870170edf1b67dac8af1d0e51c0c9e5343807f114287"
+  },
+  {
+    "key": "qtmultimedia",
+    "url": "https://download.qt.io/official_releases/qt/6.11/6.11.2/submodules/qtmultimedia-everywhere-src-6.11.2.tar.xz",
+    "filename": "qtmultimedia-everywhere-src-6.11.2.tar.xz",
+    "md5": null,
+    "group": "qt",
+    "sha256": "967b5e02ec6b793cdb360622cd6e703132836af983208d678dae4b50f109cd9f"
+  },
+  {
+    "key": "qtlocation",
+    "url": "https://download.qt.io/official_releases/qt/6.11/6.11.2/submodules/qtlocation-everywhere-src-6.11.2.tar.xz",
+    "filename": "qtlocation-everywhere-src-6.11.2.tar.xz",
+    "md5": null,
+    "group": "qt",
+    "sha256": "4d50a7ece01fbd76f6ec17c650236cb56ea60f987c52fc391dac72f13f65c23a"
+  },
+  {
+    "key": "qtpositioning",
+    "url": "https://download.qt.io/official_releases/qt/6.11/6.11.2/submodules/qtpositioning-everywhere-src-6.11.2.tar.xz",
+    "filename": "qtpositioning-everywhere-src-6.11.2.tar.xz",
+    "md5": null,
+    "group": "qt",
+    "sha256": "d8cf15ad43a3b1520adac64cec5900028525cf75f01a4c82a0002e7ac1ae7499"
+  },
+  {
+    "key": "qtsensors",
+    "url": "https://download.qt.io/official_releases/qt/6.11/6.11.2/submodules/qtsensors-everywhere-src-6.11.2.tar.xz",
+    "filename": "qtsensors-everywhere-src-6.11.2.tar.xz",
+    "md5": null,
+    "group": "qt",
+    "sha256": "68c8e44dfb32e8e2182f63f5544c2f462089b1bb049574f1d504ee2648903119"
+  },
+  {
+    "key": "qtwebchannel",
+    "url": "https://download.qt.io/official_releases/qt/6.11/6.11.2/submodules/qtwebchannel-everywhere-src-6.11.2.tar.xz",
+    "filename": "qtwebchannel-everywhere-src-6.11.2.tar.xz",
+    "md5": null,
+    "group": "qt",
+    "sha256": "feb3149758bda887f0c292656194812dd2c227595badc8fbdeb2fb2311c5575f"
+  },
+  {
+    "key": "qtwebsockets",
+    "url": "https://download.qt.io/official_releases/qt/6.11/6.11.2/submodules/qtwebsockets-everywhere-src-6.11.2.tar.xz",
+    "filename": "qtwebsockets-everywhere-src-6.11.2.tar.xz",
+    "md5": null,
+    "group": "qt",
+    "sha256": "2bfe25c383c37f7690e3c59b02c9907d2744cf8527b1f3f1fc2c785b2ff3c9a3"
+  },
+  {
+    "key": "qtserialport",
+    "url": "https://download.qt.io/official_releases/qt/6.11/6.11.2/submodules/qtserialport-everywhere-src-6.11.2.tar.xz",
+    "filename": "qtserialport-everywhere-src-6.11.2.tar.xz",
+    "md5": null,
+    "group": "qt",
+    "sha256": "df3a733616444f31b2ecb689218ea1444be91d8628aa3ab8e464c5eb1b17ad8e"
+  },
+  {
+    "key": "qtvirtualkeyboard",
+    "url": "https://download.qt.io/official_releases/qt/6.11/6.11.2/submodules/qtvirtualkeyboard-everywhere-src-6.11.2.tar.xz",
+    "filename": "qtvirtualkeyboard-everywhere-src-6.11.2.tar.xz",
+    "md5": null,
+    "group": "qt",
+    "sha256": "4c6a26734a5c4e4acd5ff9ae5f192a5b883bc4514118f9df2fcf12064e647c2f"
+  },
+  {
+    "key": "qtspeech",
+    "url": "https://download.qt.io/official_releases/qt/6.11/6.11.2/submodules/qtspeech-everywhere-src-6.11.2.tar.xz",
+    "filename": "qtspeech-everywhere-src-6.11.2.tar.xz",
+    "md5": null,
+    "group": "qt",
+    "sha256": "9c1d05dc9d710049f20a67680fc6b4293c9b584a90f04f4cf6cc36e758c5cb98"
+  },
+  {
+    "key": "libqaccessibilityclient",
+    "url": "https://download.kde.org/Attic/libqaccessibilityclient/libqaccessibilityclient-0.6.0.tar.xz",
+    "filename": "libqaccessibilityclient-0.6.0.tar.xz",
+    "md5": null,
+    "group": "direct",
+    "sha256_expected": "4c50c448622dc9c5041ed10da7d87b3e4e71ccb49d4831a849211d423c5f5d33",
+    "checksum_source": "https://download.kde.org/Attic/libqaccessibilityclient/libqaccessibilityclient-0.6.0.tar.xz.sha256",
+    "sha256": "4c50c448622dc9c5041ed10da7d87b3e4e71ccb49d4831a849211d423c5f5d33"
+  },
+  {
+    "key": "kcalc",
+    "url": "https://download.kde.org/stable/release-service/26.04.3/src/kcalc-26.04.3.tar.xz",
+    "filename": "kcalc-26.04.3.tar.xz",
+    "md5": null,
+    "group": "direct",
+    "sha256_expected": "45bd63e3791eaef421a7e0172ce26f5df8da5be5f5d1052cb23be72e25685208",
+    "checksum_source": "https://download.kde.org/stable/release-service/26.04.3/src/kcalc-26.04.3.tar.xz.sha256",
+    "sha256": "45bd63e3791eaef421a7e0172ce26f5df8da5be5f5d1052cb23be72e25685208"
+  },
+  {
+    "key": "kdialog",
+    "url": "https://download.kde.org/stable/release-service/26.04.3/src/kdialog-26.04.3.tar.xz",
+    "filename": "kdialog-26.04.3.tar.xz",
+    "md5": null,
+    "group": "direct",
+    "sha256_expected": "e8b6dd4f54b6b9d0051a5014af069332327717c0e36bbc36430eddcbb76f226e",
+    "checksum_source": "https://download.kde.org/stable/release-service/26.04.3/src/kdialog-26.04.3.tar.xz.sha256",
+    "sha256": "e8b6dd4f54b6b9d0051a5014af069332327717c0e36bbc36430eddcbb76f226e"
+  },
+  {
+    "key": "orca",
+    "url": "https://download.gnome.org/sources/orca/50/orca-50.2.tar.xz",
+    "filename": "orca-50.2.tar.xz",
+    "md5": null,
+    "group": "direct",
+    "sha256_expected": "0714421cde8ec4baf47f18e4b4a12b4e5c4a3cfe3b161569e070fe037713fd04",
+    "checksum_source": "https://download.gnome.org/sources/orca/50/orca-50.2.sha256sum",
+    "sha256": "0714421cde8ec4baf47f18e4b4a12b4e5c4a3cfe3b161569e070fe037713fd04"
+  },
+  {
+    "key": "speech-dispatcher",
+    "url": "https://github.com/brailcom/speechd/releases/download/0.12.1/speech-dispatcher-0.12.1.tar.gz",
+    "filename": "speech-dispatcher-0.12.1.tar.gz",
+    "md5": null,
+    "group": "direct",
+    "provenance": "Official upstream release 0.12.1 over HTTPS; SHA-256 recorded on first fetch",
+    "sha256_expected": "b14a5238d287d2dcce4dd42bbd66ca65fa228e7e683708267f7b34036f7ba4b4",
+    "sha256": "b14a5238d287d2dcce4dd42bbd66ca65fa228e7e683708267f7b34036f7ba4b4"
+  },
+  {
+    "key": "espeak-ng",
+    "url": "https://github.com/espeak-ng/espeak-ng/archive/refs/tags/1.52.0.tar.gz",
+    "filename": "espeak-ng-1.52.0.tar.gz",
+    "md5": null,
+    "group": "direct",
+    "provenance": "Official upstream tag 1.52.0 over HTTPS; SHA-256 recorded on first fetch",
+    "sha256_expected": "bb4338102ff3b49a81423da8a1a158b420124b055b60fa76cfb4b18677130a23",
+    "sha256": "bb4338102ff3b49a81423da8a1a158b420124b055b60fa76cfb4b18677130a23"
+  },
+  {
+    "key": "pcaudiolib",
+    "url": "https://github.com/espeak-ng/pcaudiolib/releases/download/1.3/pcaudiolib-1.3.tar.gz",
+    "filename": "pcaudiolib-1.3.tar.gz",
+    "md5": null,
+    "group": "direct",
+    "provenance": "Official upstream release 1.3 over HTTPS; digest recorded on first fetch",
+    "sha256_expected": "e8bd15f460ea171ccd0769ea432e188532a7fb27fa73ec2d526088a082abaaad",
+    "sha256": "e8bd15f460ea171ccd0769ea432e188532a7fb27fa73ec2d526088a082abaaad"
+  },
+  {
+    "key": "dotconf",
+    "url": "https://github.com/williamh/dotconf/archive/7c3e0515c29efce45de6aae29befb2ab4396bd60.tar.gz",
+    "filename": "dotconf-1.4.1.tar.gz",
+    "md5": null,
+    "group": "direct",
+    "provenance": "Official upstream v1.4.1 commit 7c3e0515c29efce45de6aae29befb2ab4396bd60",
+    "sha256_expected": "1efa9c027ec7b791e5122b388419c3c8c14c81ea54a6c9a02804d3027f2ec14d",
+    "sha256": "1efa9c027ec7b791e5122b388419c3c8c14c81ea54a6c9a02804d3027f2ec14d"
+  },
+  {
+    "key": "dasbus",
+    "url": "https://files.pythonhosted.org/packages/37/79/9c5984d723ffbe2e839ee649690f3e1fa6544ab6a17a5150e5ac14a47072/dasbus-1.7.tar.gz",
+    "filename": "dasbus-1.7.tar.gz",
+    "md5": null,
+    "group": "direct",
+    "sha256_expected": "a8850d841adfe8ee5f7bb9f82cf449ab9b4950dc0633897071718e0d0036b6f6",
+    "checksum_source": "https://pypi.org/pypi/dasbus/1.7/json",
+    "sha256": "a8850d841adfe8ee5f7bb9f82cf449ab9b4950dc0633897071718e0d0036b6f6"
+  },
+  {
+    "key": "libssh",
+    "url": "https://www.libssh.org/files/0.12/libssh-0.12.2.tar.xz",
+    "filename": "libssh-0.12.2.tar.xz",
+    "md5": null,
+    "group": "direct",
+    "sha256_expected": "49560f677d96e3706a904ac2de1116e25f3680937d51e5c92198fcba4a1c1e9f",
+    "provenance": "Official libssh 0.12.2 source; detached GPG signature verified with upstream fingerprint 88A228D89B07C2C77D0C780903D5DF8CFDD3E8E7; recorded SHA256.",
+    "sha256": "49560f677d96e3706a904ac2de1116e25f3680937d51e5c92198fcba4a1c1e9f"
+  },
+  {
+    "key": "libxshmfence",
+    "url": "https://www.x.org/pub/individual/lib/libxshmfence-1.3.3.tar.xz",
+    "filename": "libxshmfence-1.3.3.tar.xz",
+    "md5": null,
+    "group": "direct",
+    "sha256_expected": "d4a4df096aba96fea02c029ee3a44e11a47eb7f7213c1a729be83e85ec3fde10",
+    "provenance": "Pinned BLFS r13.1 Xorg library MD5 verified; recorded SHA256",
+    "sha256": "d4a4df096aba96fea02c029ee3a44e11a47eb7f7213c1a729be83e85ec3fde10"
+  },
+  {
+    "key": "libXxf86vm",
+    "url": "https://www.x.org/pub/individual/lib/libXxf86vm-1.1.7.tar.xz",
+    "filename": "libXxf86vm-1.1.7.tar.xz",
+    "md5": null,
+    "group": "direct",
+    "sha256_expected": "ae50c0f669e0af5a67cc4cd0f54f21d64a64d2660af883e80e95d3fe51b945d8",
+    "provenance": "Pinned BLFS r13.1 Xorg MD5 verified; recorded SHA256",
+    "sha256": "ae50c0f669e0af5a67cc4cd0f54f21d64a64d2660af883e80e95d3fe51b945d8"
+  },
+  {
+    "key": "xorg-server",
+    "url": "https://www.x.org/pub/individual/xserver/xorg-server-21.1.24.tar.xz",
+    "filename": "xorg-server-21.1.24.tar.xz",
+    "md5": null,
+    "group": "direct",
+    "sha256_expected": "1a4eb36ca65cc3b1b936566d677a9786e13c11cd5806e951ac55f3f5ce3984af",
+    "provenance": "Previously verified pinned native Aether guest source archive",
+    "sha256": "1a4eb36ca65cc3b1b936566d677a9786e13c11cd5806e951ac55f3f5ce3984af"
+  },
+  {
+    "key": "gtk3",
+    "url": "https://download.gnome.org/sources/gtk/3.24/gtk-3.24.52.tar.xz",
+    "filename": "gtk-3.24.52.tar.xz",
+    "md5": null,
+    "group": "direct",
+    "sha256_expected": "80931fa472a77b9a164f6740e3c0b444fac6770054632d35a7ff9d679e5e7b9f",
+    "provenance": "Previously verified pinned native Aether guest source archive",
+    "sha256": "80931fa472a77b9a164f6740e3c0b444fac6770054632d35a7ff9d679e5e7b9f"
+  },
+  {
+    "key": "lightdm",
+    "url": "https://github.com/ubuntu/lightdm/releases/download/1.33.1/lightdm-1.33.1.tar.xz",
+    "filename": "lightdm-1.33.1.tar.xz",
+    "md5": null,
+    "group": "direct",
+    "sha256_expected": "1a3ca2fea2c97065d85d989048a30fc4148fd0eaf94cffd683f0b3f389fe1ed0",
+    "provenance": "Official upstream release; SHA256 verified against GitHub release asset digest",
+    "sha256": "1a3ca2fea2c97065d85d989048a30fc4148fd0eaf94cffd683f0b3f389fe1ed0"
+  },
+  {
+    "key": "gobject-introspection",
+    "url": "https://download.gnome.org/sources/gobject-introspection/1.86/gobject-introspection-1.86.0.tar.xz",
+    "filename": "gobject-introspection-1.86.0.tar.xz",
+    "md5": "fa0f2ae76868bf35ff725f940d75ec16",
+    "group": "direct",
+    "provenance": "Pinned BLFS r13.1 source and MD5; SHA256 recorded on verified fetch",
+    "sha256_expected": "920d1a3fcedeadc32acff95c2e203b319039dd4b4a08dd1a2dfd283d19c0b9ae",
+    "sha256": "920d1a3fcedeadc32acff95c2e203b319039dd4b4a08dd1a2dfd283d19c0b9ae"
+  },
+  {
+    "key": "itstool-lxml-patch",
+    "url": "https://www.linuxfromscratch.org/patches/blfs/svn/itstool-2.0.7-lxml-1.patch",
+    "filename": "itstool-2.0.7-lxml-1.patch",
+    "md5": null,
+    "group": "direct",
+    "sha256_expected": "035a0d22bd1cf37a00357ebc096454e1eb8594f3ea54f8122e8e76fdced0cbec",
+    "provenance": "Required patch linked by pinned BLFS r13.1; HTTPS origin and recorded SHA256",
+    "sha256": "035a0d22bd1cf37a00357ebc096454e1eb8594f3ea54f8122e8e76fdced0cbec"
+  },
+  {
+    "key": "bash-completion",
+    "url": "https://github.com/scop/bash-completion/releases/download/2.18.0/bash-completion-2.18.0.tar.xz",
+    "filename": "bash-completion-2.18.0.tar.xz",
+    "md5": null,
+    "group": "direct",
+    "sha256_expected": "88bcf85124f77f74f2f2f8bcd16ac4382d807a827ede742a64940c7116aea33f",
+    "provenance": "Official upstream release; verified GitHub release asset SHA256",
+    "sha256": "88bcf85124f77f74f2f2f8bcd16ac4382d807a827ede742a64940c7116aea33f"
+  },
+  {
+    "key": "sonic",
+    "url": "https://github.com/waywardgeek/sonic/archive/fbf75c3d6d846bad3bb3d456cbc5d07d9fd8c104.tar.gz",
+    "filename": "sonic-fbf75c3d6d846bad3bb3d456cbc5d07d9fd8c104.tar.gz",
+    "md5": null,
+    "group": "direct",
+    "provenance": "Exact Sonic commit pinned by eSpeak NG 1.52.0; HTTPS source and recorded SHA256",
+    "sha256_expected": "715827b5a39b79e56e44397d7b845910df996d4cca74777b3b61629b1ddc98c1",
+    "sha256": "715827b5a39b79e56e44397d7b845910df996d4cca74777b3b61629b1ddc98c1"
+  },
+  {
+    "key": "qca",
+    "url": "https://download.kde.org/stable/qca/2.3.12/qca-2.3.12.tar.xz",
+    "filename": "qca-2.3.12.tar.xz",
+    "md5": null,
+    "group": "direct",
+    "sha256_expected": "d4a2b3aa0272d73ea0c4cd2140960177fa34ddc2030e59a48ecfb80c757572c3",
+    "checksum_source": "https://download.kde.org/stable/qca/2.3.12/qca-2.3.12.tar.xz.sha256",
+    "sha256": "d4a2b3aa0272d73ea0c4cd2140960177fa34ddc2030e59a48ecfb80c757572c3"
+  },
+  {
+    "key": "tessdata-fast-eng",
+    "url": "https://raw.githubusercontent.com/tesseract-ocr/tessdata_fast/65727574dfcd264acbb0c3e07860e4e9e9b22185/eng.traineddata",
+    "filename": "tessdata-fast-eng.traineddata",
+    "md5": null,
+    "group": "direct",
+    "sha256_expected": "7d4322bd2a7749724879683fc3912cb542f19906c83bcc1a52132556427170b2",
+    "sha256": "7d4322bd2a7749724879683fc3912cb542f19906c83bcc1a52132556427170b2"
+  },
+  {
+    "key": "tessdata-fast-osd",
+    "url": "https://raw.githubusercontent.com/tesseract-ocr/tessdata_fast/65727574dfcd264acbb0c3e07860e4e9e9b22185/osd.traineddata",
+    "filename": "tessdata-fast-osd.traineddata",
+    "md5": null,
+    "group": "direct",
+    "sha256_expected": "9cf5d576fcc47564f11265841e5ca839001e7e6f38ff7f7aacf46d15a96b00ff",
+    "sha256": "9cf5d576fcc47564f11265841e5ca839001e7e6f38ff7f7aacf46d15a96b00ff"
+  },
+  {
+    "key": "tessdata-fast-license",
+    "url": "https://raw.githubusercontent.com/tesseract-ocr/tessdata_fast/65727574dfcd264acbb0c3e07860e4e9e9b22185/LICENSE",
+    "filename": "tessdata-fast-LICENSE",
+    "md5": null,
+    "group": "direct",
+    "sha256_expected": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30",
+    "sha256": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30"
+  },
+  {
+    "key": "gmp",
+    "url": "https://ftp.gnu.org/gnu/gmp/gmp-6.3.0.tar.xz",
+    "filename": "gmp-6.3.0.tar.xz",
+    "md5": null,
+    "group": "direct",
+    "sha256_expected": "a3c2b80201b89e68616f4ad30bc66aee4927c3ce50e33929ca819d5c43538898",
+    "sha256": "a3c2b80201b89e68616f4ad30bc66aee4927c3ce50e33929ca819d5c43538898"
+  },
+  {
+    "key": "mpfr",
+    "url": "https://ftp.gnu.org/gnu/mpfr/mpfr-4.2.2.tar.xz",
+    "filename": "mpfr-4.2.2.tar.xz",
+    "md5": null,
+    "group": "direct",
+    "sha256_expected": "b67ba0383ef7e8a8563734e2e889ef5ec3c3b898a01d00fa0a6869ad81c6ce01",
+    "sha256": "b67ba0383ef7e8a8563734e2e889ef5ec3c3b898a01d00fa0a6869ad81c6ce01"
+  },
+  {
+    "key": "mpc",
+    "url": "https://ftp.gnu.org/gnu/mpc/mpc-1.4.1.tar.xz",
+    "filename": "mpc-1.4.1.tar.xz",
+    "md5": null,
+    "group": "direct",
+    "sha256_expected": "91204cd32f164bd3b7c992d4a6a8ce6519511aadab30f78b6982d0bf8d73e931",
+    "sha256": "91204cd32f164bd3b7c992d4a6a8ce6519511aadab30f78b6982d0bf8d73e931"
+  }
+]

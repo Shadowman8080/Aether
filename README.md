@@ -276,12 +276,23 @@ src/updates/    GnuPG signing + TUF repository and client
 src/assets/     wallpapers, colour schemes, screensavers, Plymouth, layouts
 ```
 
-## Build it yourself
+## Source code
 
-Aether is built by compiling from pinned sources — there is no binary
-tarball of the base system. See [`docs/build.md`](docs/build.md) for the recipe
-and [`docs/architecture.md`](docs/architecture.md) for how the pieces fit
-together.
+See the [0.3.0 release assets](https://github.com/Shadowman8080/Aether/releases/tag/0.3.0) for the **Corresponding Source**:
+
+- `aether-0.3-corresponding-source.tar.gz` — the complete, verifiable source
+  (build system, configs, overlays, all Aether-authored patches) plus an
+  upstream component manifest. This is intended to satisfy GPL-3.0 section 6.
+- `aether-0.3-upstream-sources.00.tar.part` and `.01.tar.part` — the full set of
+  unmodified upstream source archives (3.0 GB total), with
+  `RECONSTRUCT.sh` to reassemble them. Required for recipients who cannot
+  reliably obtain every upstream archive from its original location.
+
+The smaller `aether-0.3-desktop-sources.tar.gz` and `aether-nimbrel-sources.tar.gz`
+remain available for reference, but **do not** by themselves constitute the
+complete Corresponding Source. The repository's `src/` directory contains
+Aether's own application code. It does not include the 6 GB of upstream build
+inputs; those are distributed only via the release assets above.
 
 > **Licensing note.** Aether's own code and assets are **GPL-3.0-or-later**.
 > The Linux kernel and some other base components are **GPL-2.0-only**, which is

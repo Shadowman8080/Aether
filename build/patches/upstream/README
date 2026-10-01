@@ -1,0 +1,7 @@
+# Aether-authored patches carried in this tree
+#
+# Each file is a modification Aether made to an upstream GPL component.
+# Apply in filename order on top of the exact upstream version named in
+# ../upstream-manifest/components.tsv.
+
+upstream/

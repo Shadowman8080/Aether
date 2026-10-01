@@ -1,0 +1,55 @@
+#!/bin/sh
+/bin/busybox --install -s /bin
+export PATH=/bin:/sbin:/usr/bin:/usr/sbin
+mount -t proc proc /proc
+mount -t sysfs sysfs /sys
+mount -t devtmpfs devtmpfs /dev
+mount -t tmpfs -o mode=755 tmpfs /run
+[ ! -x /usr/lib/aether-initramfs/start-splash ] || /usr/lib/aether-initramfs/start-splash
+mkdir -p /run/initramfs
+mount -t tmpfs -o mode=755 tmpfs /run/initramfs
+mkdir -p /run/initramfs/bin /run/initramfs/dev /run/initramfs/proc /run/initramfs/sys /run/initramfs/run /run/initramfs/oldroot /run/initramfs/usr
+cp -a /bin/busybox /run/initramfs/bin/
+cp -a /lib /run/initramfs/
+ln -s lib /run/initramfs/lib64
+ln -s ../lib /run/initramfs/usr/lib
+ln -s busybox /run/initramfs/bin/sh
+cp /shutdown /run/initramfs/shutdown
+chmod 755 /run/initramfs/shutdown
+chroot /run/initramfs /bin/busybox true || exec sh
+mkdir -p /run/initramfs/live/media /run/initramfs/live/lower /run/initramfs/live/write /newroot
+found=false
+for attempt in $(seq 1 40); do
+    for device in /dev/sr* /dev/sd* /dev/vd*; do
+        [ -b "$device" ] || continue
+        if mount -t iso9660 -o ro "$device" /run/initramfs/live/media 2>/dev/null; then
+            if [ -f /run/initramfs/live/media/live/rootfs.squashfs ] &&
+               [ "$(cat /run/initramfs/live/media/live/aether-release 2>/dev/null)" = "0.3" ]; then
+                found=true
+                break
+            fi
+            umount /run/initramfs/live/media
+        fi
+    done
+    $found && break
+    sleep 1
+done
+if ! $found; then
+    /usr/bin/plymouth quit 2>/dev/null || :
+    echo 'Aether live media was not found. Entering the recovery shell.'
+    exec sh
+fi
+mount -t squashfs -o loop,ro /run/initramfs/live/media/live/rootfs.squashfs /run/initramfs/live/lower || exec sh
+mount -t tmpfs -o mode=755,size=70% tmpfs /run/initramfs/live/write || exec sh
+mkdir -p /run/initramfs/live/write/upper /run/initramfs/live/write/work
+mount -t overlay overlay -o lowerdir=/run/initramfs/live/lower,upperdir=/run/initramfs/live/write/upper,workdir=/run/initramfs/live/write/work /newroot || exec sh
+# The live environment has no installed root partition or EFI partition to mount.
+printf '# Aether live session: temporary writable overlay\n' >/newroot/etc/fstab
+mkdir -p /newroot/run /newroot/dev /newroot/proc /newroot/sys
+/usr/bin/udevadm control --exit 2>/dev/null || :
+/usr/bin/plymouth update-root-fs --new-root-dir=/newroot 2>/dev/null || :
+mount -o move /run /newroot/run
+mount -o move /dev /newroot/dev
+mount -o move /proc /newroot/proc
+mount -o move /sys /newroot/sys
+exec switch_root /newroot /sbin/init

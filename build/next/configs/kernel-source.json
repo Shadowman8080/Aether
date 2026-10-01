@@ -1,0 +1,7 @@
+{
+  "version": "6.18.54",
+  "url": "https://cdn.kernel.org/pub/linux/kernel/v6.x/linux-6.18.54.tar.xz",
+  "sha256": "9df30b02dd8102bbd0be52556288ef6889ddbe7f1ddb96fbf847d0becf3eacac",
+  "checksums_url": "https://cdn.kernel.org/pub/linux/kernel/v6.x/sha256sums.asc",
+  "verification": "SHA256 against upstream HTTPS checksum list"
+}

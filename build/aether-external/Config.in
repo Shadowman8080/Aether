@@ -1,0 +1,1 @@
+source "$BR2_EXTERNAL_AETHER_PATH/package/aether-vmtools/Config.in"

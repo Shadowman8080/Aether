@@ -1,0 +1,9 @@
+[General]
+FreeFloating=true
+RetainPriorSearch=false
+historyBehavior=Disabled
+[Plugins]
+webshortcutsEnabled=false
+bookmarksEnabled=false
+recentdocumentsEnabled=false
+shellEnabled=false

@@ -1,0 +1,321 @@
+#!/usr/bin/env python3
+"""Interactive whole-disk installer for the x86_64 Aether live ISO.
+
+Always requires exact device confirmation; never used to retrofit encryption
+onto an existing installation. Credentials are entered at the local terminal.
+"""
+from pathlib import Path
+import json
+import os
+import pwd
+import grp
+import re
+import shutil
+import subprocess
+import sys
+import tempfile
+import time
+import ctypes
+from contextlib import contextmanager
+
+def progress(step, message):
+    print('AETHER_PROGRESS ' + json.dumps({'step': step, 'message': message}), flush=True)
+
+def validate_preferences(config):
+    if not isinstance(config, dict) or not isinstance(config.get('encrypt', False), bool):
+        raise ValueError('Invalid installation preferences.')
+    for key in ('password', 'storage_password', 'recovery_password'):
+        value = config.get(key, '')
+        if not isinstance(value, str) or any(ord(c) < 32 for c in value) or len(value) > 1024:
+            raise ValueError('Invalid password input.')
+    if len(config.get('password', '')) < 12:
+        raise ValueError('Choose an account password of at least twelve characters.')
+    quality = ctypes.CDLL('libpwquality.so.1')
+    quality.pwquality_default_settings.restype = ctypes.c_void_p
+    quality.pwquality_read_config.argtypes = [ctypes.c_void_p, ctypes.c_char_p, ctypes.POINTER(ctypes.c_void_p)]
+    quality.pwquality_check.argtypes = [ctypes.c_void_p, ctypes.c_char_p, ctypes.c_char_p, ctypes.c_char_p, ctypes.POINTER(ctypes.c_void_p)]
+    quality.pwquality_free_settings.argtypes = [ctypes.c_void_p]
+    settings = quality.pwquality_default_settings()
+    if not settings: raise ValueError('Password validation could not be initialized.')
+    auxiliary = ctypes.c_void_p()
+    try:
+        if quality.pwquality_read_config(settings, None, ctypes.byref(auxiliary)) < 0:
+            raise ValueError('Password policy could not be loaded.')
+        if quality.pwquality_check(settings, config['password'].encode(), None, str(config.get('username','')).encode(), ctypes.byref(auxiliary)) < 0:
+            raise ValueError('The account password does not meet Aether policy. Avoid dictionary passwords, the account name, and repeated characters.')
+    finally:
+        quality.pwquality_free_settings(settings)
+    if config.get('encrypt'):
+        if min(len(config.get('storage_password','')), len(config.get('recovery_password',''))) < 12:
+            raise ValueError('Storage and recovery passphrases must contain at least twelve characters.')
+        if config['storage_password'] == config['recovery_password']:
+            raise ValueError('Storage and recovery passphrases must be different.')
+    zone = config.get('timezone', 'UTC')
+    if not isinstance(zone, str) or not re.fullmatch(r'[A-Za-z0-9_+/-]+', zone) or '..' in zone.split('/'):
+        raise ValueError('Invalid time zone.')
+    zonefile = Path('/usr/share/zoneinfo') / zone
+    if not zonefile.is_file() or not zonefile.resolve().is_relative_to(Path('/usr/share/zoneinfo').resolve()):
+        raise ValueError('Time zone is not installed.')
+    if config.get('keyboard','us') not in ('us','gb','de','fr','es','it','pt','br'):
+        raise ValueError('Unsupported keyboard layout.')
+    if config.get('language', 'en_US.UTF-8') != 'en_US.UTF-8':
+        raise ValueError('This preview currently provides the English installation interface.')
+
+@contextmanager
+def key_pipe(secret):
+    read_fd, write_fd = os.pipe()
+    try:
+        os.write(write_fd, secret.encode())
+        os.close(write_fd); write_fd = None
+        yield read_fd
+    finally:
+        os.close(read_fd)
+        if write_fd is not None: os.close(write_fd)
+
+@contextmanager
+def installation_directory():
+    directory = tempfile.mkdtemp(prefix='aether-install-', dir='/mnt')
+    try:
+        yield directory
+    finally:
+        # Never recursively delete an installation tree: a failed unmount must
+        # leave the filesystem and all installed data intact for recovery.
+        if not os.path.ismount(directory):
+            try:
+                os.rmdir(directory)
+            except OSError:
+                pass
+
+def run(args, **kwargs):
+    return subprocess.run(args, check=True, **kwargs)
+
+def output(args):
+    return subprocess.check_output(args, text=True).strip()
+
+def write_login_defaults(root, user):
+    # pkexec may inherit umask 077. LightDM runs as an unprivileged account.
+    directory = root / 'etc/aether'
+    directory.mkdir(mode=0o755, exist_ok=True)
+    directory.chmod(0o755)
+    destination = directory / 'default-user'
+    destination.write_text(user + '\n')
+    destination.chmod(0o644)
+    for relative in ('etc/locale.conf', 'etc/vconsole.conf', 'etc/X11/xorg.conf.d/00-keyboard.conf'):
+        if (root / relative).exists(): (root / relative).chmod(0o644)
+
+
+def main(config=None):
+    if os.geteuid() != 0 or (config is None and not sys.stdin.isatty()):
+        raise SystemExit('Run sudo aether-install in an interactive terminal on the live ISO.')
+    if config is not None:
+        validate_preferences(config)
+    if os.uname().machine != 'x86_64':
+        raise SystemExit('This installer currently supports x86_64. ARM and x86 installers require separate validation.')
+    live = Path('/run/initramfs/live/lower')
+    if not (live / 'etc/os-release').is_file() or 'ID=aether' not in (live / 'etc/os-release').read_text().splitlines():
+        raise SystemExit('Run from the Aether live ISO. Existing installed systems are not installation sources.')
+    required = ('sfdisk', 'mkfs.ext4', 'mkfs.fat', 'cryptsetup', 'grub-install', 'cpio', 'tar', 'blkid')
+    for tool in required:
+        if not shutil.which(tool):
+            raise SystemExit('Missing installer dependency: ' + tool)
+    print('Aether installation: the chosen disk will be erased. Other disks are not modified.')
+    run(['lsblk', '-d', '-o', 'NAME,SIZE,MODEL,TYPE,RO'])
+    chosen = str(config.get('disk','')).strip() if config is not None else input('Target disk, such as /dev/sdb (empty cancels): ').strip()
+    if not chosen:
+        if config is not None: raise ValueError('No installation disk selected.')
+        return
+    disk = Path(chosen)
+    if not chosen.startswith('/dev/') or disk.is_symlink() or not disk.is_block_device():
+        raise SystemExit('Choose a direct block-device path shown above.')
+    details = json.loads(output(['lsblk', '-J', '-b', '-o', 'PATH,TYPE,SIZE,RO,MOUNTPOINTS', chosen]))['blockdevices'][0]
+    def mounted(node):
+        return any(node.get('mountpoints') or []) or any(mounted(n) for n in node.get('children', []))
+    if details['type'] != 'disk' or details['ro'] or mounted(details) or int(details['size']) < 16 * 1024**3:
+        raise SystemExit('Target must be an unmounted writable whole disk of at least 16 GiB.')
+    encrypt = bool(config.get('encrypt')) if config is not None else input('Encrypt system storage with LUKS2? [Y/n]: ').strip().lower() != 'n'
+    user = str(config.get('username','')).strip() if config is not None else input('Personal account name [aether]: ').strip() or 'aether'
+    if not re.fullmatch('[a-z][a-z0-9_-]{0,30}', user) or user in ('root', 'nobody', 'lightdm', 'polkitd'):
+        raise SystemExit('Invalid or reserved account name.')
+    if user != 'aether':
+        try:
+            pwd.getpwnam(user)
+        except KeyError:
+            pass
+        else:
+            raise SystemExit('That name is already used by a system account. Choose another name.')
+        try:
+            grp.getgrnam(user)
+        except KeyError:
+            pass
+        else:
+            raise SystemExit('That name is already used by a system group. Choose another name.')
+    backup = str(config.get('backup','')).strip() if config is not None else input('Backup destination to set up after installation (mounted Linux path; empty postpones setup): ').strip()
+    if backup and (not backup.startswith('/') or '\n' in backup):
+        raise SystemExit('Use an absolute Linux path for the backup destination.')
+    print('Disk:', chosen, '\nEncryption:', 'LUKS2' if encrypt else 'None', '\nAccount:', user)
+    print('Boot files remain on unencrypted /boot. Secure Boot is a separate, currently unfinished feature.')
+    confirmation = config.get('confirmation','') if config is not None else input('To erase this disk, type ERASE ' + chosen + ': ')
+    if confirmation != 'ERASE ' + chosen:
+        if config is not None: raise ValueError('Disk erase confirmation did not match.')
+        print('Cancelled; no disk changed.')
+        return
+    # Recheck just before the first destructive operation.
+    current = json.loads(output(['lsblk', '-J', '-b', '-o', 'PATH,TYPE,SIZE,RO,MOUNTPOINTS', chosen]))['blockdevices'][0]
+    if current != details or mounted(current):
+        raise SystemExit('Disk state changed; refusing installation.')
+    if Path('/dev/mapper/aether-install-root').exists():
+        raise SystemExit('Installation mapper is already in use.')
+    progress(1, 'Preparing the selected disk')
+    layout = 'label: gpt\n,2M,21686148-6449-6E6F-744E-656564454649\n,512M,U\n,1G,L\n,,L\n'
+    run(['sfdisk', '--wipe', 'always', chosen], input=layout, text=True)
+    run(['udevadm', 'settle'])
+    prefix = chosen + ('p' if chosen[-1].isdigit() else '')
+    efi, boot, data = prefix + '2', prefix + '3', prefix + '4'
+    for _ in range(20):
+        if Path(data).is_block_device():
+            break
+        time.sleep(1)
+    if not Path(data).is_block_device():
+        raise SystemExit('New partitions did not appear. Disk has been partitioned; installation stopped.')
+    mapper = '/dev/mapper/aether-install-root'
+    if Path(mapper).exists():
+        raise SystemExit('Installation mapper is already in use.')
+    mapped = False
+    mounts = []
+    with installation_directory() as directory:
+        root = Path(directory)
+        try:
+            luks_uuid = None
+            if encrypt:
+                progress(2, 'Creating encrypted storage')
+                print('Choose a strong storage passphrase. It is not the account password.')
+                if config is None:
+                    run(['cryptsetup', 'luksFormat', '--type', 'luks2', '--pbkdf', 'argon2id', data])
+                    run(['cryptsetup', 'open', data, 'aether-install-root'])
+                else:
+                    run(['cryptsetup', 'luksFormat', '--batch-mode', '--type', 'luks2', '--pbkdf', 'argon2id', '--key-file=-', data], input=config['storage_password'].encode())
+                    run(['cryptsetup', 'open', '--key-file=-', data, 'aether-install-root'], input=config['storage_password'].encode())
+                mapped = True
+                luks_uuid = output(['cryptsetup', 'luksUUID', data])
+                print('Add a DIFFERENT recovery passphrase now and store it offline. cryptsetup will ask for the existing passphrase first.')
+                if config is None:
+                    run(['cryptsetup', 'luksAddKey', data])
+                else:
+                    with key_pipe(config['storage_password']) as fd:
+                        run(['cryptsetup', 'luksAddKey', '--key-file', '/proc/self/fd/'+str(fd), data, '-'], input=config['recovery_password'].encode(), pass_fds=(fd,))
+                filesystem = mapper
+            else:
+                filesystem = data
+            progress(3, 'Creating filesystems')
+            run(['mkfs.fat', '-F', '32', '-n', 'AETHER_EFI', efi])
+            run(['mkfs.ext4', '-F', '-L', 'AETHER_BOOT', boot])
+            run(['mkfs.ext4', '-F', '-L', 'AETHER_ROOT', filesystem])
+            def mount(device, destination, *options):
+                destination.mkdir(parents=True, exist_ok=True)
+                run(['mount', *options, device, str(destination)])
+                mounts.append(destination)
+            mount(filesystem, root)
+            mount(boot, root / 'boot')
+            mount(efi, root / 'boot/efi')
+            # Do not copy the live OS's development password to a usable installation.
+            progress(4, 'Copying Aether and your desktop')
+            producer = subprocess.Popen(['tar', '--xattrs', '--acls', '--numeric-owner', '--exclude=./swapfile',
+                                         '--exclude=./boot', '-C', str(live), '-cpf', '-', '.'], stdout=subprocess.PIPE)
+            try:
+                run(['tar', '--xattrs', '--acls', '--numeric-owner', '-C', str(root), '-xpf', '-'], stdin=producer.stdout)
+            finally:
+                producer.stdout.close()
+            if producer.wait() != 0:
+                raise RuntimeError('System copy failed')
+            # /boot is an independent filesystem; preserve the native kernel set.
+            for kernel in (live / 'boot').glob('*aether4*'):
+                if kernel.is_file():
+                    shutil.copy2(kernel, root / 'boot' / kernel.name)
+            for d in ('dev', 'proc', 'sys', 'run'):
+                mount('/' + d, root / d, '--rbind')
+                run(['mount', '--make-rslave', str(root / d)])
+            def chroot(*args, **kwargs):
+                return run(['chroot', directory, *args], **kwargs)
+            chroot('/usr/sbin/usermod', '-L', 'aether')
+            if user != 'aether':
+                chroot('/usr/sbin/usermod', '-l', user, '-d', '/home/' + user, '-m', 'aether')
+                chroot('/usr/sbin/groupmod', '-n', user, 'aether')
+            print('Set the personal login password. The installed system will not retain the live ISO password.')
+            progress(5, 'Setting up your account and preferences')
+            if config is None:
+                chroot('/usr/bin/passwd', user)
+            else:
+                chroot('/usr/sbin/chpasswd', input=user+':'+config['password']+'\n', text=True)
+                (root/'etc/localtime').unlink(missing_ok=True)
+                shutil.copyfile(root/'usr/share/zoneinfo'/config.get('timezone','UTC'), root/'etc/localtime')
+                (root/'etc/locale.conf').write_text('LANG=en_US.UTF-8\n')
+                keyboard = config.get('keyboard','us')
+                keymap={'us':'us','gb':'uk','de':'de-latin1','fr':'fr','es':'es','it':'it','pt':'pt-latin1','br':'br-abnt2'}[keyboard]
+                (root/'etc/vconsole.conf').write_text('KEYMAP='+keymap+'\nXKBLAYOUT='+keyboard+'\n')
+                (root/'etc/X11/xorg.conf.d/00-keyboard.conf').write_text('Section "InputClass"\n Identifier "Aether keyboard"\n MatchIsKeyboard "on"\n Option "XkbLayout" "'+keyboard+'"\nEndSection\n')
+            chroot('/usr/sbin/usermod', '-L', 'root')
+            write_login_defaults(root, user)
+            root_uuid = output(['blkid', '-s', 'UUID', '-o', 'value', filesystem])
+            boot_uuid = output(['blkid', '-s', 'UUID', '-o', 'value', boot])
+            efi_uuid = output(['blkid', '-s', 'UUID', '-o', 'value', efi])
+            (root / 'etc/fstab').write_text(f'UUID={root_uuid} / ext4 defaults 1 1\nUUID={boot_uuid} /boot ext4 defaults,nodev,nosuid 0 2\nUUID={efi_uuid} /boot/efi vfat umask=0077,nodev,nosuid,noexec 0 2\n')
+            (root / 'etc/crypttab').write_text(f'aether-root UUID={luks_uuid} none luks\n' if encrypt else '')
+            (root / 'etc/machine-id').write_text('')
+            for file in ('var/lib/systemd/random-seed', 'var/lib/dbus/machine-id'):
+                (root / file).unlink(missing_ok=True)
+            if backup:
+                (root / 'etc/aether-security/backup-destination').write_text(backup + '\n')
+            release = '6.18.54-aether4'
+            progress(6, 'Installing the boot environment')
+            chroot('/usr/bin/aether-mkinitramfs', '/boot/initramfs-' + release + '.img')
+            chroot('/usr/sbin/grub-install', '--target=i386-pc', '--recheck', chosen)
+            chroot('/usr/sbin/grub-install', '--target=x86_64-efi', '--efi-directory=/boot/efi', '--removable', '--no-nvram')
+            commandline = f'root=UUID={root_uuid}' + (f' aether.luks={luks_uuid}' if encrypt else '')
+            (root / 'boot/grub/grub.cfg').write_text(f'''set default=0
+set timeout_style=hidden
+set timeout=3
+serial --unit=0 --speed=115200
+terminal_input console serial
+terminal_output console serial
+clear
+search --no-floppy --fs-uuid --set=root {boot_uuid}
+menuentry 'Aether Linux' --hotkey=a {{
+ linux /vmlinuz-{release} {commandline} rw console=ttyS0,115200n8 console=tty0 quiet splash loglevel=3 systemd.show_status=false vt.global_cursor_default=0
+ initrd /initramfs-{release}.img
+}}
+menuentry 'Aether diagnostics and console login' --hotkey=d {{
+ linux /vmlinuz-{release} {commandline} rw console=ttyS0,115200n8 console=tty0 plymouth.enable=0 systemd.show_status=yes systemd.unit=multi-user.target
+ initrd /initramfs-{release}.img
+}}
+if [ "$grub_platform" = efi ]; then
+ menuentry 'UEFI firmware settings' --hotkey=f {{ fwsetup }}
+fi
+''')
+            chroot('/usr/bin/grub-script-check', '/boot/grub/grub.cfg')
+            run(['sync'])
+            progress(7, 'Installation complete')
+            print('Installation complete. Shut down, remove the ISO, and boot from the installed disk.')
+            print('After boot, open Set Up Encrypted Backups to enter and save your separate backup recovery passphrase.')
+        finally:
+            for path in reversed(mounts):
+                subprocess.run(['umount', '-R', str(path)], check=False)
+            if mapped:
+                subprocess.run(['cryptsetup', 'close', 'aether-install-root'], check=False)
+
+if __name__ == '__main__':
+    if sys.argv[1:] == ['--graphical']:
+        try:
+            raw = sys.stdin.buffer.read(65537)
+            if len(raw) > 65536:
+                raise ValueError('Installation request is too large.')
+            config = json.loads(raw)
+            main(config)
+        except json.JSONDecodeError:
+            raise SystemExit('Invalid installation request.')
+        except (ValueError, RuntimeError, subprocess.CalledProcessError) as error:
+            # Do not serialize the request or subprocess input: it holds secrets.
+            raise SystemExit('Installation stopped: ' + str(error))
+    elif sys.argv[1:]:
+        raise SystemExit('Usage: aether-install [--graphical]')
+    else:
+        main()

@@ -1,0 +1,2 @@
+LABEL=AETHER_ROOT / ext4 defaults 1 1
+LABEL=AETHER_EFI /boot/efi vfat defaults,umask=0077 0 2

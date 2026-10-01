@@ -1,0 +1,33 @@
+#!/bin/sh
+# systemd pivots into this independent RAM filesystem before calling us.
+export PATH=/bin
+/bin/busybox --install -s /bin
+for fs in proc sys dev run; do
+    mountpoint -q "/$fs" || mount --move "/oldroot/$fs" "/$fs" 2>/dev/null || true
+done
+mountpoint -q /proc || mount -t proc proc /proc
+cd /
+sync
+for attempt in 1 2 3 4 5; do
+    awk '$2 ~ /^\/oldroot(\/|$)/ { print length($2), $2 }' /proc/mounts |
+        sort -rn | cut -d' ' -f2 | while read -r point; do
+            umount "$point" 2>/dev/null || true
+        done
+    mountpoint -q /oldroot || break
+    sleep 1
+done
+umount /live/lower 2>/dev/null || true
+losetup -D 2>/dev/null || true
+umount /live/write 2>/dev/null || true
+umount /live/media 2>/dev/null || true
+if awk '$2 ~ /^\/(oldroot|live)(\/|$)/ { found=1 } END { exit !found }' /proc/mounts; then
+    echo 'AETHER_LIVE_SHUTDOWN_ERROR: a live filesystem remains mounted'
+else
+    echo 'AETHER_LIVE_SHUTDOWN_CLEAN'
+fi
+sync
+case "$1" in
+    reboot) exec reboot -f ;;
+    halt) exec halt -f ;;
+    *) exec poweroff -f ;;
+esac

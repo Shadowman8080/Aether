@@ -1,0 +1,8 @@
+[Desktop Entry]
+Type=Application
+Name=Animated Lock Screen
+Comment=Choose an Aether animation and configure automatic locking
+Exec=systemsettings kcm_screenlocker
+Icon=preferences-desktop-screensaver
+Categories=Settings;DesktopSettings;
+Terminal=false

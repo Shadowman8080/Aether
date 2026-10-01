@@ -1,0 +1,16 @@
+{
+  "KPackageStructure": "Plasma/LookAndFeel",
+  "KPlugin": {
+    "Id": "org.aether.desktop.light",
+    "Name": "Aether Light",
+    "Description": "Aether desktop with AuraSearch, a top bar and floating dock",
+    "Version": "0.3.0",
+    "License": "GPL-2.0-or-later",
+    "Authors": [
+      {
+        "Name": "Aether Linux"
+      }
+    ]
+  },
+  "X-Plasma-APIVersion": "2"
+}

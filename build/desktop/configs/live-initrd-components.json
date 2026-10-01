@@ -1,0 +1,7 @@
+{
+  "build/prototype/target/bin/busybox": "8f829338f6ba79bac07d3c1fa1c2dfb5c0ffecc343bddde937cb0432a0ace988",
+  "desktop/scripts/live-init": "b6f70ba1080ddd28266b84283f42f0e817d262e1c719b5484a30c8782918fe69",
+  "desktop-system/usr/lib/libc.so.6": "db51ff303ac393cb10f62b45d11377bff6d4631340aa8f572866c560699b4bc0",
+  "desktop-system/usr/lib/libresolv.so.2": "5ace739a050e694dc124df85fd8f29ad900d595e27c05e25f3bdec575967aa67",
+  "desktop-system/usr/lib/ld-linux-x86-64.so.2": "e068627a176d2cedebabe8cd3a7c6118ca853e1bed3d6d0d8684c8dd4a9165de"
+}

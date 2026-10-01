@@ -1,0 +1,8 @@
+[Desktop Entry]
+Type=Application
+Name=Aether Assistant
+Comment=Private, local help and writing assistance
+Exec=aether-assistant
+Icon=aether-assistant
+Categories=Utility;
+Terminal=false

@@ -1,0 +1,11 @@
+{
+  "KPackageStructure": "Plasma/LookAndFeel",
+  "KPlugin": {
+    "Id": "org.aether.desktop",
+    "Name": "Aether",
+    "Description": "A calm desktop with a top bar and floating application dock",
+    "Version": "0.2",
+    "License": "MIT",
+    "Authors": [{"Name": "Aether Linux"}]
+  }
+}

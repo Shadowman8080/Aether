@@ -1,0 +1,10 @@
+{
+  "name": "Qwen3.5 0.8B (Q4_0)",
+  "repository": "ggml-org/Qwen3.5-0.8B-GGUF",
+  "revision": "8fea620810c4afa23dd6443f999a48574c1611a3",
+  "filename": "Qwen3.5-0.8B-Q4_0.gguf",
+  "sha256": "57d1997790d1744fba5b40a7317df71ea5e2acee28c47e78f0cce39c0703f8cf",
+  "bytes": 563036064,
+  "license": "Apache-2.0",
+  "url": "https://huggingface.co/ggml-org/Qwen3.5-0.8B-GGUF/resolve/8fea620810c4afa23dd6443f999a48574c1611a3/Qwen3.5-0.8B-Q4_0.gguf"
+}

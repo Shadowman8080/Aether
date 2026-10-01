@@ -1,0 +1,170 @@
+[
+  {
+    "key": "libqaccessibilityclient",
+    "url": "https://download.kde.org/Attic/libqaccessibilityclient/libqaccessibilityclient-0.6.0.tar.xz",
+    "sha256_expected": "4c50c448622dc9c5041ed10da7d87b3e4e71ccb49d4831a849211d423c5f5d33",
+    "checksum_source": "https://download.kde.org/Attic/libqaccessibilityclient/libqaccessibilityclient-0.6.0.tar.xz.sha256"
+  },
+  {
+    "key": "kcalc",
+    "url": "https://download.kde.org/stable/release-service/26.04.3/src/kcalc-26.04.3.tar.xz",
+    "sha256_expected": "45bd63e3791eaef421a7e0172ce26f5df8da5be5f5d1052cb23be72e25685208",
+    "checksum_source": "https://download.kde.org/stable/release-service/26.04.3/src/kcalc-26.04.3.tar.xz.sha256"
+  },
+  {
+    "key": "kdialog",
+    "url": "https://download.kde.org/stable/release-service/26.04.3/src/kdialog-26.04.3.tar.xz",
+    "sha256_expected": "e8b6dd4f54b6b9d0051a5014af069332327717c0e36bbc36430eddcbb76f226e",
+    "checksum_source": "https://download.kde.org/stable/release-service/26.04.3/src/kdialog-26.04.3.tar.xz.sha256"
+  },
+  {
+    "key": "orca",
+    "url": "https://download.gnome.org/sources/orca/50/orca-50.2.tar.xz",
+    "sha256_expected": "0714421cde8ec4baf47f18e4b4a12b4e5c4a3cfe3b161569e070fe037713fd04",
+    "checksum_source": "https://download.gnome.org/sources/orca/50/orca-50.2.sha256sum"
+  },
+  {
+    "key": "speech-dispatcher",
+    "url": "https://github.com/brailcom/speechd/releases/download/0.12.1/speech-dispatcher-0.12.1.tar.gz",
+    "provenance": "Official upstream release 0.12.1 over HTTPS; SHA-256 recorded on first fetch",
+    "sha256_expected": "b14a5238d287d2dcce4dd42bbd66ca65fa228e7e683708267f7b34036f7ba4b4"
+  },
+  {
+    "key": "espeak-ng",
+    "url": "https://github.com/espeak-ng/espeak-ng/archive/refs/tags/1.52.0.tar.gz",
+    "filename": "espeak-ng-1.52.0.tar.gz",
+    "provenance": "Official upstream tag 1.52.0 over HTTPS; SHA-256 recorded on first fetch",
+    "sha256_expected": "bb4338102ff3b49a81423da8a1a158b420124b055b60fa76cfb4b18677130a23"
+  },
+  {
+    "key": "pcaudiolib",
+    "url": "https://github.com/espeak-ng/pcaudiolib/releases/download/1.3/pcaudiolib-1.3.tar.gz",
+    "provenance": "Official upstream release 1.3 over HTTPS; digest recorded on first fetch",
+    "sha256_expected": "e8bd15f460ea171ccd0769ea432e188532a7fb27fa73ec2d526088a082abaaad"
+  },
+  {
+    "key": "dotconf",
+    "url": "https://github.com/williamh/dotconf/archive/7c3e0515c29efce45de6aae29befb2ab4396bd60.tar.gz",
+    "filename": "dotconf-1.4.1.tar.gz",
+    "provenance": "Official upstream v1.4.1 commit 7c3e0515c29efce45de6aae29befb2ab4396bd60",
+    "sha256_expected": "1efa9c027ec7b791e5122b388419c3c8c14c81ea54a6c9a02804d3027f2ec14d"
+  },
+  {
+    "key": "dasbus",
+    "url": "https://files.pythonhosted.org/packages/37/79/9c5984d723ffbe2e839ee649690f3e1fa6544ab6a17a5150e5ac14a47072/dasbus-1.7.tar.gz",
+    "sha256_expected": "a8850d841adfe8ee5f7bb9f82cf449ab9b4950dc0633897071718e0d0036b6f6",
+    "checksum_source": "https://pypi.org/pypi/dasbus/1.7/json"
+  },
+  {
+    "key": "libssh",
+    "url": "https://www.libssh.org/files/0.12/libssh-0.12.2.tar.xz",
+    "filename": "libssh-0.12.2.tar.xz",
+    "sha256_expected": "49560f677d96e3706a904ac2de1116e25f3680937d51e5c92198fcba4a1c1e9f",
+    "provenance": "Official libssh 0.12.2 source; detached GPG signature verified with upstream fingerprint 88A228D89B07C2C77D0C780903D5DF8CFDD3E8E7; recorded SHA256."
+  },
+  {
+    "key": "libxshmfence",
+    "url": "https://www.x.org/pub/individual/lib/libxshmfence-1.3.3.tar.xz",
+    "filename": "libxshmfence-1.3.3.tar.xz",
+    "sha256_expected": "d4a4df096aba96fea02c029ee3a44e11a47eb7f7213c1a729be83e85ec3fde10",
+    "provenance": "Pinned BLFS r13.1 Xorg library MD5 verified; recorded SHA256"
+  },
+  {
+    "key": "libXxf86vm",
+    "url": "https://www.x.org/pub/individual/lib/libXxf86vm-1.1.7.tar.xz",
+    "filename": "libXxf86vm-1.1.7.tar.xz",
+    "sha256_expected": "ae50c0f669e0af5a67cc4cd0f54f21d64a64d2660af883e80e95d3fe51b945d8",
+    "provenance": "Pinned BLFS r13.1 Xorg MD5 verified; recorded SHA256"
+  },
+  {
+    "key": "xorg-server",
+    "url": "https://www.x.org/pub/individual/xserver/xorg-server-21.1.24.tar.xz",
+    "filename": "xorg-server-21.1.24.tar.xz",
+    "sha256_expected": "1a4eb36ca65cc3b1b936566d677a9786e13c11cd5806e951ac55f3f5ce3984af",
+    "provenance": "Previously verified pinned native Aether guest source archive"
+  },
+  {
+    "key": "gtk3",
+    "url": "https://download.gnome.org/sources/gtk/3.24/gtk-3.24.52.tar.xz",
+    "filename": "gtk-3.24.52.tar.xz",
+    "sha256_expected": "80931fa472a77b9a164f6740e3c0b444fac6770054632d35a7ff9d679e5e7b9f",
+    "provenance": "Previously verified pinned native Aether guest source archive"
+  },
+  {
+    "key": "lightdm",
+    "url": "https://github.com/ubuntu/lightdm/releases/download/1.33.1/lightdm-1.33.1.tar.xz",
+    "filename": "lightdm-1.33.1.tar.xz",
+    "sha256_expected": "1a3ca2fea2c97065d85d989048a30fc4148fd0eaf94cffd683f0b3f389fe1ed0",
+    "provenance": "Official upstream release; SHA256 verified against GitHub release asset digest"
+  },
+  {
+    "key": "gobject-introspection",
+    "url": "https://download.gnome.org/sources/gobject-introspection/1.86/gobject-introspection-1.86.0.tar.xz",
+    "md5": "fa0f2ae76868bf35ff725f940d75ec16",
+    "provenance": "Pinned BLFS r13.1 source and MD5; SHA256 recorded on verified fetch",
+    "sha256_expected": "920d1a3fcedeadc32acff95c2e203b319039dd4b4a08dd1a2dfd283d19c0b9ae"
+  },
+  {
+    "key": "itstool-lxml-patch",
+    "url": "https://www.linuxfromscratch.org/patches/blfs/svn/itstool-2.0.7-lxml-1.patch",
+    "filename": "itstool-2.0.7-lxml-1.patch",
+    "sha256_expected": "035a0d22bd1cf37a00357ebc096454e1eb8594f3ea54f8122e8e76fdced0cbec",
+    "provenance": "Required patch linked by pinned BLFS r13.1; HTTPS origin and recorded SHA256"
+  },
+  {
+    "key": "bash-completion",
+    "url": "https://github.com/scop/bash-completion/releases/download/2.18.0/bash-completion-2.18.0.tar.xz",
+    "filename": "bash-completion-2.18.0.tar.xz",
+    "sha256_expected": "88bcf85124f77f74f2f2f8bcd16ac4382d807a827ede742a64940c7116aea33f",
+    "provenance": "Official upstream release; verified GitHub release asset SHA256",
+    "sha256": "88bcf85124f77f74f2f2f8bcd16ac4382d807a827ede742a64940c7116aea33f",
+    "md5": null,
+    "group": "direct"
+  },
+  {
+    "key": "sonic",
+    "url": "https://github.com/waywardgeek/sonic/archive/fbf75c3d6d846bad3bb3d456cbc5d07d9fd8c104.tar.gz",
+    "filename": "sonic-fbf75c3d6d846bad3bb3d456cbc5d07d9fd8c104.tar.gz",
+    "provenance": "Exact Sonic commit pinned by eSpeak NG 1.52.0; HTTPS source and recorded SHA256",
+    "sha256_expected": "715827b5a39b79e56e44397d7b845910df996d4cca74777b3b61629b1ddc98c1"
+  },
+  {
+    "key": "qca",
+    "url": "https://download.kde.org/stable/qca/2.3.12/qca-2.3.12.tar.xz",
+    "sha256_expected": "d4a2b3aa0272d73ea0c4cd2140960177fa34ddc2030e59a48ecfb80c757572c3",
+    "checksum_source": "https://download.kde.org/stable/qca/2.3.12/qca-2.3.12.tar.xz.sha256"
+  },
+  {
+    "key": "tessdata-fast-eng",
+    "url": "https://raw.githubusercontent.com/tesseract-ocr/tessdata_fast/65727574dfcd264acbb0c3e07860e4e9e9b22185/eng.traineddata",
+    "filename": "tessdata-fast-eng.traineddata",
+    "sha256_expected": "7d4322bd2a7749724879683fc3912cb542f19906c83bcc1a52132556427170b2"
+  },
+  {
+    "key": "tessdata-fast-osd",
+    "url": "https://raw.githubusercontent.com/tesseract-ocr/tessdata_fast/65727574dfcd264acbb0c3e07860e4e9e9b22185/osd.traineddata",
+    "filename": "tessdata-fast-osd.traineddata",
+    "sha256_expected": "9cf5d576fcc47564f11265841e5ca839001e7e6f38ff7f7aacf46d15a96b00ff"
+  },
+  {
+    "key": "tessdata-fast-license",
+    "url": "https://raw.githubusercontent.com/tesseract-ocr/tessdata_fast/65727574dfcd264acbb0c3e07860e4e9e9b22185/LICENSE",
+    "filename": "tessdata-fast-LICENSE",
+    "sha256_expected": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30"
+  },
+  {
+    "key": "gmp",
+    "url": "https://ftp.gnu.org/gnu/gmp/gmp-6.3.0.tar.xz",
+    "sha256_expected": "a3c2b80201b89e68616f4ad30bc66aee4927c3ce50e33929ca819d5c43538898"
+  },
+  {
+    "key": "mpfr",
+    "url": "https://ftp.gnu.org/gnu/mpfr/mpfr-4.2.2.tar.xz",
+    "sha256_expected": "b67ba0383ef7e8a8563734e2e889ef5ec3c3b898a01d00fa0a6869ad81c6ce01"
+  },
+  {
+    "key": "mpc",
+    "url": "https://ftp.gnu.org/gnu/mpc/mpc-1.4.1.tar.xz",
+    "sha256_expected": "91204cd32f164bd3b7c992d4a6a8ce6519511aadab30f78b6982d0bf8d73e931"
+  }
+]

@@ -1,0 +1,28 @@
+#!/bin/sh
+case "$1" in start|selftest) ;; *) exit 0 ;; esac
+echo 'AETHER_BOOT_OK: init reached userspace'
+if [ "$1" = selftest ] || grep -qw 'aether.selftest=1' /proc/cmdline; then
+    failed=0
+    check() { if "$@"; then echo "PASS: $*"; else echo "FAIL: $*"; failed=1; fi; }
+    check test "$(uname -m)" = aarch64
+    check test -d /sys/class
+    check test -c /dev/null
+    check test -w /tmp
+    check grep -q '^ID=aether$' /etc/os-release
+    check /bin/bash -c 'test "$((20 + 22))" -eq 42'
+    check /usr/bin/aether-toolchain-check
+    check /bin/sh -c 'printf aether > /tmp/aether-check; test "$(cat /tmp/aether-check)" = aether'
+    if [ -x /usr/sbin/VBoxService ] && [ -x /usr/bin/vmtoolsd ]; then
+        check /usr/bin/aether-guest-status
+        if /usr/bin/vmware-checkvm >/dev/null 2>&1; then
+            check pidof vmtoolsd
+        fi
+        if [ -c /dev/vboxguest ]; then check pidof VBoxService; fi
+    fi
+    uname -a
+    cat /etc/os-release
+    if [ -d /sys/firmware/efi ]; then echo AETHER_FIRMWARE=UEFI; else echo AETHER_FIRMWARE=BIOS; fi
+    if [ "$failed" = 0 ]; then echo AETHER_SELFTEST_PASS; else echo AETHER_SELFTEST_FAIL; fi
+    sync
+    poweroff -f
+fi

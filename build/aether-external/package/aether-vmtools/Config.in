@@ -1,0 +1,12 @@
+config BR2_PACKAGE_AETHER_VMTOOLS
+	bool "Aether open-vm-tools"
+	depends on BR2_i386 || BR2_x86_64 || BR2_aarch64
+	depends on BR2_USE_MMU && BR2_USE_WCHAR && BR2_TOOLCHAIN_HAS_THREADS
+	depends on BR2_ENABLE_LOCALE && !BR2_STATIC_LIBS
+	select BR2_PACKAGE_LIBGLIB2
+	select BR2_PACKAGE_LIBTIRPC
+	select BR2_PACKAGE_LIBXCRYPT if BR2_TOOLCHAIN_USES_GLIBC
+	select BR2_PACKAGE_LIBFUSE3
+	help
+	  Source-built VMware guest service and shared-folder FUSE helper.
+	  Desktop clipboard integration requires the later graphical image.

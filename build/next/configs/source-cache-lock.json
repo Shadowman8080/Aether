@@ -1,0 +1,478 @@
+{
+  "Python-3.14.7-openssl_4-1.patch": {
+    "bytes": 38486,
+    "sha256": "707a0c457192ac2f3b5b8a51481bc5ebd12db22d57c1dbe0256138ee6e070792"
+  },
+  "Python-3.14.7.tar.xz": {
+    "bytes": 24053924,
+    "sha256": "3b48dac8fb59f62eaa67ac83c1eb12bda1b7a08406dd286e252c11a66be27f81"
+  },
+  "acl-2.4.0.tar.xz": {
+    "bytes": 384828,
+    "sha256": "e661131456d2708a01c614a0f400e11d7d1bfaeb6f3e74b75bb980b72f0161a3"
+  },
+  "attr-2.6.0.tar.gz": {
+    "bytes": 506247,
+    "sha256": "d42fa374513180bb48cb11a46696f488240e5124ff1e6ad88b0abff706985612"
+  },
+  "autoconf-2.73.tar.xz": {
+    "bytes": 1417428,
+    "sha256": "9fd672b1c8425fac2fa67fa0477b990987268b90ff36d5f016dae57be0d6b52e"
+  },
+  "automake-1.18.1.tar.xz": {
+    "bytes": 1652392,
+    "sha256": "168aa363278351b89af56684448f525a5bce5079d0b6842bd910fdd3f1646887"
+  },
+  "bash-5.3.tar.gz": {
+    "bytes": 11355854,
+    "sha256": "0d5cd86965f869a26cf64f4b71be7b96f90a3ba8b3d74e27e8e9d9d5550f31ba"
+  },
+  "bc-7.0.3.tar.xz": {
+    "bytes": 474800,
+    "sha256": "91eb74caed0ee6655b669711a4f350c25579778694df248e28363318e03c7fc4"
+  },
+  "binutils-2.47.tar.xz": {
+    "bytes": 29034716,
+    "sha256": "154ab23b60070e8f27013c22977f1129425d67d1e8acd6e13010e617811e4cff"
+  },
+  "bison-3.8.2.tar.xz": {
+    "bytes": 2817324,
+    "sha256": "9bba0214ccf7f1079c5d59210045227bcf619519840ebfa80cd3849cff5a5bf2"
+  },
+  "bzip2-1.0.8-install_docs-1.patch": {
+    "bytes": 1684,
+    "sha256": "35e3bbd9642af51fef2a8a83afba040d272da42d7e3a251d8e43255a7b496702"
+  },
+  "bzip2-1.0.8.tar.gz": {
+    "bytes": 810029,
+    "sha256": "ab5a03176ee106d3f0fa90e381da478ddae405918153cca248e682cd0c4a2269"
+  },
+  "cmake-4.4.2.tar.gz": {
+    "bytes": 13283673,
+    "sha256": "1db9e61e60b6e0874c86386340b910382f3c5e75b9fbfb44d122063129a2789d"
+  },
+  "coreutils-9.11-i18n-1.patch": {
+    "bytes": 67821,
+    "sha256": "7c2aecf9ae24b87b019595e382b9f41d2c96de7f95abe95ad8cacc7e2ce1bbcc"
+  },
+  "coreutils-9.11.tar.xz": {
+    "bytes": 6562420,
+    "sha256": "394024eda0a5955217ceda9cd1201e65dc8fa3aa29c2951135a49521d57c3cc3"
+  },
+  "curl-8.21.0.tar.xz": {
+    "bytes": 2882336,
+    "sha256": "aa1b66a70eace83dc624508745646c08ae561de512ab403adffb93ac87fc72e6"
+  },
+  "dbus-1.16.2.tar.xz": {
+    "bytes": 1115644,
+    "sha256": "0ba2a1a4b16afe7bceb2c07e9ce99a8c2c3508e5dec290dbb643384bd6beb7e2"
+  },
+  "dejagnu-1.6.3.tar.gz": {
+    "bytes": 622059,
+    "sha256": "87daefacd7958b4a69f88c6856dbd1634261963c414079d0c371f589cd66a2e3"
+  },
+  "diffutils-3.12.tar.xz": {
+    "bytes": 1938800,
+    "sha256": "7c8b7f9fc8609141fdea9cece85249d308624391ff61dedaf528fcb337727dfd"
+  },
+  "docbook-xml-4.5.zip": {
+    "bytes": 98497,
+    "sha256": "4e4e037a2b83c98c6c94818390d4bdd3f6e10f6ec62dd79188594e26190dc7b4"
+  },
+  "docbook-xsl-doc-1.79.2.tar.bz2": {
+    "bytes": 534208,
+    "sha256": "9bc38a3015717279a3a0620efb2d4bcace430077241ae2b0da609ba67d8340bc"
+  },
+  "docbook-xsl-nons-1.79.2-stack_fix-1.patch": {
+    "bytes": 1744,
+    "sha256": "a92c39715c54949ba9369add1809527b8f155b7e2a2b2e30cb4b39ee715f2e30"
+  },
+  "docbook-xsl-nons-1.79.2.tar.bz2": {
+    "bytes": 23400667,
+    "sha256": "ee8b9eca0b7a8f89075832a2da7534bce8c5478fc8fc2676f512d5d87d832102"
+  },
+  "e2fsprogs-1.47.4.tar.gz": {
+    "bytes": 10106395,
+    "sha256": "2cec05f39c20ee621f14926195664e66e6017190ac8e4bbdb16d86082e43c5da"
+  },
+  "elfutils-0.195.tar.bz2": {
+    "bytes": 12032640,
+    "sha256": "37629fdf7f1f3dc2818e138fca2b8094177d6c2d0f701d3bb650a561218dc026"
+  },
+  "expat-2.8.3.tar.xz": {
+    "bytes": 517264,
+    "sha256": "f6256df90c906773d344da084402b7d3e4f22ed41b1a59c989098a83d3ea0c85"
+  },
+  "expect-5.45.4-gcc15-1.patch": {
+    "bytes": 12155,
+    "sha256": "ab5fc0af9e2e0f80d7623c1a3a3dbeb1da3d8c9134276792199df401f9eb2cec"
+  },
+  "expect5.45.4.tar.gz": {
+    "bytes": 632363,
+    "sha256": "49a7da83b0bdd9f46d04a04deec19c7767bb9a323e40c4781f89caf760b92c34"
+  },
+  "file-5.48.tar.gz": {
+    "bytes": 2693209,
+    "sha256": "ed14656883b23a364b4057c05595d93252da9bc473d30106519519d0da141283"
+  },
+  "findutils-4.11.0.tar.xz": {
+    "bytes": 2451424,
+    "sha256": "bfd19cb06cc71f3352d567e90284d8cdac02ac89774bbeadf0b533b0c11432fd"
+  },
+  "flex-2.6.4.tar.gz": {
+    "bytes": 1419096,
+    "sha256": "e87aae032bf07c26f85ac0ed3250998c37621d95f8bd748b31f15b33c45ee995"
+  },
+  "flit_core-4.0.2.tar.gz": {
+    "bytes": 53083,
+    "sha256": "b6929defd93884b584d7c87829e0e7b5c26ed6be17b0b873979019314aa841c8"
+  },
+  "gawk-5.4.1.tar.xz": {
+    "bytes": 3838416,
+    "sha256": "07f6f7342b7febe4313fc2c2542ad93d64fe20ad8717200109f105a826f5fd37"
+  },
+  "gcc-16.2.0.tar.xz": {
+    "bytes": 107200820,
+    "sha256": "e6738e29597f733270731aa90600f37ffdc045079dfc27ec7e8192cc81085c3e"
+  },
+  "gdbm-1.26.tar.gz": {
+    "bytes": 1226591,
+    "sha256": "6a24504a14de4a744103dcb936be976df6fbe88ccff26065e54c1c47946f4a5e"
+  },
+  "gettext-1.0.tar.xz": {
+    "bytes": 10721600,
+    "sha256": "71132a3fb71e68245b8f2ac4e9e97137d3e5c02f415636eb508ae607bc01add7"
+  },
+  "glibc-2.44-upstream_fixes-1.patch": {
+    "bytes": 175367,
+    "sha256": "500567ff0a22e295bfe3b55e9b397796f71a19f01e1ff7fb29c9189482ee1809"
+  },
+  "glibc-2.44.tar.xz": {
+    "bytes": 20620544,
+    "sha256": "37f600f2bef3c5e8300147059568b2a2e40a7ad6ccc65ce942556d49429cc667"
+  },
+  "glibc-fhs-1.patch": {
+    "bytes": 2804,
+    "sha256": "643552db030e2f2d7ffde4f558e0f5f83d3fabf34a2e0e56ebdb49750ac27b0d"
+  },
+  "gmp-6.3.0.tar.xz": {
+    "bytes": 2094196,
+    "sha256": "a3c2b80201b89e68616f4ad30bc66aee4927c3ce50e33929ca819d5c43538898"
+  },
+  "gperf-3.3.tar.gz": {
+    "bytes": 1831294,
+    "sha256": "fd87e0aba7e43ae054837afd6cd4db03a3f2693deb3619085e6ed9d8d9604ad8"
+  },
+  "grep-3.12.tar.xz": {
+    "bytes": 1918448,
+    "sha256": "2649b27c0e90e632eadcd757be06c6e9a4f48d941de51e7c0f83ff76408a07b9"
+  },
+  "groff-1.24.1.tar.gz": {
+    "bytes": 9005760,
+    "sha256": "74e2819795b6aff431aeac983d63a9c8968eeaba2a2eba7df8ba4c7b41e7cfd8"
+  },
+  "grub-2.14.tar.xz": {
+    "bytes": 7725668,
+    "sha256": "bc8d3c73535b8838d8c8e2654d73edc4e6ae8c8acdb45d5df5dc9a1547446d43"
+  },
+  "gzip-1.14.tar.xz": {
+    "bytes": 885748,
+    "sha256": "01a7b881bd220bfdf615f97b8718f80bdfd3f6add385b993dcf6efd14e8c0ac6"
+  },
+  "iana-etc-20260805.tar.gz": {
+    "bytes": 610207,
+    "sha256": "29270860664e324107537f32ea476a333ca52d71b59c74bc06ecc3b0fa9cf490"
+  },
+  "icu4c-78.3-sources.tgz": {
+    "bytes": 27977255,
+    "sha256": "3a2e7a47604ba702f345878308e6fefeca612ee895cf4a5f222e7955fabfe0c0"
+  },
+  "inetutils-2.8.tar.gz": {
+    "bytes": 2985957,
+    "sha256": "57b3cf4f77555992881e5ba2a09a63b05aa2c56342a60ed4305b5f45938390b5"
+  },
+  "iproute2-7.1.0.tar.xz": {
+    "bytes": 964700,
+    "sha256": "fd9fa1b95809417157ca83dd72957e3261bdbce896353cb936f80af0b33a4b5c"
+  },
+  "jinja2-3.1.6.tar.gz": {
+    "bytes": 245115,
+    "sha256": "0137fb05990d35f1275a587e9aee6d56da821fc83491a0fb838183be43f66d6d"
+  },
+  "kbd-2.10.0-backspace-1.patch": {
+    "bytes": 12640,
+    "sha256": "8be28dcb11420624a500f2ea4fe975f771174bffee50e54ec8cd295a2dec104e"
+  },
+  "kbd-2.10.0.tar.xz": {
+    "bytes": 1788500,
+    "sha256": "6e5ca4f8d76ee9e3a8db700b667f13e12aac9933828a64e1aaad93d26be9b479"
+  },
+  "kmod-34.2.tar.xz": {
+    "bytes": 443748,
+    "sha256": "5a5d5073070cc7e0c7a7a3c6ec2a0e1780850c8b47b3e3892226b93ffcb9cb54"
+  },
+  "less-704.tar.gz": {
+    "bytes": 996650,
+    "sha256": "20a0b0a2bb2525fa53c7eee9beb854b4c9cf172eabb209af7020743547bfe9fb"
+  },
+  "libarchive-3.8.9.tar.xz": {
+    "bytes": 6617696,
+    "sha256": "888c934f9d95648ecb9163dc8e23ab80a476ecb81a8f1154704a227b5b676dde"
+  },
+  "libcap-2.78.tar.xz": {
+    "bytes": 201040,
+    "sha256": "0d621e562fd932ccf67b9660fb018e468a683d7b827541df27813228c996bb11"
+  },
+  "libffi-3.8.0.tar.gz": {
+    "bytes": 1581626,
+    "sha256": "7da3e2d9a171eb0a038f592ecad3ff2bb2550f3496d87b3b29ad0cf4430c0db4"
+  },
+  "libidn2-2.3.8.tar.gz": {
+    "bytes": 2234804,
+    "sha256": "f557911bf6171621e1f72ff35f5b1825bb35b52ed45325dcdee931e5d3c0787a"
+  },
+  "libpipeline-1.5.8.tar.gz": {
+    "bytes": 1070254,
+    "sha256": "1b1203ca152ccd63983c3f2112f7fe6fa5afd453218ede5153d1b31e11bb8405"
+  },
+  "libpsl-0.23.3.tar.gz": {
+    "bytes": 7830615,
+    "sha256": "93941f85a1e7bd593fa94f299233cb5dfc91cd144fd9a78a6ceb75001c5b03be"
+  },
+  "libssh2-1.11.1-security_fixes-1.patch": {
+    "bytes": 6690,
+    "sha256": "919a91a0ef99a97efe1f94e2bed7600ce12fdf5f3e6c978b8eba37fe4526ec5e"
+  },
+  "libssh2-1.11.1.tar.gz": {
+    "bytes": 1093012,
+    "sha256": "d9ec76cbe34db98eec3539fe2c899d26b0c837cb3eb466a56b0f109cabf658f7"
+  },
+  "libtasn1-4.21.0.tar.gz": {
+    "bytes": 1816537,
+    "sha256": "1d8a444a223cc5464240777346e125de51d8e6abf0b8bac742ac84609167dc87"
+  },
+  "libtool-2.6.2.tar.xz": {
+    "bytes": 1093564,
+    "sha256": "2ef1067c16c97db930fd740cc9bc3d3ba9a583804ae5ac42cc3e8719e49e191e"
+  },
+  "libunistring-1.4.2.tar.xz": {
+    "bytes": 2786084,
+    "sha256": "5b46e74377ed7409c5b75e7a96f95377b095623b689d8522620927964a41499c"
+  },
+  "libuv-v1.52.1.tar.gz": {
+    "bytes": 1354296,
+    "sha256": "66d511b9e6e334c0e62279eb234fbfb2b3110b1479c09b95b44c7afca8cff9e7"
+  },
+  "libxcrypt-4.5.2.tar.xz": {
+    "bytes": 669820,
+    "sha256": "71513a31c01a428bccd5367a32fd95f115d6dac50fb5b60c779d5c7942aec071"
+  },
+  "libxml2-2.15.3.tar.xz": {
+    "bytes": 3152452,
+    "sha256": "78262a6e7ac170d6528ebfe2efccdf220191a5af6a6cd61ea4a9a9a5042c7a07"
+  },
+  "libxslt-1.1.45.tar.xz": {
+    "bytes": 1519992,
+    "sha256": "9acfe68419c4d06a45c550321b3212762d92f41465062ca4ea19e632ee5d216e"
+  },
+  "linux-7.1.8.tar.xz": {
+    "bytes": 158434924,
+    "sha256": "ff01dcb449279d5b4cfccdb01fee639cf5ff1803f1749a77844dd33915422c49"
+  },
+  "llvm-22.1.8-upstream_fix-1.patch": {
+    "bytes": 161404,
+    "sha256": "4a2084f9714f2f3babc0ed58065c3a6b83cd2828ea19aec1518995a6d2376187"
+  },
+  "llvm-project-22.1.8.src.tar.xz": {
+    "bytes": 167061596,
+    "sha256": "922f1817a0df7b1489272d18134ee0087a8b068828f87ac63b9861b1a9965888"
+  },
+  "lz4-1.10.0.tar.gz": {
+    "bytes": 387114,
+    "sha256": "537512904744b35e232912055ccf8ec66d768639ff3abe5788d90d792ec5f48b"
+  },
+  "m4-1.4.21.tar.xz": {
+    "bytes": 2080016,
+    "sha256": "f25c6ab51548a73a75558742fb031e0625d6485fe5f9155949d6486a2408ab66"
+  },
+  "make-4.4.1.tar.gz": {
+    "bytes": 2348200,
+    "sha256": "dd16fb1d67bfab79a72f5e8390735c49e3e8e70b4945a15ab1f81ddb78658fb3"
+  },
+  "make-ca-1.16.1.tar.gz": {
+    "bytes": 38185,
+    "sha256": "98c7e6fded1938b972d0177b5d5e925d318be87f84ee9e4cad680656a8c29414"
+  },
+  "man-db-2.13.1.tar.xz": {
+    "bytes": 2110328,
+    "sha256": "8afebb6f7eb6bb8542929458841f5c7e6f240e30c86358c1fbcefbea076c87d9"
+  },
+  "man-pages-6.18.tar.xz": {
+    "bytes": 1902724,
+    "sha256": "c934fadc8b59748c68227a34f6581d2ddf8282b73cdcd52546c8cd88b74b24d1"
+  },
+  "markupsafe-3.0.3.tar.gz": {
+    "bytes": 80313,
+    "sha256": "722695808f4b6457b320fdc131280796bdceb04ab50fe1795cd540799ebe1698"
+  },
+  "meson-1.12.0.tar.gz": {
+    "bytes": 2518280,
+    "sha256": "88afe0c20e52030218924ac37d0c81c59b4b5f3ae3752c8c6d7470c7d365886c"
+  },
+  "mpc-1.4.1.tar.xz": {
+    "bytes": 531992,
+    "sha256": "91204cd32f164bd3b7c992d4a6a8ce6519511aadab30f78b6982d0bf8d73e931"
+  },
+  "mpdecimal-4.0.1.tar.gz": {
+    "bytes": 316268,
+    "sha256": "96d33abb4bb0070c7be0fed4246cd38416188325f820468214471938545b1ac8"
+  },
+  "mpfr-4.2.2.tar.xz": {
+    "bytes": 1505596,
+    "sha256": "b67ba0383ef7e8a8563734e2e889ef5ec3c3b898a01d00fa0a6869ad81c6ce01"
+  },
+  "ncurses-6.6.tar.gz": {
+    "bytes": 3791150,
+    "sha256": "355b4cbbed880b0381a04c46617b7656e362585d52e9cf84a67e2009b749ff11"
+  },
+  "nghttp2-1.70.0.tar.xz": {
+    "bytes": 2018996,
+    "sha256": "e05cb1388eaca3830aded4ccf20044b6e1ac1a61411dcca11b0437c4285c8bc2"
+  },
+  "ninja-1.13.2.tar.gz": {
+    "bytes": 292385,
+    "sha256": "974d6b2f4eeefa25625d34da3cb36bdcebe7fbce40f4c16ac0835fd1c0cbae17"
+  },
+  "openssl-4.0.1.tar.gz": {
+    "bytes": 55079428,
+    "sha256": "2db3f3a0d6ea4b59e1f094ace2c8cd536dffb87cdc39084c5afa1e6f7f37dd09"
+  },
+  "p11-kit-0.26.5.tar.xz": {
+    "bytes": 1082584,
+    "sha256": "f2cc09111e44bf3fea58f023180b33acea90aa82d042d6fbb623fbc5ba033bb7"
+  },
+  "packaging-26.3.tar.gz": {
+    "bytes": 313412,
+    "sha256": "94edc256424af38762eb31306eed28beb9f0efc50a8837492c9d6fd6004aed79"
+  },
+  "patch-2.8.tar.xz": {
+    "bytes": 907208,
+    "sha256": "f87cee69eec2b4fcbf60a396b030ad6aa3415f192aa5f7ee84cad5e11f7f5ae3"
+  },
+  "pcre2-10.47.tar.bz2": {
+    "bytes": 2145789,
+    "sha256": "47fe8c99461250d42f89e6e8fdaeba9da057855d06eb7fc08d9ca03fd08d7bc7"
+  },
+  "perl-5.44.0.tar.xz": {
+    "bytes": 14919940,
+    "sha256": "505cf43912e9480495c344c70260452e32aa2a73c546a026b3f100053b23ce91"
+  },
+  "pkgconf-3.0.5.tar.xz": {
+    "bytes": 426972,
+    "sha256": "3acd3a8a3cce65a8d620321855d92fb602e026cbe8e13ee36bdec58483b59ace"
+  },
+  "procps-ng-4.0.7.tar.xz": {
+    "bytes": 1588352,
+    "sha256": "9d2021f47a4501c667862c9942a92d1953694b21d11bcd1702e83eb594e3d67d"
+  },
+  "psmisc-23.7.tar.xz": {
+    "bytes": 432208,
+    "sha256": "58c55d9c1402474065adae669511c191de374b0871eec781239ab400b907c327"
+  },
+  "python-3.14.7-docs-html.tar.bz2": {
+    "bytes": 11177897,
+    "sha256": "d484b784ec35c5776c5ff55f81fa984b5251a38b532b24bb00e43148bd73ffe9"
+  },
+  "readline-8.3.tar.gz": {
+    "bytes": 3419642,
+    "sha256": "fe5383204467828cd495ee8d1d3c037a7eba1389c22bc6a041f627976f9061cc"
+  },
+  "sed-4.10.tar.xz": {
+    "bytes": 1732800,
+    "sha256": "b8e72182b2ec96a3574e2998c47b7aaa64cc20ce000d8e9ac313cc07cecf28c7"
+  },
+  "setuptools-84.0.0.tar.gz": {
+    "bytes": 1168449,
+    "sha256": "f4695c21257f0d9b537ec2692c941d02ee143b7cc1276941349a546573b2ef73"
+  },
+  "shadow-4.20.2.tar.xz": {
+    "bytes": 2291052,
+    "sha256": "b89f432b75ae55a2d852b446d0365484795fdf533ab97d550e325fa15594a224"
+  },
+  "sqlite-autoconf-3530400.tar.gz": {
+    "bytes": 3283177,
+    "sha256": "0e9483900e92cd5de8fd48d16bf9200145a61f7fd5be542a5ac81d8a9516eb9c"
+  },
+  "sqlite-doc-3530400.zip": {
+    "bytes": 11820412,
+    "sha256": "a1d0f5de57485d062796ed7e67daff0758b50d00001a0f233a2c15aaf40bbdc8"
+  },
+  "sudo-1.9.17p2.tar.gz": {
+    "bytes": 5451682,
+    "sha256": "4a38a1ab3adb1199257edc2a7c4a2bd714665eb605b04368843b06dada2cfcfb"
+  },
+  "systemd-261.2.tar.gz": {
+    "bytes": 18456346,
+    "sha256": "ed1059ff964f5df35b6056434cc17cc83f86dc913f10489948a0b19b6081c5ec"
+  },
+  "systemd-man-pages-261.2.tar.xz": {
+    "bytes": 821528,
+    "sha256": "9be13865c9c7f9fecba7b86fc5185aecef00164c87ed68b4f6884283aefebe50"
+  },
+  "tar-1.35-acl_fix-1.patch": {
+    "bytes": 4333,
+    "sha256": "51cadccfcb2f29cfdb4ec18015360100aa167179a72ece040a6a8612aeec5081"
+  },
+  "tar-1.35.tar.xz": {
+    "bytes": 2317208,
+    "sha256": "4d62ff37342ec7aed748535323930c7cf94acf71c3591882b26a7ea50f3edc16"
+  },
+  "tcl8.6.18-html.tar.gz": {
+    "bytes": 1197786,
+    "sha256": "bee2d83a19ce50624eeae951be29fe5f654b171357a6391123caf18107cec543"
+  },
+  "tcl8.6.18-src.tar.gz": {
+    "bytes": 11816279,
+    "sha256": "14f9af32b1767ff718477a8f974ad03c34341097e6b43f4ce54644ee974e268e"
+  },
+  "texinfo-7.3.tar.xz": {
+    "bytes": 6940392,
+    "sha256": "51f74eb0f51cfa9873b85264dfdd5d46e8957ec95b88f0fb762f63d9e164c72e"
+  },
+  "tzdata2026c.tar.gz": {
+    "bytes": 475694,
+    "sha256": "e4a178a4477f3d0ea77cc31828ff72aa38feff8d61aa13e7e99e142e9d902be4"
+  },
+  "util-linux-2.42.2.tar.xz": {
+    "bytes": 10658220,
+    "sha256": "03a05d3adf9602ef128f2da05b84b3205ce60c351e5737c0370f74000679ce8a"
+  },
+  "vim-9.2.1025.tar.gz": {
+    "bytes": 20133511,
+    "sha256": "cb0dbf701f8550bb54940304fa4d8b875e078db84967e5b36a0eb7ebe8a6d0cc"
+  },
+  "wget-1.25.0.tar.gz": {
+    "bytes": 5263736,
+    "sha256": "766e48423e79359ea31e41db9e5c289675947a7fcf2efdcedb726ac9d0da3784"
+  },
+  "wheel-0.48.0.tar.gz": {
+    "bytes": 66471,
+    "sha256": "94800765601e9171bf5d58d066e640662842bcedcbab982b2c90787a2c987322"
+  },
+  "xmlts20130923.tar.gz": {
+    "bytes": 641522,
+    "sha256": "9b61db9f5dbffa545f4b8d78422167083a8568c59bd1129f94138f936cf6fc1f"
+  },
+  "xz-5.8.3.tar.xz": {
+    "bytes": 1548064,
+    "sha256": "fff1ffcf2b0da84d308a14de513a1aa23d4e9aa3464d17e64b9714bfdd0bbfb6"
+  },
+  "zlib-1.3.2.tar.gz": {
+    "bytes": 1502830,
+    "sha256": "bb329a0a2cd0274d05519d61c667c062e06990d72e125ee2dfa8de64f0119d16"
+  },
+  "zstd-1.5.7.tar.gz": {
+    "bytes": 2434947,
+    "sha256": "eb33e51f49a15e023950cd7825ca74a4a2b43db8354825ac24fc1b7ee09e6fa3"
+  }
+}

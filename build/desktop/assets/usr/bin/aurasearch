@@ -1,0 +1,4 @@
+#!/bin/sh
+# SPDX-License-Identifier: GPL-2.0-or-later
+# Preserve argument boundaries; queries are never evaluated by this wrapper.
+exec /usr/bin/krunner "$@"

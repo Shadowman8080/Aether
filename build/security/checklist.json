@@ -1,0 +1,1646 @@
+[
+  {
+    "id": "01.01",
+    "category": "B",
+    "requirement": "Verified boot chain. Support UEFI Secure Boot with trusted signing keys and clear reporting of boot verification status.",
+    "state": "pending",
+    "evidence": [],
+    "owner": "Aether maintainer / deployment owner"
+  },
+  {
+    "id": "01.02",
+    "category": "B",
+    "requirement": "Firmware maintenance. Discover supported firmware updates, authenticate their origin, and report unsupported devices and failed updates.",
+    "state": "pending",
+    "evidence": [],
+    "owner": "Aether maintainer / deployment owner"
+  },
+  {
+    "id": "01.03",
+    "category": "B",
+    "requirement": "Revocation maintenance. Update boot trust and revocation databases safely, with compatibility checks and a documented recovery path.",
+    "state": "pending",
+    "evidence": [],
+    "owner": "Aether maintainer / deployment owner"
+  },
+  {
+    "id": "01.04",
+    "category": "C",
+    "requirement": "Measured boot. Record boot measurements in a TPM for integrity assessment; measurement alone does not block untrusted execution.",
+    "state": "pending",
+    "evidence": [],
+    "owner": "Aether maintainer / deployment owner"
+  },
+  {
+    "id": "01.05",
+    "category": "C",
+    "requirement": "Protected disk unlock. Bind automated unlocking to suitable TPM policies; provide recovery keys and optional user presence or PIN requirements.",
+    "state": "pending",
+    "evidence": [],
+    "owner": "Aether maintainer / deployment owner"
+  },
+  {
+    "id": "01.06",
+    "category": "C",
+    "requirement": "Boot configuration protection. Restrict firmware settings, alternate boot paths, and bootloader editing according to the physical-access threat model.",
+    "state": "pending",
+    "evidence": [],
+    "owner": "Aether maintainer / deployment owner"
+  },
+  {
+    "id": "01.07",
+    "category": "C",
+    "requirement": "Authenticated boot artifacts. Protect the kernel, initramfs, and relevant command line through a verified design such as signed unified kernel images.",
+    "state": "pending",
+    "evidence": [],
+    "owner": "Aether maintainer / deployment owner"
+  },
+  {
+    "id": "01.08",
+    "category": "C",
+    "requirement": "Attestation. Verify measured device state before releasing sensitive credentials, using a maintained verifier and meaningful reference measurements.",
+    "state": "pending",
+    "evidence": [],
+    "owner": "Aether maintainer / deployment owner"
+  },
+  {
+    "id": "02.01",
+    "category": "B",
+    "requirement": "Device inventory. Identify connected peripherals and expose their type, ownership, firmware state, and authorization status where available.",
+    "state": "pending",
+    "evidence": [],
+    "owner": "Aether maintainer / deployment owner"
+  },
+  {
+    "id": "02.02",
+    "category": "B",
+    "requirement": "Safe removable media. Avoid automatically executing content; make mounting, opening, and granting write access explicit and understandable.",
+    "state": "pending",
+    "evidence": [],
+    "owner": "Aether maintainer / deployment owner"
+  },
+  {
+    "id": "02.03",
+    "category": "B",
+    "requirement": "Radio controls. Allow Bluetooth, Wi-Fi, NFC, and other available radios to be disabled when unnecessary.",
+    "state": "pending",
+    "evidence": [],
+    "owner": "Aether maintainer / deployment owner"
+  },
+  {
+    "id": "02.04",
+    "category": "C",
+    "requirement": "USB authorization. Support device and interface allowlists, with usable enrollment and recovery for keyboards and accessibility devices.",
+    "state": "pending",
+    "evidence": [],
+    "owner": "Aether maintainer / deployment owner"
+  },
+  {
+    "id": "02.05",
+    "category": "C",
+    "requirement": "DMA protection. Use supported IOMMU and external-device protections to limit direct memory access by peripherals.",
+    "state": "pending",
+    "evidence": [],
+    "owner": "Aether maintainer / deployment owner"
+  },
+  {
+    "id": "02.06",
+    "category": "C",
+    "requirement": "Dock authorization. Require appropriate authorization for supported Thunderbolt or USB4 devices, including behavior while the screen is locked.",
+    "state": "pending",
+    "evidence": [],
+    "owner": "Aether maintainer / deployment owner"
+  },
+  {
+    "id": "02.07",
+    "category": "C",
+    "requirement": "Physical tamper response. Provide asset tracking, tamper procedures, secure storage, and lost-device handling appropriate to the deployment.",
+    "state": "pending",
+    "evidence": [],
+    "owner": "Aether maintainer / deployment owner"
+  },
+  {
+    "id": "02.08",
+    "category": "C",
+    "requirement": "Management controller isolation. Protect BMC credentials and firmware, and isolate remote management interfaces from ordinary user networks.",
+    "state": "pending",
+    "evidence": [],
+    "owner": "Aether maintainer / deployment owner"
+  },
+  {
+    "id": "03.01",
+    "category": "B",
+    "requirement": "Separate user identities. Give each person an individual account; avoid shared administrator identities and unnecessary automatic login.",
+    "state": "pending",
+    "evidence": [],
+    "owner": "Aether maintainer / deployment owner"
+  },
+  {
+    "id": "03.02",
+    "category": "B",
+    "requirement": "Strong password handling. Use supported password hashing, secure password changes, and protections against common or compromised passwords where available.",
+    "state": "partially implemented; password-change checks passed",
+    "evidence": [
+      "Generated CrackLib dictionary from the packaged 54,763-word upstream list. Native PAM rejected a dictionary word, accepted a strong password, produced a yescrypt hash and authenticated that password. Existing development credentials remain unchanged; breached-password services are not configured."
+    ],
+    "owner": "Aether maintainer / deployment owner"
+  },
+  {
+    "id": "03.03",
+    "category": "B",
+    "requirement": "Authentication throttling. Slow repeated login attempts while providing recovery and avoiding easy denial of service through account lockouts.",
+    "state": "partially implemented; stated runtime checks passed",
+    "evidence": [
+      "Five incorrect PAM attempts blocked the correct password; authenticated faillock reset restored login. Two-minute automatic recovery configured.",
+      "UEFI disk test 20260928-013125; BIOS ISO test 20260928-013840",
+      "Repeated successfully on latest d7876196 disk and/or 00eb19ae ISO; see release validation.json for exact test scope."
+    ],
+    "owner": "Aether maintainer / deployment owner"
+  },
+  {
+    "id": "03.04",
+    "category": "B",
+    "requirement": "Account lifecycle. Create, disable, expire, and remove accounts predictably, including associated sessions and access credentials.",
+    "state": "pending",
+    "evidence": [],
+    "owner": "Aether maintainer / deployment owner"
+  },
+  {
+    "id": "03.05",
+    "category": "B",
+    "requirement": "Safe account recovery. Provide recovery that verifies identity without silently bypassing encryption or weakening normal authentication.",
+    "state": "pending",
+    "evidence": [],
+    "owner": "Aether maintainer / deployment owner"
+  },
+  {
+    "id": "03.06",
+    "category": "C",
+    "requirement": "Multifactor authentication. Support security keys, smart cards, or other appropriate factors for privileged and remote access.",
+    "state": "pending",
+    "evidence": [],
+    "owner": "Aether maintainer / deployment owner"
+  },
+  {
+    "id": "03.07",
+    "category": "C",
+    "requirement": "Central identity. Integrate directory services, role membership, and cached offline login with explicit expiration and revocation behavior.",
+    "state": "pending",
+    "evidence": [],
+    "owner": "Aether maintainer / deployment owner"
+  },
+  {
+    "id": "03.08",
+    "category": "C",
+    "requirement": "Biometric convenience. Support optional fingerprint authentication with protected templates and a fallback; do not assume it unlocks encrypted disks.",
+    "state": "pending",
+    "evidence": [],
+    "owner": "Aether maintainer / deployment owner"
+  },
+  {
+    "id": "04.01",
+    "category": "B",
+    "requirement": "Least privilege. Run normal work without root and grant administration only to users who need it.",
+    "state": "implementation prepared; runtime verification pending",
+    "evidence": [
+      "Aether security source recipes; see SECURITY.md for limits."
+    ],
+    "owner": "Aether maintainer / deployment owner"
+  },
+  {
+    "id": "04.02",
+    "category": "B",
+    "requirement": "Controlled elevation. Use narrowly scoped sudo or equivalent policies with understandable prompts, authentication lifetimes, and audit records.",
+    "state": "implementation prepared; runtime verification pending",
+    "evidence": [
+      "Aether security source recipes; see SECURITY.md for limits."
+    ],
+    "owner": "Aether maintainer / deployment owner"
+  },
+  {
+    "id": "04.03",
+    "category": "B",
+    "requirement": "Desktop authorization. Use maintained polkit policies that identify the privileged action and avoid broad implicit authorization.",
+    "state": "pending",
+    "evidence": [],
+    "owner": "Aether maintainer / deployment owner"
+  },
+  {
+    "id": "04.04",
+    "category": "B",
+    "requirement": "Privileged file hygiene. Audit setuid, setgid, and file capabilities; remove unnecessary privileged executables and writable privileged configuration.",
+    "state": "pending",
+    "evidence": [],
+    "owner": "Aether maintainer / deployment owner"
+  },
+  {
+    "id": "04.05",
+    "category": "B",
+    "requirement": "Service identities. Give services separate accounts and restrict access to their files, sockets, credentials, and administrative interfaces.",
+    "state": "pending",
+    "evidence": [],
+    "owner": "Aether maintainer / deployment owner"
+  },
+  {
+    "id": "04.06",
+    "category": "B",
+    "requirement": "Sensitive group review. Treat membership in groups controlling containers, disks, or system services as potentially equivalent to administrative access.",
+    "state": "implementation prepared; runtime verification pending",
+    "evidence": [
+      "Aether security source recipes; see SECURITY.md for limits."
+    ],
+    "owner": "Aether maintainer / deployment owner"
+  },
+  {
+    "id": "04.07",
+    "category": "C",
+    "requirement": "Temporary administration. Issue time-limited privileges with approval, expiration, and revocation for managed environments.",
+    "state": "pending",
+    "evidence": [],
+    "owner": "Aether maintainer / deployment owner"
+  },
+  {
+    "id": "04.08",
+    "category": "C",
+    "requirement": "Emergency access. Maintain tightly controlled break-glass credentials and test their use without making them everyday administrator accounts.",
+    "state": "pending",
+    "evidence": [],
+    "owner": "Aether maintainer / deployment owner"
+  },
+  {
+    "id": "05.01",
+    "category": "B",
+    "requirement": "Maintained kernel. Use a supported kernel with timely security fixes, supported drivers, and visible reboot requirements.",
+    "state": "pending",
+    "evidence": [],
+    "owner": "Aether maintainer / deployment owner"
+  },
+  {
+    "id": "05.02",
+    "category": "B",
+    "requirement": "Memory exploit mitigations. Retain supported address randomization, non-executable memory, stack protection, and other distribution hardening defaults.",
+    "state": "implementation prepared; runtime verification pending",
+    "evidence": [
+      "Aether security source recipes; see SECURITY.md for limits."
+    ],
+    "owner": "Aether maintainer / deployment owner"
+  },
+  {
+    "id": "05.03",
+    "category": "B",
+    "requirement": "Kernel access restrictions. Restrict unprivileged access to kernel pointers, logs, debugging interfaces, and performance facilities according to workload needs.",
+    "state": "partially implemented; stated runtime checks passed",
+    "evidence": [
+      "Runtime sysctl checks passed; an unprivileged process was denied kernel log access.",
+      "UEFI disk test 20260928-013125; BIOS ISO test 20260928-013840",
+      "Repeated successfully on latest d7876196 disk and/or 00eb19ae ISO; see release validation.json for exact test scope."
+    ],
+    "owner": "Aether maintainer / deployment owner"
+  },
+  {
+    "id": "05.04",
+    "category": "B",
+    "requirement": "Process inspection controls. Limit tracing and cross-process inspection while preserving explicitly authorized debugging and support workflows.",
+    "state": "implementation prepared; runtime verification pending",
+    "evidence": [
+      "Aether security source recipes; see SECURITY.md for limits."
+    ],
+    "owner": "Aether maintainer / deployment owner"
+  },
+  {
+    "id": "05.05",
+    "category": "B",
+    "requirement": "CPU vulnerability handling. Deploy microcode and supported mitigations, with explicit review before accepting performance-driven reductions in protection.",
+    "state": "pending",
+    "evidence": [],
+    "owner": "Aether maintainer / deployment owner"
+  },
+  {
+    "id": "05.06",
+    "category": "C",
+    "requirement": "Module trust. Require authenticated kernel modules and limit module loading where the platform and driver requirements permit.",
+    "state": "pending",
+    "evidence": [],
+    "owner": "Aether maintainer / deployment owner"
+  },
+  {
+    "id": "05.07",
+    "category": "C",
+    "requirement": "Kernel lockdown. Use supported lockdown policies to restrict interfaces that could undermine kernel integrity or confidentiality.",
+    "state": "pending",
+    "evidence": [],
+    "owner": "Aether maintainer / deployment owner"
+  },
+  {
+    "id": "05.08",
+    "category": "C",
+    "requirement": "Advanced exploit resistance. Adopt available control-flow, memory initialization, and memory-safety improvements after compatibility and performance evaluation.",
+    "state": "implementation prepared; runtime verification pending",
+    "evidence": [
+      "Aether security source recipes; see SECURITY.md for limits."
+    ],
+    "owner": "Aether maintainer / deployment owner"
+  },
+  {
+    "id": "06.01",
+    "category": "B",
+    "requirement": "Enforced access policy. Use the distribution-supported SELinux or AppArmor configuration in enforcing mode where available.",
+    "state": "partially implemented; stated runtime checks passed",
+    "evidence": [
+      "AppArmor timesyncd and boundary-probe profiles enforced; public access succeeded and private access was denied. Other applications remain unconfined.",
+      "UEFI disk test 20260928-013125; BIOS ISO test 20260928-013840",
+      "Repeated successfully on latest d7876196 disk and/or 00eb19ae ISO; see release validation.json for exact test scope."
+    ],
+    "owner": "Aether maintainer / deployment owner"
+  },
+  {
+    "id": "06.02",
+    "category": "B",
+    "requirement": "Policy coverage visibility. Report which services and applications are confined; an enabled framework does not imply universal protection.",
+    "state": "implementation prepared; runtime verification pending",
+    "evidence": [
+      "Aether security source recipes; see SECURITY.md for limits."
+    ],
+    "owner": "Aether maintainer / deployment owner"
+  },
+  {
+    "id": "06.03",
+    "category": "B",
+    "requirement": "Policy lifecycle. Maintain confinement rules through software updates and diagnose denials without routinely disabling enforcement.",
+    "state": "pending",
+    "evidence": [],
+    "owner": "Aether maintainer / deployment owner"
+  },
+  {
+    "id": "06.04",
+    "category": "B",
+    "requirement": "Capability reduction. Drop Linux capabilities that a process does not need and prevent unintended privilege gains.",
+    "state": "pending",
+    "evidence": [],
+    "owner": "Aether maintainer / deployment owner"
+  },
+  {
+    "id": "06.05",
+    "category": "C",
+    "requirement": "System call filtering. Apply seccomp filters appropriate to each workload; syscall filtering complements other security boundaries.",
+    "state": "pending",
+    "evidence": [],
+    "owner": "Aether maintainer / deployment owner"
+  },
+  {
+    "id": "06.06",
+    "category": "C",
+    "requirement": "Namespace isolation. Isolate filesystem views, processes, networking, and users as appropriate to the application or service.",
+    "state": "pending",
+    "evidence": [],
+    "owner": "Aether maintainer / deployment owner"
+  },
+  {
+    "id": "06.07",
+    "category": "C",
+    "requirement": "Application self restriction. Use Landlock or equivalent supported mechanisms for applications that can voluntarily narrow their own access.",
+    "state": "implementation prepared; runtime verification pending",
+    "evidence": [
+      "Aether security source recipes; see SECURITY.md for limits."
+    ],
+    "owner": "Aether maintainer / deployment owner"
+  },
+  {
+    "id": "06.08",
+    "category": "C",
+    "requirement": "User namespace policy. Balance sandbox requirements against exposed kernel attack surface using distribution-supported controls and workload testing.",
+    "state": "implementation prepared; runtime verification pending",
+    "evidence": [
+      "Aether security source recipes; see SECURITY.md for limits."
+    ],
+    "owner": "Aether maintainer / deployment owner"
+  },
+  {
+    "id": "07.01",
+    "category": "B",
+    "requirement": "Minimal installation. Install and enable only required components, removing obsolete daemons and unused optional network services.",
+    "state": "implementation prepared; runtime verification pending",
+    "evidence": [
+      "Aether security source recipes; see SECURITY.md for limits."
+    ],
+    "owner": "Aether maintainer / deployment owner"
+  },
+  {
+    "id": "07.02",
+    "category": "B",
+    "requirement": "Listener visibility. Show listening ports and owning services, including services started through sockets or scheduled activation.",
+    "state": "pending",
+    "evidence": [],
+    "owner": "Aether maintainer / deployment owner"
+  },
+  {
+    "id": "07.03",
+    "category": "B",
+    "requirement": "Restricted service filesystem. Limit writable paths and access to user homes; use private temporary storage where appropriate.",
+    "state": "implementation prepared; runtime verification pending",
+    "evidence": [
+      "Aether security source recipes; see SECURITY.md for limits."
+    ],
+    "owner": "Aether maintainer / deployment owner"
+  },
+  {
+    "id": "07.04",
+    "category": "B",
+    "requirement": "Privilege containment. Use service manager controls such as NoNewPrivileges and bounded capabilities when compatible with the service.",
+    "state": "implementation prepared; runtime verification pending",
+    "evidence": [
+      "Aether security source recipes; see SECURITY.md for limits."
+    ],
+    "owner": "Aether maintainer / deployment owner"
+  },
+  {
+    "id": "07.05",
+    "category": "B",
+    "requirement": "Safe service credentials. Deliver secrets through restricted files or credential mechanisms rather than public command lines or world-readable configuration.",
+    "state": "pending",
+    "evidence": [],
+    "owner": "Aether maintainer / deployment owner"
+  },
+  {
+    "id": "07.06",
+    "category": "B",
+    "requirement": "Resource controls. Limit CPU, memory, processes, file descriptors, and storage consumption to reduce local denial-of-service risk.",
+    "state": "pending",
+    "evidence": [],
+    "owner": "Aether maintainer / deployment owner"
+  },
+  {
+    "id": "07.07",
+    "category": "C",
+    "requirement": "Additional service isolation. Restrict device access, address families, kernel tunables, and namespace creation according to actual service requirements.",
+    "state": "pending",
+    "evidence": [],
+    "owner": "Aether maintainer / deployment owner"
+  },
+  {
+    "id": "07.08",
+    "category": "C",
+    "requirement": "Configuration assessment. Review service hardening with automated tooling and functional tests; a score alone is not proof of security.",
+    "state": "pending",
+    "evidence": [],
+    "owner": "Aether maintainer / deployment owner"
+  },
+  {
+    "id": "08.01",
+    "category": "B",
+    "requirement": "Encrypted system storage. Offer supported disk encryption such as LUKS2 for sensitive data, including suitable installer and recovery workflows.",
+    "state": "partially implemented; installer and encrypted boots passed",
+    "evidence": [
+      "Latest ISO fresh LUKS2 installation; primary and recovery passphrases each passed UEFI boot, login and shutdown. Existing user VM intentionally unencrypted; x86_64 only."
+    ],
+    "owner": "Aether maintainer / deployment owner"
+  },
+  {
+    "id": "08.02",
+    "category": "B",
+    "requirement": "Swap protection. Prevent sensitive memory from leaking through unencrypted swap, with an explicit design for hibernation if enabled.",
+    "state": "implementation prepared; runtime verification pending",
+    "evidence": [
+      "Aether security source recipes; see SECURITY.md for limits."
+    ],
+    "owner": "Aether maintainer / deployment owner"
+  },
+  {
+    "id": "08.03",
+    "category": "B",
+    "requirement": "Recovery key management. Support secure creation, offline storage, retrieval, and rotation of recovery credentials.",
+    "state": "partially implemented; recovery unlock passed",
+    "evidence": [
+      "Installer provisions an independent recovery passphrase; tested successful unlock and login. Offline custody belongs to the installer user; rotation and retrieval lifecycle not fully implemented."
+    ],
+    "owner": "Aether maintainer / deployment owner"
+  },
+  {
+    "id": "08.04",
+    "category": "B",
+    "requirement": "Keyslot lifecycle. Allow adding and revoking unlock methods without accidentally leaving old credentials usable.",
+    "state": "implementation prepared; runtime verification pending",
+    "evidence": [
+      "Aether security source recipes; see SECURITY.md for limits."
+    ],
+    "owner": "Aether maintainer / deployment owner"
+  },
+  {
+    "id": "08.05",
+    "category": "B",
+    "requirement": "Encrypted removable storage. Provide understandable encryption and unlocking for external drives and portable backups.",
+    "state": "pending",
+    "evidence": [],
+    "owner": "Aether maintainer / deployment owner"
+  },
+  {
+    "id": "08.06",
+    "category": "B",
+    "requirement": "Sensitive temporary data. Protect temporary files, crash dumps, caches, and exported documents according to their content and retention needs.",
+    "state": "implementation prepared; runtime verification pending",
+    "evidence": [
+      "Aether security source recipes; see SECURITY.md for limits."
+    ],
+    "owner": "Aether maintainer / deployment owner"
+  },
+  {
+    "id": "08.07",
+    "category": "C",
+    "requirement": "Per-user encryption. Support separate user or directory encryption where distinct unlock lifetimes or multi-user separation are required.",
+    "state": "pending",
+    "evidence": [],
+    "owner": "Aether maintainer / deployment owner"
+  },
+  {
+    "id": "08.08",
+    "category": "C",
+    "requirement": "Data disposal. Support appropriate device sanitization or cryptographic erasure; simple file deletion is insufficient for many storage devices.",
+    "state": "pending",
+    "evidence": [],
+    "owner": "Aether maintainer / deployment owner"
+  },
+  {
+    "id": "09.01",
+    "category": "B",
+    "requirement": "Private defaults. Create sensitive files and directories with restrictive ownership and permissions, including user homes and SSH material.",
+    "state": "implementation prepared; runtime verification pending",
+    "evidence": [
+      "Aether security source recipes; see SECURITY.md for limits."
+    ],
+    "owner": "Aether maintainer / deployment owner"
+  },
+  {
+    "id": "09.02",
+    "category": "B",
+    "requirement": "Permission administration. Make ownership, mode bits, ACLs, and effective access reviewable without encouraging overly broad write permissions.",
+    "state": "pending",
+    "evidence": [],
+    "owner": "Aether maintainer / deployment owner"
+  },
+  {
+    "id": "09.03",
+    "category": "B",
+    "requirement": "Safe temporary files. Use secure temporary-file creation and protections against symlink and hardlink abuse in shared writable locations.",
+    "state": "implementation prepared; runtime verification pending",
+    "evidence": [
+      "Aether security source recipes; see SECURITY.md for limits."
+    ],
+    "owner": "Aether maintainer / deployment owner"
+  },
+  {
+    "id": "09.04",
+    "category": "B",
+    "requirement": "Mount policy. Apply suitable nodev, nosuid, and noexec restrictions where compatible; noexec alone is not a complete execution barrier.",
+    "state": "pending",
+    "evidence": [],
+    "owner": "Aether maintainer / deployment owner"
+  },
+  {
+    "id": "09.05",
+    "category": "B",
+    "requirement": "Critical configuration protection. Prevent ordinary users and unnecessary services from modifying system binaries, policies, or startup configuration.",
+    "state": "implementation prepared; runtime verification pending",
+    "evidence": [
+      "Aether security source recipes; see SECURITY.md for limits."
+    ],
+    "owner": "Aether maintainer / deployment owner"
+  },
+  {
+    "id": "09.06",
+    "category": "C",
+    "requirement": "File integrity monitoring. Compare important files against protected baselines and investigate unexpected changes with useful context.",
+    "state": "pending",
+    "evidence": [],
+    "owner": "Aether maintainer / deployment owner"
+  },
+  {
+    "id": "09.07",
+    "category": "C",
+    "requirement": "Verified system content. Use dm-verity or similar integrity protection for appropriate read-only system images, anchored to a trusted root hash.",
+    "state": "pending",
+    "evidence": [],
+    "owner": "Aether maintainer / deployment owner"
+  },
+  {
+    "id": "09.08",
+    "category": "C",
+    "requirement": "Application integrity appraisal. Use IMA or related integrity policies where operationally justified, with managed keys and tested update procedures.",
+    "state": "pending",
+    "evidence": [],
+    "owner": "Aether maintainer / deployment owner"
+  },
+  {
+    "id": "10.01",
+    "category": "B",
+    "requirement": "Supported cryptography. Use maintained libraries and current distribution policies; remove obsolete protocols and algorithms through tested migrations.",
+    "state": "pending",
+    "evidence": [],
+    "owner": "Aether maintainer / deployment owner"
+  },
+  {
+    "id": "10.02",
+    "category": "B",
+    "requirement": "Certificate validation. Validate peer identities and certificate chains, and report failures without normalizing insecure bypasses.",
+    "state": "pending",
+    "evidence": [],
+    "owner": "Aether maintainer / deployment owner"
+  },
+  {
+    "id": "10.03",
+    "category": "B",
+    "requirement": "Credential vault. Provide encrypted secret storage with appropriate locking behavior and controls over application access.",
+    "state": "pending",
+    "evidence": [],
+    "owner": "Aether maintainer / deployment owner"
+  },
+  {
+    "id": "10.04",
+    "category": "B",
+    "requirement": "Secret exposure prevention. Avoid credentials in logs, shell history, crash reports, process arguments, and source repositories.",
+    "state": "pending",
+    "evidence": [],
+    "owner": "Aether maintainer / deployment owner"
+  },
+  {
+    "id": "10.05",
+    "category": "B",
+    "requirement": "Secure randomness. Use operating-system cryptographic random interfaces and ensure key creation has suitable entropy.",
+    "state": "pending",
+    "evidence": [],
+    "owner": "Aether maintainer / deployment owner"
+  },
+  {
+    "id": "10.06",
+    "category": "C",
+    "requirement": "Credential rotation. Support short-lived credentials, expiration, revocation, and automated renewal where services permit them.",
+    "state": "pending",
+    "evidence": [],
+    "owner": "Aether maintainer / deployment owner"
+  },
+  {
+    "id": "10.07",
+    "category": "C",
+    "requirement": "Hardware key storage. Integrate supported TPMs, security tokens, or HSMs for selected keys, with backup and recovery planning.",
+    "state": "pending",
+    "evidence": [],
+    "owner": "Aether maintainer / deployment owner"
+  },
+  {
+    "id": "10.08",
+    "category": "C",
+    "requirement": "Validated cryptographic operation. Use validated modules and approved configurations when required; selecting a mode alone does not establish compliance.",
+    "state": "pending",
+    "evidence": [],
+    "owner": "Aether maintainer / deployment owner"
+  },
+  {
+    "id": "11.01",
+    "category": "B",
+    "requirement": "Authenticated distribution. Verify repository metadata and package authenticity using the distribution's supported trust mechanism.",
+    "state": "pending",
+    "evidence": [],
+    "owner": "Aether maintainer / deployment owner"
+  },
+  {
+    "id": "11.02",
+    "category": "B",
+    "requirement": "Repository control. Show trusted software sources, signing keys, and third-party additions; make removal and trust revocation possible.",
+    "state": "pending",
+    "evidence": [],
+    "owner": "Aether maintainer / deployment owner"
+  },
+  {
+    "id": "11.03",
+    "category": "B",
+    "requirement": "Safe installation flow. Avoid granting root to unauthenticated installers; clearly identify scripts or packages that require broad host access.",
+    "state": "pending",
+    "evidence": [],
+    "owner": "Aether maintainer / deployment owner"
+  },
+  {
+    "id": "11.04",
+    "category": "B",
+    "requirement": "Software inventory. Track installed operating-system packages, applications, runtimes, plugins, and their update sources.",
+    "state": "pending",
+    "evidence": [],
+    "owner": "Aether maintainer / deployment owner"
+  },
+  {
+    "id": "11.05",
+    "category": "B",
+    "requirement": "Dependency maintenance. Track abandoned dependencies and bundled libraries that may not receive fixes through system updates.",
+    "state": "pending",
+    "evidence": [],
+    "owner": "Aether maintainer / deployment owner"
+  },
+  {
+    "id": "11.06",
+    "category": "C",
+    "requirement": "Build provenance. Record where release artifacts originated and verify available provenance against organizational trust policies.",
+    "state": "pending",
+    "evidence": [],
+    "owner": "Aether maintainer / deployment owner"
+  },
+  {
+    "id": "11.07",
+    "category": "C",
+    "requirement": "Reproducibility checks. Use reproducible builds and independent comparisons where feasible to improve confidence in delivered artifacts.",
+    "state": "pending",
+    "evidence": [],
+    "owner": "Aether maintainer / deployment owner"
+  },
+  {
+    "id": "11.08",
+    "category": "C",
+    "requirement": "Component transparency. Maintain software bills of materials and vulnerability mappings for managed products and critical workloads.",
+    "state": "pending",
+    "evidence": [],
+    "owner": "Aether maintainer / deployment owner"
+  },
+  {
+    "id": "12.01",
+    "category": "B",
+    "requirement": "Supported releases. Expose support status and end-of-life dates so users can migrate before security maintenance ends.",
+    "state": "pending",
+    "evidence": [],
+    "owner": "Aether maintainer / deployment owner"
+  },
+  {
+    "id": "12.02",
+    "category": "B",
+    "requirement": "Automatic security updates. Provide reliable update automation with scheduling, failure reporting, and clear user or administrator control.",
+    "state": "pending",
+    "evidence": [],
+    "owner": "Aether maintainer / deployment owner"
+  },
+  {
+    "id": "12.03",
+    "category": "B",
+    "requirement": "Complete update coverage. Include the kernel, firmware, native packages, sandbox runtimes, browsers, and applications with separate update mechanisms.",
+    "state": "pending",
+    "evidence": [],
+    "owner": "Aether maintainer / deployment owner"
+  },
+  {
+    "id": "12.04",
+    "category": "B",
+    "requirement": "Restart visibility. Identify processes and systems that need restarting before an installed fix takes effect.",
+    "state": "pending",
+    "evidence": [],
+    "owner": "Aether maintainer / deployment owner"
+  },
+  {
+    "id": "12.05",
+    "category": "B",
+    "requirement": "Emergency patch workflow. Support rapid deployment of critical fixes with verification and an appropriate recovery path.",
+    "state": "pending",
+    "evidence": [],
+    "owner": "Aether maintainer / deployment owner"
+  },
+  {
+    "id": "12.06",
+    "category": "B",
+    "requirement": "Update resilience. Recover from interrupted downloads or installations without silently disabling verification or leaving an unusable system.",
+    "state": "pending",
+    "evidence": [],
+    "owner": "Aether maintainer / deployment owner"
+  },
+  {
+    "id": "12.07",
+    "category": "C",
+    "requirement": "Atomic updates and rollback. Provide transactional updates where available; prevent rollback from becoming an unnoticed return to vulnerable software.",
+    "state": "pending",
+    "evidence": [],
+    "owner": "Aether maintainer / deployment owner"
+  },
+  {
+    "id": "12.08",
+    "category": "C",
+    "requirement": "Live patching. Use supported live patches where useful, while retaining normal update and reboot maintenance for uncovered components.",
+    "state": "pending",
+    "evidence": [],
+    "owner": "Aether maintainer / deployment owner"
+  },
+  {
+    "id": "13.01",
+    "category": "B",
+    "requirement": "Host firewall. Provide a manageable stateful firewall with deliberate incoming-service exposure and clear rule ownership.",
+    "state": "partially implemented; stated runtime checks passed",
+    "evidence": [
+      "Stateful nftables rules blocked incoming IPv4 and IPv6 TCP; explicit allowance connected; revocation blocked again. Reload preserves unrelated tables.",
+      "UEFI disk test 20260928-013125; BIOS ISO test 20260928-013840",
+      "Repeated successfully on latest d7876196 disk and/or 00eb19ae ISO; see release validation.json for exact test scope."
+    ],
+    "owner": "Aether maintainer / deployment owner"
+  },
+  {
+    "id": "13.02",
+    "category": "B",
+    "requirement": "IPv4 and IPv6 coverage. Apply intended protections to both protocol families, including VPN and container network paths.",
+    "state": "partially implemented; stated runtime checks passed",
+    "evidence": [
+      "IPv4 and IPv6 host traffic tested through a network namespace. VPN and container routing policies remain pending.",
+      "UEFI disk test 20260928-013125; BIOS ISO test 20260928-013840",
+      "Repeated successfully on latest d7876196 disk and/or 00eb19ae ISO; see release validation.json for exact test scope."
+    ],
+    "owner": "Aether maintainer / deployment owner"
+  },
+  {
+    "id": "13.03",
+    "category": "B",
+    "requirement": "Network trust profiles. Distinguish public and trusted networks, and avoid exposing local services unexpectedly when networks change.",
+    "state": "pending",
+    "evidence": [],
+    "owner": "Aether maintainer / deployment owner"
+  },
+  {
+    "id": "13.04",
+    "category": "B",
+    "requirement": "Secure wireless access. Support modern Wi-Fi security and correct enterprise certificate validation instead of accepting arbitrary authentication servers.",
+    "state": "pending",
+    "evidence": [],
+    "owner": "Aether maintainer / deployment owner"
+  },
+  {
+    "id": "13.05",
+    "category": "B",
+    "requirement": "Sharing controls. Make file sharing, discovery, printing, and remote services opt-in where appropriate and visible while active.",
+    "state": "implementation prepared; runtime verification pending",
+    "evidence": [
+      "Aether security source recipes; see SECURITY.md for limits."
+    ],
+    "owner": "Aether maintainer / deployment owner"
+  },
+  {
+    "id": "13.06",
+    "category": "C",
+    "requirement": "Outbound restrictions. Apply workload-specific egress rules when needed, including DNS and update dependencies and an auditable exception process.",
+    "state": "pending",
+    "evidence": [],
+    "owner": "Aether maintainer / deployment owner"
+  },
+  {
+    "id": "13.07",
+    "category": "C",
+    "requirement": "Segmentation. Separate user, server, guest, management, and sensitive workloads using suitable network and host controls.",
+    "state": "pending",
+    "evidence": [],
+    "owner": "Aether maintainer / deployment owner"
+  },
+  {
+    "id": "13.08",
+    "category": "C",
+    "requirement": "Connection abuse resistance. Support rate limits and service-specific defenses against scanning, brute force, and resource exhaustion.",
+    "state": "pending",
+    "evidence": [],
+    "owner": "Aether maintainer / deployment owner"
+  },
+  {
+    "id": "14.01",
+    "category": "B",
+    "requirement": "Authenticated transport. Use TLS, SSH, or another suitable authenticated encrypted protocol for sensitive traffic and administration.",
+    "state": "pending",
+    "evidence": [],
+    "owner": "Aether maintainer / deployment owner"
+  },
+  {
+    "id": "14.02",
+    "category": "B",
+    "requirement": "SSH identity checks. Verify host keys or trusted host certificates; make unexpected identity changes visible and investigate them.",
+    "state": "pending",
+    "evidence": [],
+    "owner": "Aether maintainer / deployment owner"
+  },
+  {
+    "id": "14.03",
+    "category": "B",
+    "requirement": "Restricted remote login. Disable remote services until needed and limit accounts, interfaces, and authentication methods explicitly.",
+    "state": "implementation prepared; runtime verification pending",
+    "evidence": [
+      "Aether security source recipes; see SECURITY.md for limits."
+    ],
+    "owner": "Aether maintainer / deployment owner"
+  },
+  {
+    "id": "14.04",
+    "category": "B",
+    "requirement": "SSH key protection. Protect private keys and support hardware-backed keys where useful; revoke lost or obsolete credentials.",
+    "state": "pending",
+    "evidence": [],
+    "owner": "Aether maintainer / deployment owner"
+  },
+  {
+    "id": "14.05",
+    "category": "B",
+    "requirement": "Remote privilege separation. Avoid unrestricted direct root login and use accountable elevation for remote administration.",
+    "state": "implementation prepared; runtime verification pending",
+    "evidence": [
+      "Aether security source recipes; see SECURITY.md for limits."
+    ],
+    "owner": "Aether maintainer / deployment owner"
+  },
+  {
+    "id": "14.06",
+    "category": "C",
+    "requirement": "Controlled forwarding. Restrict SSH agent, TCP, and X11 forwarding to approved use cases rather than broad default availability.",
+    "state": "implementation prepared; runtime verification pending",
+    "evidence": [
+      "Aether security source recipes; see SECURITY.md for limits."
+    ],
+    "owner": "Aether maintainer / deployment owner"
+  },
+  {
+    "id": "14.07",
+    "category": "C",
+    "requirement": "VPN reliability. Provide secure VPN setup, sensible DNS routing, and tested leak prevention or a kill switch when required.",
+    "state": "pending",
+    "evidence": [],
+    "owner": "Aether maintainer / deployment owner"
+  },
+  {
+    "id": "14.08",
+    "category": "C",
+    "requirement": "Remote desktop consent. Protect remote desktop with strong authentication, appropriate local consent, encryption, and visible disconnect controls.",
+    "state": "pending",
+    "evidence": [],
+    "owner": "Aether maintainer / deployment owner"
+  },
+  {
+    "id": "15.01",
+    "category": "B",
+    "requirement": "Reliable screen locking. Lock all displays and sessions consistently, including around sleep, docking, crashes, and user switching.",
+    "state": "pending",
+    "evidence": [],
+    "owner": "Aether maintainer / deployment owner"
+  },
+  {
+    "id": "15.02",
+    "category": "B",
+    "requirement": "Idle locking. Offer configurable inactivity locking with accessible authentication and secure defaults appropriate to the device.",
+    "state": "implementation prepared; runtime verification pending",
+    "evidence": [
+      "Aether security source recipes; see SECURITY.md for limits."
+    ],
+    "owner": "Aether maintainer / deployment owner"
+  },
+  {
+    "id": "15.03",
+    "category": "B",
+    "requirement": "Display isolation. Prefer supported Wayland sessions and document the weaker isolation of applications sharing an X11 environment.",
+    "state": "implementation prepared; runtime verification pending",
+    "evidence": [
+      "Aether security source recipes; see SECURITY.md for limits."
+    ],
+    "owner": "Aether maintainer / deployment owner"
+  },
+  {
+    "id": "15.04",
+    "category": "B",
+    "requirement": "Capture authorization. Require controlled access to screenshots, screen recording, and remote input through supported desktop mechanisms.",
+    "state": "pending",
+    "evidence": [],
+    "owner": "Aether maintainer / deployment owner"
+  },
+  {
+    "id": "15.05",
+    "category": "B",
+    "requirement": "Session privacy. Hide sensitive lock-screen notifications, previews, and user-switching content according to user policy.",
+    "state": "pending",
+    "evidence": [],
+    "owner": "Aether maintainer / deployment owner"
+  },
+  {
+    "id": "15.06",
+    "category": "B",
+    "requirement": "Clipboard controls. Allow history clearing, sensitive-item exclusion, and control over clipboard synchronization or remote sharing.",
+    "state": "implementation prepared; runtime verification pending",
+    "evidence": [
+      "Aether security source recipes; see SECURITY.md for limits."
+    ],
+    "owner": "Aether maintainer / deployment owner"
+  },
+  {
+    "id": "15.07",
+    "category": "B",
+    "requirement": "Extension trust. Treat shell extensions and startup scripts as powerful session code; support review, updates, and safe disabling.",
+    "state": "pending",
+    "evidence": [],
+    "owner": "Aether maintainer / deployment owner"
+  },
+  {
+    "id": "15.08",
+    "category": "C",
+    "requirement": "High-assurance idle behavior. Offer logout or shutdown policies when locking or suspend does not meet the physical-access threat model.",
+    "state": "pending",
+    "evidence": [],
+    "owner": "Aether maintainer / deployment owner"
+  },
+  {
+    "id": "16.01",
+    "category": "B",
+    "requirement": "Application sandboxing. Offer supported isolation for applications and explain that actual protection depends on granted access.",
+    "state": "pending",
+    "evidence": [],
+    "owner": "Aether maintainer / deployment owner"
+  },
+  {
+    "id": "16.02",
+    "category": "B",
+    "requirement": "File access mediation. Prefer user-selected file access through portals over unrestricted access to home directories.",
+    "state": "pending",
+    "evidence": [],
+    "owner": "Aether maintainer / deployment owner"
+  },
+  {
+    "id": "16.03",
+    "category": "B",
+    "requirement": "Permission visibility. Show requested and effective permissions, including filesystem, devices, network, and sensitive interprocess communication.",
+    "state": "pending",
+    "evidence": [],
+    "owner": "Aether maintainer / deployment owner"
+  },
+  {
+    "id": "16.04",
+    "category": "B",
+    "requirement": "Permission revocation. Allow users to revoke supported grants and understand when an application must restart for changes to apply.",
+    "state": "pending",
+    "evidence": [],
+    "owner": "Aether maintainer / deployment owner"
+  },
+  {
+    "id": "16.05",
+    "category": "B",
+    "requirement": "Device access control. Manage microphone, camera, and location access where the application and backend support enforcement.",
+    "state": "pending",
+    "evidence": [],
+    "owner": "Aether maintainer / deployment owner"
+  },
+  {
+    "id": "16.06",
+    "category": "B",
+    "requirement": "Sensitive activity indicators. Show screen sharing, recording, and device-use status where reliably observable; provide a clear stop control.",
+    "state": "pending",
+    "evidence": [],
+    "owner": "Aether maintainer / deployment owner"
+  },
+  {
+    "id": "16.07",
+    "category": "C",
+    "requirement": "Network isolation. Restrict per-application networking where supported without implying that every desktop offers a domain-level application firewall.",
+    "state": "pending",
+    "evidence": [],
+    "owner": "Aether maintainer / deployment owner"
+  },
+  {
+    "id": "16.08",
+    "category": "C",
+    "requirement": "Untrusted content isolation. Use disposable profiles, containers, or virtual machines for risky content when ordinary application permissions are too broad.",
+    "state": "pending",
+    "evidence": [],
+    "owner": "Aether maintainer / deployment owner"
+  },
+  {
+    "id": "17.01",
+    "category": "B",
+    "requirement": "Maintained browser sandbox. Keep the browser and its sandbox enabled and current, including bundled media and rendering components.",
+    "state": "pending",
+    "evidence": [],
+    "owner": "Aether maintainer / deployment owner"
+  },
+  {
+    "id": "17.02",
+    "category": "B",
+    "requirement": "Extension management. Review browser and application extensions, their privileges, and their update provenance; remove unused extensions.",
+    "state": "pending",
+    "evidence": [],
+    "owner": "Aether maintainer / deployment owner"
+  },
+  {
+    "id": "17.03",
+    "category": "B",
+    "requirement": "Site permissions. Provide reviewable controls for camera, microphone, notifications, location, clipboard, and downloads within supported browsers.",
+    "state": "pending",
+    "evidence": [],
+    "owner": "Aether maintainer / deployment owner"
+  },
+  {
+    "id": "17.04",
+    "category": "B",
+    "requirement": "Download handling. Make executable launches deliberate and open untrusted documents with restricted viewers where practical.",
+    "state": "pending",
+    "evidence": [],
+    "owner": "Aether maintainer / deployment owner"
+  },
+  {
+    "id": "17.05",
+    "category": "B",
+    "requirement": "Search privacy. Allow exclusions for sensitive folders, encrypted locations, recent items, thumbnails, and content indexing.",
+    "state": "implementation prepared; runtime verification pending",
+    "evidence": [
+      "Aether security source recipes; see SECURITY.md for limits."
+    ],
+    "owner": "Aether maintainer / deployment owner"
+  },
+  {
+    "id": "17.06",
+    "category": "B",
+    "requirement": "Data collection controls. Make telemetry, crash uploads, cloud synchronization, and diagnostic sharing understandable and user-controllable.",
+    "state": "pending",
+    "evidence": [],
+    "owner": "Aether maintainer / deployment owner"
+  },
+  {
+    "id": "17.07",
+    "category": "B",
+    "requirement": "Retention controls. Allow clearing histories and caches while preserving data needed for recovery or organizational obligations.",
+    "state": "pending",
+    "evidence": [],
+    "owner": "Aether maintainer / deployment owner"
+  },
+  {
+    "id": "17.08",
+    "category": "C",
+    "requirement": "Identity separation. Use separate browser profiles or stronger isolation for work, personal activity, administration, and high-risk browsing.",
+    "state": "pending",
+    "evidence": [],
+    "owner": "Aether maintainer / deployment owner"
+  },
+  {
+    "id": "18.01",
+    "category": "C",
+    "requirement": "Rootless operation. Run containers without host root where feasible, with explicit ownership and user-namespace behavior.",
+    "state": "pending",
+    "evidence": [],
+    "owner": "Aether maintainer / deployment owner"
+  },
+  {
+    "id": "18.02",
+    "category": "C",
+    "requirement": "Restricted container privileges. Avoid privileged containers, unnecessary capabilities, host namespaces, and unrestricted device passthrough.",
+    "state": "pending",
+    "evidence": [],
+    "owner": "Aether maintainer / deployment owner"
+  },
+  {
+    "id": "18.03",
+    "category": "C",
+    "requirement": "Container engine protection. Restrict access to engine sockets and APIs; treat powerful management access as host administration.",
+    "state": "pending",
+    "evidence": [],
+    "owner": "Aether maintainer / deployment owner"
+  },
+  {
+    "id": "18.04",
+    "category": "C",
+    "requirement": "Image trust and updates. Use approved images, immutable identifiers where practical, vulnerability review, and a rebuild process for fixes.",
+    "state": "pending",
+    "evidence": [],
+    "owner": "Aether maintainer / deployment owner"
+  },
+  {
+    "id": "18.05",
+    "category": "C",
+    "requirement": "Workload secrets. Keep secrets out of images and protect their delivery, storage, rotation, and deletion.",
+    "state": "pending",
+    "evidence": [],
+    "owner": "Aether maintainer / deployment owner"
+  },
+  {
+    "id": "18.06",
+    "category": "C",
+    "requirement": "Container boundaries. Apply resource, filesystem, syscall, and network limits; use stronger isolation where sharing a kernel is unacceptable.",
+    "state": "pending",
+    "evidence": [],
+    "owner": "Aether maintainer / deployment owner"
+  },
+  {
+    "id": "18.07",
+    "category": "C",
+    "requirement": "Virtual machine isolation. Maintain hypervisors and guests, restrict shared folders and devices, and isolate management interfaces.",
+    "state": "pending",
+    "evidence": [],
+    "owner": "Aether maintainer / deployment owner"
+  },
+  {
+    "id": "18.08",
+    "category": "C",
+    "requirement": "Cloud identity protection. Use least-privilege instance identities, protected metadata access, and short-lived credentials for hosted workloads.",
+    "state": "pending",
+    "evidence": [],
+    "owner": "Aether maintainer / deployment owner"
+  },
+  {
+    "id": "19.01",
+    "category": "B",
+    "requirement": "Useful security logs. Record authentication, elevation, policy denials, important service failures, and relevant administrative changes.",
+    "state": "implementation prepared; runtime verification pending",
+    "evidence": [
+      "Aether security source recipes; see SECURITY.md for limits."
+    ],
+    "owner": "Aether maintainer / deployment owner"
+  },
+  {
+    "id": "19.02",
+    "category": "B",
+    "requirement": "Protected log access. Restrict log reading and modification, including access to records that contain personal or sensitive operational information.",
+    "state": "pending",
+    "evidence": [],
+    "owner": "Aether maintainer / deployment owner"
+  },
+  {
+    "id": "19.03",
+    "category": "B",
+    "requirement": "Reliable timestamps. Maintain trustworthy time synchronization and consistent timestamps for investigating events across systems.",
+    "state": "implementation prepared; runtime verification pending",
+    "evidence": [
+      "Aether security source recipes; see SECURITY.md for limits."
+    ],
+    "owner": "Aether maintainer / deployment owner"
+  },
+  {
+    "id": "19.04",
+    "category": "B",
+    "requirement": "Retention and capacity. Rotate logs, set retention, and detect storage exhaustion without silently discarding important evidence.",
+    "state": "implementation prepared; runtime verification pending",
+    "evidence": [
+      "Aether security source recipes; see SECURITY.md for limits."
+    ],
+    "owner": "Aether maintainer / deployment owner"
+  },
+  {
+    "id": "19.05",
+    "category": "B",
+    "requirement": "Security status view. Expose update health, encryption state, firewall exposure, failed protection services, and required actions clearly.",
+    "state": "partially implemented; stated runtime checks passed",
+    "evidence": [
+      "Native Security window renders on the BIOS live desktop; CLI reports observed firewall, LSM, swap and service states. Full update/encryption health coverage remains pending.",
+      "UEFI disk test 20260928-013125; BIOS ISO test 20260928-013840",
+      "Repeated successfully on latest d7876196 disk and/or 00eb19ae ISO; see release validation.json for exact test scope."
+    ],
+    "owner": "Aether maintainer / deployment owner"
+  },
+  {
+    "id": "19.06",
+    "category": "C",
+    "requirement": "Central log collection. Forward selected events over authenticated transport to access-controlled storage outside the monitored host.",
+    "state": "unconfigured by user choice",
+    "evidence": [
+      "User requested leaving remote security-log storage unconfigured. No remote collection is active."
+    ],
+    "owner": "Aether maintainer / deployment owner"
+  },
+  {
+    "id": "19.07",
+    "category": "C",
+    "requirement": "Detailed audit trails. Use Linux Audit or equivalent tooling for relevant security events with monitored queues and tested performance.",
+    "state": "pending",
+    "evidence": [],
+    "owner": "Aether maintainer / deployment owner"
+  },
+  {
+    "id": "19.08",
+    "category": "C",
+    "requirement": "Tamper resistance. Use restricted remote storage or appropriate integrity controls; local logs alone cannot be trusted after full host compromise.",
+    "state": "pending",
+    "evidence": [],
+    "owner": "Aether maintainer / deployment owner"
+  },
+  {
+    "id": "20.01",
+    "category": "B",
+    "requirement": "Vulnerability visibility. Match software inventory to applicable advisories and account for distribution backports when interpreting version numbers.",
+    "state": "pending",
+    "evidence": [],
+    "owner": "Aether maintainer / deployment owner"
+  },
+  {
+    "id": "20.02",
+    "category": "B",
+    "requirement": "Exposure prioritization. Prioritize fixes using actual exposure, exploitability, asset importance, and existing mitigations.",
+    "state": "pending",
+    "evidence": [],
+    "owner": "Aether maintainer / deployment owner"
+  },
+  {
+    "id": "20.03",
+    "category": "B",
+    "requirement": "Configuration drift detection. Identify unexpected changes to accounts, privileges, services, firewall rules, and security controls.",
+    "state": "pending",
+    "evidence": [],
+    "owner": "Aether maintainer / deployment owner"
+  },
+  {
+    "id": "20.04",
+    "category": "B",
+    "requirement": "Actionable alerts. Make alerts specific, deduplicated, and directed to someone responsible for investigation and resolution.",
+    "state": "pending",
+    "evidence": [],
+    "owner": "Aether maintainer / deployment owner"
+  },
+  {
+    "id": "20.05",
+    "category": "C",
+    "requirement": "Malware scanning. Use antivirus or content scanning for relevant file-sharing, email, or organizational requirements, with maintained signatures.",
+    "state": "pending",
+    "evidence": [],
+    "owner": "Aether maintainer / deployment owner"
+  },
+  {
+    "id": "20.06",
+    "category": "C",
+    "requirement": "Endpoint detection. Deploy supported endpoint monitoring when risk warrants it, balancing privileges, privacy, performance, and response capability.",
+    "state": "pending",
+    "evidence": [],
+    "owner": "Aether maintainer / deployment owner"
+  },
+  {
+    "id": "20.07",
+    "category": "C",
+    "requirement": "Persistence monitoring. Monitor suspicious startup entries, scheduled jobs, service definitions, and unauthorized credential or key additions.",
+    "state": "pending",
+    "evidence": [],
+    "owner": "Aether maintainer / deployment owner"
+  },
+  {
+    "id": "20.08",
+    "category": "C",
+    "requirement": "Detection validation. Exercise alert paths safely and measure false positives; detection tools do not establish that a system is uncompromised.",
+    "state": "pending",
+    "evidence": [],
+    "owner": "Aether maintainer / deployment owner"
+  },
+  {
+    "id": "21.01",
+    "category": "B",
+    "requirement": "Automated backups. Back up important user data and required system configuration with clear schedules and failure notifications.",
+    "state": "implementation prepared; runtime verification pending",
+    "evidence": [
+      "Aether security source recipes; see SECURITY.md for limits."
+    ],
+    "owner": "Aether maintainer / deployment owner"
+  },
+  {
+    "id": "21.02",
+    "category": "B",
+    "requirement": "Independent backup copies. Keep offline or appropriately immutable copies that a compromised endpoint cannot simply overwrite or delete.",
+    "state": "pending",
+    "evidence": [],
+    "owner": "Aether maintainer / deployment owner"
+  },
+  {
+    "id": "21.03",
+    "category": "B",
+    "requirement": "Encrypted backups. Encrypt sensitive backup data and keep recovery keys available separately from the protected machine.",
+    "state": "partially implemented; stated runtime checks passed",
+    "evidence": [
+      "Restic encrypted repository, full data check, byte-identical file restore and wrong-key rejection passed. User backup destination and recovery secret still require local setup.",
+      "UEFI disk test 20260928-013125; BIOS ISO test 20260928-013840",
+      "Repeated successfully on latest d7876196 disk and/or 00eb19ae ISO; see release validation.json for exact test scope."
+    ],
+    "owner": "Aether maintainer / deployment owner"
+  },
+  {
+    "id": "21.04",
+    "category": "B",
+    "requirement": "Restore testing. Regularly restore representative files and complete systems, verifying integrity and usable recovery times.",
+    "state": "partially implemented; stated runtime checks passed",
+    "evidence": [
+      "Representative file restore passed. Scheduled full-system disaster recovery drills remain pending.",
+      "UEFI disk test 20260928-013125; BIOS ISO test 20260928-013840",
+      "Repeated successfully on latest d7876196 disk and/or 00eb19ae ISO; see release validation.json for exact test scope."
+    ],
+    "owner": "Aether maintainer / deployment owner"
+  },
+  {
+    "id": "21.05",
+    "category": "B",
+    "requirement": "Version retention. Retain enough history to recover from delayed discovery of corruption, accidental deletion, or malicious encryption.",
+    "state": "implementation prepared; runtime verification pending",
+    "evidence": [
+      "Aether security source recipes; see SECURITY.md for limits."
+    ],
+    "owner": "Aether maintainer / deployment owner"
+  },
+  {
+    "id": "21.06",
+    "category": "B",
+    "requirement": "Recovery media. Maintain trusted installation or rescue media and document how to reinstall and recover essential services.",
+    "state": "pending",
+    "evidence": [],
+    "owner": "Aether maintainer / deployment owner"
+  },
+  {
+    "id": "21.07",
+    "category": "C",
+    "requirement": "Backup access separation. Use distinct backup identities, limited deletion rights, and protected administration for managed environments.",
+    "state": "pending",
+    "evidence": [],
+    "owner": "Aether maintainer / deployment owner"
+  },
+  {
+    "id": "21.08",
+    "category": "C",
+    "requirement": "Snapshot integration. Use snapshots for convenient recovery while retaining independent backups; local snapshots share important failure and attack risks.",
+    "state": "pending",
+    "evidence": [],
+    "owner": "Aether maintainer / deployment owner"
+  },
+  {
+    "id": "22.01",
+    "category": "B",
+    "requirement": "Response instructions. Provide practical steps to report suspicious behavior, identify support contacts, and preserve useful information.",
+    "state": "pending",
+    "evidence": [],
+    "owner": "Aether maintainer / deployment owner"
+  },
+  {
+    "id": "22.02",
+    "category": "B",
+    "requirement": "Containment capability. Support rapid network isolation or account disabling without unnecessary destruction of investigative evidence.",
+    "state": "pending",
+    "evidence": [],
+    "owner": "Aether maintainer / deployment owner"
+  },
+  {
+    "id": "22.03",
+    "category": "B",
+    "requirement": "Credential revocation. Revoke affected passwords, keys, tokens, sessions, and device identities from a trusted system.",
+    "state": "pending",
+    "evidence": [],
+    "owner": "Aether maintainer / deployment owner"
+  },
+  {
+    "id": "22.04",
+    "category": "B",
+    "requirement": "Trusted rebuilding. Support clean reinstallation and restoration from verified sources after a serious compromise.",
+    "state": "pending",
+    "evidence": [],
+    "owner": "Aether maintainer / deployment owner"
+  },
+  {
+    "id": "22.05",
+    "category": "B",
+    "requirement": "Lost-device procedure. Document reporting, account protection, recovery-key exposure assessment, and the limits of encryption on an unlocked device.",
+    "state": "pending",
+    "evidence": [],
+    "owner": "Aether maintainer / deployment owner"
+  },
+  {
+    "id": "22.06",
+    "category": "C",
+    "requirement": "Evidence preservation. Collect appropriate logs and disk or memory evidence using trained procedures and restricted storage.",
+    "state": "pending",
+    "evidence": [],
+    "owner": "Aether maintainer / deployment owner"
+  },
+  {
+    "id": "22.07",
+    "category": "C",
+    "requirement": "Remote wipe. Offer managed wipe where supported, acknowledging that disconnected devices may never receive the command.",
+    "state": "pending",
+    "evidence": [],
+    "owner": "Aether maintainer / deployment owner"
+  },
+  {
+    "id": "22.08",
+    "category": "C",
+    "requirement": "Post-incident improvement. Track root causes, repair control gaps, and test revised detection, backup, and response procedures.",
+    "state": "pending",
+    "evidence": [],
+    "owner": "Aether maintainer / deployment owner"
+  },
+  {
+    "id": "23.01",
+    "category": "C",
+    "requirement": "Asset ownership. Maintain device inventory, business purpose, responsible owners, and support status for managed systems.",
+    "state": "pending",
+    "evidence": [],
+    "owner": "Aether maintainer / deployment owner"
+  },
+  {
+    "id": "23.02",
+    "category": "C",
+    "requirement": "Configuration management. Deploy reviewed, repeatable configurations and detect unauthorized changes across the fleet.",
+    "state": "pending",
+    "evidence": [],
+    "owner": "Aether maintainer / deployment owner"
+  },
+  {
+    "id": "23.03",
+    "category": "C",
+    "requirement": "Policy profiles. Choose tested workstation, server, kiosk, or high-security profiles rather than applying every hardening control indiscriminately.",
+    "state": "pending",
+    "evidence": [],
+    "owner": "Aether maintainer / deployment owner"
+  },
+  {
+    "id": "23.04",
+    "category": "C",
+    "requirement": "Administrative separation. Separate routine use, production administration, build systems, and security tooling according to risk.",
+    "state": "pending",
+    "evidence": [],
+    "owner": "Aether maintainer / deployment owner"
+  },
+  {
+    "id": "23.05",
+    "category": "C",
+    "requirement": "Service-specific protection. Harden web, database, mail, directory, and storage services using their own supported security guidance.",
+    "state": "pending",
+    "evidence": [],
+    "owner": "Aether maintainer / deployment owner"
+  },
+  {
+    "id": "23.06",
+    "category": "C",
+    "requirement": "Compliance evidence. Collect verifiable configuration and operational evidence for applicable requirements; a checklist is not a certification.",
+    "state": "pending",
+    "evidence": [],
+    "owner": "Aether maintainer / deployment owner"
+  },
+  {
+    "id": "23.07",
+    "category": "C",
+    "requirement": "Exception management. Document incompatible controls, compensating measures, owners, expiration dates, and periodic review.",
+    "state": "pending",
+    "evidence": [],
+    "owner": "Aether maintainer / deployment owner"
+  },
+  {
+    "id": "23.08",
+    "category": "C",
+    "requirement": "Secure provisioning and retirement. Enroll devices through trusted processes and revoke identities, sanitize storage, and remove management access at retirement.",
+    "state": "pending",
+    "evidence": [],
+    "owner": "Aether maintainer / deployment owner"
+  },
+  {
+    "id": "24.01",
+    "category": "B",
+    "requirement": "Secure defaults. Make normal installation and everyday use reasonably safe without requiring users to understand every underlying mechanism.",
+    "state": "pending",
+    "evidence": [],
+    "owner": "Aether maintainer / deployment owner"
+  },
+  {
+    "id": "24.02",
+    "category": "B",
+    "requirement": "Honest status reporting. Distinguish available, enabled, enforced, degraded, and unsupported protections instead of displaying a misleading single score.",
+    "state": "partially implemented; stated runtime checks passed",
+    "evidence": [
+      "Status view distinguishes observed, enforced, unavailable, unverified and incomplete states; it does not claim a complete security score.",
+      "UEFI disk test 20260928-013125; BIOS ISO test 20260928-013840",
+      "Repeated successfully on latest d7876196 disk and/or 00eb19ae ISO; see release validation.json for exact test scope."
+    ],
+    "owner": "Aether maintainer / deployment owner"
+  },
+  {
+    "id": "24.03",
+    "category": "B",
+    "requirement": "Understandable authorization. Explain what access is requested, by which component, for what purpose, and for how long.",
+    "state": "pending",
+    "evidence": [],
+    "owner": "Aether maintainer / deployment owner"
+  },
+  {
+    "id": "24.04",
+    "category": "B",
+    "requirement": "Accessible protection. Make login, recovery, locking, permission prompts, and security status usable with assistive technologies.",
+    "state": "pending",
+    "evidence": [],
+    "owner": "Aether maintainer / deployment owner"
+  },
+  {
+    "id": "24.05",
+    "category": "B",
+    "requirement": "Safe change recovery. Provide rollback or recovery for settings that can prevent login, networking, boot, or disk unlocking.",
+    "state": "implementation prepared; runtime verification pending",
+    "evidence": [
+      "Aether security source recipes; see SECURITY.md for limits."
+    ],
+    "owner": "Aether maintainer / deployment owner"
+  },
+  {
+    "id": "24.06",
+    "category": "B",
+    "requirement": "Tested security boundaries. Test permissions and revocation through real user flows, including updates, device reconnection, sleep, and multiple users.",
+    "state": "pending",
+    "evidence": [],
+    "owner": "Aether maintainer / deployment owner"
+  },
+  {
+    "id": "24.07",
+    "category": "C",
+    "requirement": "Independent assessment. Use targeted penetration tests and architecture reviews for exposed or sensitive deployments, then track remediation.",
+    "state": "pending",
+    "evidence": [],
+    "owner": "Aether maintainer / deployment owner"
+  },
+  {
+    "id": "24.08",
+    "category": "C",
+    "requirement": "Vulnerability reporting. Provide a clear reporting channel and a maintained process for triage, fixes, advisories, and coordinated disclosure.",
+    "state": "pending",
+    "evidence": [],
+    "owner": "Aether maintainer / deployment owner"
+  }
+]

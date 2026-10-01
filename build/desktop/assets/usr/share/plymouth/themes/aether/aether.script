@@ -1,0 +1,33 @@
+# Aether splash. SPDX-License-Identifier: GPL-2.0-or-later
+Window.SetBackgroundTopColor(0.043, 0.078, 0.145);
+Window.SetBackgroundBottomColor(0.043, 0.078, 0.145);
+logo = Sprite(Image("logo.png"));
+logo.SetPosition(Window.GetWidth()/2-96, Window.GetHeight()/2-130, 1);
+angle = 0;
+normal = 1;
+for (i = 0; i < 12; i++) {
+    dots[i] = Sprite(Image("dot.png"));
+    dots[i].SetPosition(Window.GetWidth()/2+Math.Cos(i*6.283/12)*20-3, Window.GetHeight()/2+110+Math.Sin(i*6.283/12)*20-3, 2);
+}
+prompt_sprite = Sprite();
+answer_sprite = Sprite();
+fun refresh() {
+    global.angle += 0.10;
+    for (i = 0; i < 12; i++) dots[i].SetOpacity(normal*(0.25+0.75*(Math.Cos(angle-i*6.283/12)+1)/2));
+}
+fun password(prompt, count) {
+    global.normal = 0;
+    text = Image.Text(prompt, 0.9, 0.93, 1.0);
+    prompt_sprite.SetImage(text);
+    prompt_sprite.SetPosition(Window.GetWidth()/2-text.GetWidth()/2, Window.GetHeight()/2+80, 5);
+    bullets = "";
+    for (i=0; i<count && i<64; i++) bullets += "*";
+    text = Image.Text(bullets, 0.9, 0.93, 1.0);
+    answer_sprite.SetImage(text);
+    answer_sprite.SetPosition(Window.GetWidth()/2-text.GetWidth()/2, Window.GetHeight()/2+115, 5);
+    prompt_sprite.SetOpacity(1); answer_sprite.SetOpacity(1);
+}
+fun display_normal() { global.normal = 1; prompt_sprite.SetOpacity(0); answer_sprite.SetOpacity(0); }
+Plymouth.SetRefreshFunction(refresh);
+Plymouth.SetDisplayPasswordFunction(password);
+Plymouth.SetDisplayNormalFunction(display_normal);

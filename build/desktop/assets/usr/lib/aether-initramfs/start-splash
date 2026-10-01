@@ -1,0 +1,19 @@
+#!/bin/sh
+case " $(cat /proc/cmdline) " in
+ *" splash "*)
+    mkdir -p /dev/pts
+    mount -t devpts -o mode=0620,gid=5 devpts /dev/pts
+    /usr/sbin/modprobe vmwgfx 2>/dev/null || :
+    /usr/sbin/modprobe virtio_gpu 2>/dev/null || :
+    /usr/lib/systemd/systemd-udevd --daemon >/dev/null 2>&1
+    /usr/bin/udevadm trigger --action=add
+    /usr/bin/udevadm settle --timeout=10
+    if [ -r /etc/vconsole.conf ]; then
+        . /etc/vconsole.conf
+        /usr/bin/loadkeys "${KEYMAP:-us}" 2>/dev/null || :
+    fi
+    mkdir -p /run/plymouth
+    /usr/sbin/plymouthd --mode=boot --tty=/dev/tty1 --ignore-serial-consoles --pid-file=/run/plymouth/pid --attach-to-session 2>/dev/null && /usr/bin/plymouth show-splash
+    ;;
+esac
+exit 0

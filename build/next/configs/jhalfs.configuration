@@ -1,0 +1,155 @@
+HAVE_NPROC=y
+HAVE_CGROUP=y
+
+#
+# BOOK Settings
+#
+BOOK_LFS_ANY=y
+# BOOK_BLFS is not set
+# BOOK_LFS is not set
+BOOK_LFS_SYSD=y
+INITSYS="systemd"
+RUN_ME="./jhalfs run"
+# BRANCH is not set
+WORKING_COPY=y
+BOOK="/opt/aether/sources/lfs-r13.1"
+LFS_MULTILIB_NO=y
+# LFS_MULTILIB_I686 is not set
+# LFS_MULTILIB_X32 is not set
+# LFS_MULTILIB_ALL is not set
+MULTILIB="default"
+BUILD_CHROOT=y
+# BUILD_BOOT is not set
+METHOD="chroot"
+BLFS_TOOL=y
+
+#
+# blfs-tool dependencies
+#
+DEP_LIBXML=y
+DEP_LIBXSLT=y
+DEP_DBXML=y
+# DEP_LYNX is not set
+DEP_SUDO=y
+DEP_WGET=y
+# DEP_GPM is not set
+# DEP_GIT is not set
+# end of blfs-tool dependencies
+
+# BLFS_BRANCH is not set
+BLFS_WORKING_COPY=y
+BLFS_WC_LOCATION="/opt/aether/sources/blfs-r13.1"
+BLFS_ROOT="/blfs_root"
+BLFS_XML="blfs-xml"
+LFS_XML="lfs-xml"
+# CUSTOM_TOOLS is not set
+TRACKING_DIR="/var/lib/jhalfs/BLFS"
+# end of BOOK Settings
+
+#
+# General Settings
+#
+LUSER="aetherlfs"
+LGROUP="aetherlfs"
+LHOME="/home"
+BUILDDIR="/opt/aether/system"
+GETPKG=y
+SRC_ARCHIVE="/opt/aether/sources/lfs-cache"
+GNU_REPLACE="ftpmirror.gnu.org"
+# RETRYSRCDOWNLOAD is not set
+RETRYDOWNLOADCNT=3
+DOWNLOADTIMEOUT=30
+# RUNMAKE is not set
+# CLEAN is not set
+# end of General Settings
+
+#
+# Build Settings
+#
+
+#
+# Parallelism settings
+#
+ALL_CORES=y
+CPUSET="all"
+# REALSBU is not set
+# end of Parallelism settings
+
+CONFIG_TESTS=y
+TST_1=y
+# TST_2 is not set
+TEST=1
+# KEEPDIR is not set
+TEST_MISMATCH=y
+# PKGMNGT is not set
+INSTALL_LOG=y
+STRIP=y
+NO_PROGRESS_BAR=y
+# end of Build Settings
+
+#
+# System configuration
+#
+HAVE_FSTAB=y
+FSTAB="/opt/aether/next/configs/fstab"
+# CONFIG_BUILD_KERNEL is not set
+# NCURSES5 is not set
+TIMEZONE="America/Denver"
+LANG="en_US.UTF-8"
+# FULL_LOCALE is not set
+PAGE_LETTER=y
+# PAGE_A4 is not set
+PAGE="letter"
+HOSTNAME="aether"
+
+#
+# Network configuration
+#
+INTERFACE="eth0"
+IP_ADDR="10.0.2.9"
+GATEWAY="10.0.2.2"
+PREFIX="24"
+BROADCAST="10.0.2.255"
+DOMAIN="local"
+DNS1="10.0.2.3"
+DNS2="8.8.8.8"
+# end of Network configuration
+
+#
+# Console configuration
+#
+FONT="lat0-16"
+KEYMAP="us"
+# LOCAL is not set
+# end of Console configuration
+# end of System configuration
+
+#
+# Advanced Features
+#
+# CONFIG_OPTIMIZE is not set
+OPTIMIZE=0
+# REPORT is not set
+# SAVE_CH5 is not set
+# COMPARE is not set
+
+#
+# Internal Settings (WARNING: for jhalfs developers only)
+#
+SCRIPT_ROOT="jhalfs"
+JHALFSDIR="$BUILDDIR/$SCRIPT_ROOT"
+LOGDIRBASE="logs"
+LOGDIR="$JHALFSDIR/$LOGDIRBASE"
+TESTLOGDIRBASE="test-logs"
+TESTLOGDIR="$JHALFSDIR/$TESTLOGDIRBASE"
+FILELOGDIRBASE="installed-files"
+FILELOGDIR="$JHALFSDIR/$FILELOGDIRBASE"
+ICALOGDIR="$LOGDIR/ICA"
+MKFILE="$JHALFSDIR/Makefile"
+XSL="lfs.xsl"
+PKG_LST="unpacked"
+DEL_LA_FILES=y
+# end of Internal Settings (WARNING: for jhalfs developers only)
+# end of Advanced Features
+
+# REBUILD_MAKEFILE is not set

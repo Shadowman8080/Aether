@@ -1,0 +1,15 @@
+#!/bin/sh
+case "$1" in
+  start)
+    /usr/bin/vmware-checkvm >/dev/null 2>&1 || exit 0
+    mkdir -p /run
+    printf 'Starting VMware guest service: '
+    /usr/bin/vmtoolsd -b /run/vmtoolsd.pid && echo OK
+    ;;
+  stop)
+    start-stop-daemon -K -q -p /run/vmtoolsd.pid
+    ;;
+  restart)
+    "$0" stop; "$0" start
+    ;;
+esac

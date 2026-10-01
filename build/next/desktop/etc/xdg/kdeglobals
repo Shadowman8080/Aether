@@ -1,0 +1,7 @@
+[KDE]
+LookAndFeelPackage=org.aether.desktop
+SingleClick=false
+
+[General]
+ColorScheme=BreezeLight
+AccentColor=87,103,218

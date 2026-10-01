@@ -1,0 +1,7 @@
+[Plymouth Theme]
+Name=Aether
+Description=Aether logo and a quiet loading indicator
+ModuleName=script
+[script]
+ImageDir=/usr/share/plymouth/themes/aether
+ScriptFile=/usr/share/plymouth/themes/aether/aether.script

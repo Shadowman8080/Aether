@@ -1,0 +1,12 @@
+[Desktop Entry]
+Type=Application
+Name=Vector
+GenericName=Applications and Files
+Comment=Browse applications and your home folders
+Exec=vector
+Icon=org.aether.Vector
+Terminal=false
+Categories=System;FileTools;
+Keywords=Applications;Finder;Explorer;Files;Folders;
+StartupNotify=true
+StartupWMClass=Vector

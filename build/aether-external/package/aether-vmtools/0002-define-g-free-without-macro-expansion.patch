@@ -1,0 +1,17 @@
+From: Aether Linux <aether@localhost>
+Subject: [PATCH] rpcChannel: define g_free stub without expanding GLib macro
+
+New GLib headers provide a function-like g_free macro. Parenthesize the
+function name so this local implementation still defines the ABI symbol.
+
+--- a/lib/rpcChannel/glib_stubs.c
++++ b/lib/rpcChannel/glib_stubs.c
+@@ -35,7 +35,7 @@
+ 
+ void *g_malloc0(size_t s) { return Util_SafeCalloc(1, s); }
+ void *g_malloc0_n(size_t n, size_t s) { return Util_SafeCalloc(n, s); }
+-void g_free(void *p) { free(p); }
++void (g_free)(void *p) { free(p); }
+ 
+ void g_mutex_init(GMutex *mutex) { }
+ void g_mutex_clear(GMutex *mutex) { }

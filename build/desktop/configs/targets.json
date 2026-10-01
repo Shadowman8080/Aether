@@ -1,0 +1,10 @@
+{
+  "schema": 1,
+  "shared_assets": "assets",
+  "targets": [
+    {"id":"x86", "cpu":"i686", "bits":32, "candidate_cflags":"-O2 -pipe -march=i686 -msse2 -mfpmath=sse", "status":"not-built", "release_gate":"Qt/KWin i686 build, SSE2 baseline and boot/runtime validation"},
+    {"id":"x86_64", "aliases":["x64"], "cpu":"x86_64", "bits":64, "candidate_cflags":"-O2 -pipe -march=x86-64", "status":"foundation-build-in-progress", "release_gate":"native Aether desktop boot/session/search/locking tests"},
+    {"id":"arm64-vm", "cpu":"aarch64", "bits":64, "candidate_cflags":"-O2 -pipe -march=armv8-a", "status":"not-built", "release_gate":"ARM64 UEFI image and matching ARM64 hypervisor or QEMU tests"},
+    {"id":"raspberry-pi-arm64", "cpu":"aarch64", "bits":64, "candidate_cflags":"-O2 -pipe -march=armv8-a", "status":"not-built", "candidate_boards":["Raspberry Pi 4","Raspberry Pi 5"], "release_gate":"board-specific firmware/kernel/device trees, GPU and real-board boot tests"}
+  ]
+}

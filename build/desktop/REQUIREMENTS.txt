@@ -1,0 +1,269 @@
+Desktop shell and navigation
+AuraSearch – macOS’s spotlight search
+Application launcher with search, categories, favorites, and recently used apps.
+Panel, taskbar, dock, or an equivalent way to see and switch running applications.
+Window overview and workspace overview.
+System status area for networking, audio, battery, Bluetooth, and background applications.
+Quick settings for common controls.
+Clock, calendar, and configurable date/time display.
+Desktop context menus and useful application context menus.
+Clear feedback when applications launch, become busy, or fail.
+Keyboard access to every major shell function.
+Usable behavior across small screens, ultrawide monitors, and touchscreens.
+Optional: Desktop icons, widgets, multiple panels, auto-hide docks, and alternative launcher layouts.
+2. Window management
+Move, resize, minimize, maximize, close, and fullscreen windows.
+Edge snapping, side-by-side layouts, and screen quadrants.
+Keyboard shortcuts for positioning and resizing windows.
+Window switching with predictable ordering and previews.
+Virtual desktops/workspaces with keyboard and gesture navigation.
+Move windows between workspaces and monitors.
+Restore sensible window sizes and positions.
+Keep windows reachable after disconnecting a monitor.
+Correct handling of dialogs, transient windows, and modal prompts.
+Focus-stealing prevention and visible attention requests.
+Configurable focus behavior and title-bar actions.
+Optional: Automatic tiling, tabbed or stacked windows, custom layouts, per-application rules, always-on-top, and windows visible on every workspace.
+3. Display and graphics
+A reliable Wayland session.
+XWayland compatibility for legacy X11 applications.
+Hardware-accelerated compositing with a usable fallback where feasible.
+Multiple monitors with independent resolution, refresh rate, orientation, and scaling.
+Fractional scaling and mixed-DPI support.
+Correct resizing and rendering when moving apps between displays.
+Display arrangement, mirroring, primary-display selection, and remembered configurations.
+Safe display-setting changes with automatic rollback if not confirmed.
+Reliable docking, hot-plugging, and external display reconnection.
+Night-light/color-temperature scheduling.
+Color management and ICC profiles.
+HDR and wide-gamut support where the hardware and graphics stack allow it.
+Variable refresh rate support and appropriate fullscreen behavior.
+Screen rotation and orientation sensors on supported devices.
+Optional: Per-monitor brightness controls, including supported external displays.
+HDR, color management, scaling, and accessibility are active areas of desktop development; support should be evaluated across the compositor, drivers, and applications together. KDE Plasma 6.4
+4. Application integration
+Consistent application launching, task tracking, icons, and startup feedback.
+Default applications and file/protocol associations.
+“Open With” selection and easy reassignment of defaults.
+Consistent file dialogs, printing dialogs, notifications, and authentication prompts.
+Clipboard and drag-and-drop interoperability across applications.
+Reasonably consistent GTK, Qt, Electron, and other toolkit integration.
+Support for native distribution packages and sandboxed applications.
+Desktop portals for controlled access to files, screenshots, screen sharing, and other desktop services.
+Permission interfaces that explain what an application is requesting.
+Clear handling of background applications and autostart entries.
+A supported global-shortcut mechanism with appropriate user control.
+Optional: Web-app installation and integration.
+For example, the desktop file chooser portal lets sandboxed applications request user-selected files through a desktop-provided interface. XDG File Chooser portal
+5. File management
+A capable graphical file manager.
+Copy, move, rename, delete, duplicate, and create files and folders.
+Tabs, bookmarks, breadcrumb navigation, and editable paths.
+Search, sorting, filtering, hidden-file controls, and useful metadata.
+Thumbnails and safe previews.
+Clear transfer progress, cancellation, conflict handling, and error recovery.
+Trash, restore, and undo where practical.
+File properties, permissions, ownership information, and symbolic links.
+Removable-drive mounting, encrypted-volume unlocking, and safe ejection.
+Network locations such as SMB and SFTP.
+Archive creation and extraction.
+Useful bulk operations, including batch renaming.
+Consistent handling of disconnected drives and unavailable network shares.
+Optional: Split panes, folder comparison, checksums, and version-control indicators.
+6. Search and discovery
+Fast application and settings search.
+File and folder search.
+Optional content indexing.
+Search across mounted locations where appropriate.
+Useful matching for partial names and minor typing errors.
+Clear result categories and keyboard navigation.
+Controls for indexed locations, exclusions, and indexing resource use.
+Privacy controls for search history and recent items.
+Respect for file permissions and encrypted or disconnected storage.
+Optional: Calculator, unit conversion, dictionary, commands, and explicitly enabled online search providers.
+7. Input devices and text entry
+Keyboard layouts, variants, and easy layout switching.
+International input methods, compose keys, dead keys, and Unicode entry.
+Configurable shortcuts with conflict detection.
+Key repeat, pointer speed, acceleration, and scrolling settings.
+Touchpad tapping, palm rejection, natural scrolling, and gestures.
+Mouse button reassignment and left-handed operation.
+Touchscreen gestures and an on-screen keyboard.
+Stylus/tablet calibration, mapping, pressure, and button configuration.
+Per-device settings where useful.
+Reliable input after suspend, docking, and device reconnection.
+Optional: Per-application input settings and configurable gesture actions.
+8. Accessibility
+Screen-reader integration across the shell, settings, dialogs, and applications.
+Full keyboard navigation with visible focus.
+Screen magnification and zoom.
+Large text and independently adjustable interface scaling.
+High-contrast themes and controls that do not rely on color alone.
+Reduced-motion and disabled-animation options.
+Sticky keys, slow keys, bounce keys, and mouse keys.
+Pointer size, contrast, highlighting, and location assistance.
+Visual alternatives to audible alerts.
+Accessible authentication, lock screen, login, and initial setup.
+Assistive-technology interfaces and accessible application metadata.
+Optional: Color-vision filters, dwell clicking, switch input, and integrated voice control.
+These capabilities should be usable together; a zoom tool, for example, also needs accessible controls and predictable pointer behavior. KDE accessibility documentation
+9. Notifications and attention management
+Consistent notifications with useful actions.
+Notification history.
+Per-application controls for banners, sounds, and persistence.
+Do Not Disturb mode.
+Appropriate handling of urgent alerts.
+Lock-screen privacy controls.
+Progress notifications for long-running operations.
+Sensible placement on multiple monitors.
+Avoidance of notification floods and repeated alerts.
+Optional: Scheduled quiet hours, notification grouping, and presentation-mode suppression.
+10. Audio, video, and media
+Output and input device selection.
+Per-application volume and mute controls.
+Microphone level meters and input testing.
+Clear microphone mute state.
+Bluetooth headset profile selection and understandable switching behavior.
+HDMI, DisplayPort, USB, and docking-station audio integration.
+Hot-plug handling and remembered device preferences.
+Media keys and shared playback controls.
+Camera access controls and useful camera testing.
+Visible indication of microphone, camera, and screen-capture activity where supported.
+Optional: Audio balance, advanced routing, equalization, and spatial-audio configuration.
+11. Networking and connectivity
+Wi-Fi discovery, connection, saved networks, and signal information.
+Ethernet configuration and status.
+VPN setup, connection state, and credential handling.
+Bluetooth pairing, reconnecting, and device management.
+Airplane mode.
+Captive-portal detection and login assistance.
+Proxy, DNS, IPv4, and IPv6 settings.
+Metered-connection controls.
+Useful connection diagnostics and actionable errors.
+Optional: Wi-Fi hotspots, mobile broadband/eSIM integration, and nearby file sharing.
+12. Power and battery
+Battery level, charging state, and useful remaining-time estimates.
+Low-battery and critical-battery actions.
+Screen dimming, blanking, and automatic locking.
+Suspend and reliable resume.
+Hibernation controls when the system supports it.
+Lid-close and power-button behavior.
+Separate battery and AC-power settings.
+Power profiles with understandable tradeoffs.
+Correct handling of applications that temporarily inhibit sleep.
+Battery health and charge limits where supported.
+Peripheral battery information.
+Optional: Per-application energy information and scheduled power behavior.
+13. Security and privacy
+A reliable lock screen with no exposure of the active session.
+Automatic locking and correct behavior around suspend/resume.
+Clear authentication prompts identifying the requested privileged operation.
+Integration with secure credential storage.
+Application-permission management where enforcement is available.
+Privacy controls for camera, microphone, location, history, and recent files.
+Clear indicators and stop controls for screen sharing and remote access.
+Protection against unintended input capture and unauthorized screen capture.
+Session isolation between users.
+User-controlled telemetry and understandable data collection settings.
+Optional: Fingerprint/security-key authentication and enterprise identity integration.
+GNOME’s settings organization illustrates how device access, screen locking, accounts, and other privacy controls belong in the normal desktop configuration experience. GNOME user and system settings
+14. Screenshots, recording, and remote access
+Full-screen, window, and region screenshots.
+Save-to-file and copy-to-clipboard options.
+Delayed capture and cursor inclusion controls.
+Screen recording with clear recording status.
+Window- or monitor-specific screen sharing.
+Explicit source selection and an obvious way to stop sharing.
+Correct behavior with scaling and multiple monitors.
+Optional: Screenshot annotation, remote desktop hosting, remote login, and remote assistance.
+For remote access: authentication, encryption, consent appropriate to the use case, and visible session status.
+15. Settings and personalization
+A unified, searchable settings application.
+Clear defaults and explanations for unfamiliar settings.
+Immediate previews where safe, with rollback for disruptive changes.
+Light and dark appearance.
+Font, text-size, cursor, icon, wallpaper, and accent-color controls.
+Consistent appearance preferences across applications.
+Shortcut customization.
+Autostart and background-service management.
+Reset-to-default options.
+Optional: Scheduled appearance changes, per-monitor wallpapers, theme packages, and settings export/import.
+16. Software installation and updates
+Graphical application discovery and installation.
+Clear descriptions, screenshots, licenses, and publisher/source information.
+Distinguishable package sources and versions.
+Installation, removal, and update progress.
+Permission information for sandboxed applications.
+Update notifications and scheduling controls.
+Clear restart requirements.
+Handling of failed, interrupted, and offline updates.
+Firmware-update integration where supported.
+Respect for metered networks and low battery.
+Optional: System rollback and snapshot integration where the distribution provides it.
+17. Session and user management
+Login, logout, restart, shutdown, and user switching.
+Guest or temporary sessions where appropriate.
+User-account and password management.
+Autostart controls.
+Clear handling of unsaved work during logout/shutdown.
+Session recovery after crashes.
+Restoration of applications and workspace state where applications support it.
+Consistent locale, time-zone, and language configuration.
+Optional: Multiple desktop-session choices and synchronized preferences.
+18. Hardware and peripherals
+Printer discovery, setup, queue management, and useful failure messages.
+Scanner integration.
+Removable storage and encrypted-drive handling.
+Docking-station support.
+Webcam, microphone, game-controller, and drawing-tablet discovery.
+Sensor integration for brightness and rotation.
+Hardware information and driver-status visibility where available.
+Notifications explaining unsupported or malfunctioning devices.
+Optional: Thunderbolt/USB4 device authorization and specialized peripheral configuration.
+19. Essential utilities and help
+Terminal emulator.
+Text editor.
+Image viewer.
+Document/PDF viewer.
+Archive manager.
+Calculator.
+System monitor and process management.
+Disk-usage and storage-management tools.
+Help, keyboard-shortcut reference, and first-run guidance.
+Useful crash reporting and diagnostic collection with user control.
+Integration with backup and restore tools.
+Optional: Screenshot editor, character picker, logs viewer, and advanced disk tools.
+20. Accounts and cross-device integration — optional
+Online accounts for calendar, contacts, files, and mail-capable applications.
+Clear controls for which services each account enables.
+Phone notifications, file transfer, and media controls.
+Cross-device clipboard with explicit privacy controls.
+Settings synchronization.
+Cloud-storage integration with understandable offline and sync states.
+Local-network sharing.
+Reliable account removal and credential revocation.
+Online account integration should expose individual services rather than make connecting an account an all-or-nothing decision. GNOME online accounts
+21. Extensibility and automation — optional
+Documented extension, widget, and plugin interfaces.
+Clear compatibility requirements and update behavior.
+Safe recovery when an extension breaks the shell.
+Easy disabling of third-party customizations.
+Command-line and D-Bus interfaces for useful desktop operations.
+Scriptable shortcuts and actions.
+Importable/exportable settings.
+Administrative policy controls for managed deployments.
+22. Performance, reliability, and overall quality
+Responsive interaction under ordinary and heavy workloads.
+Predictable memory, CPU, GPU, and background I/O use.
+Fast login and application launching.
+Efficient idle behavior and good battery life.
+Smooth animations with reduced-motion alternatives.
+Stability across suspend/resume, docking, and monitor changes.
+Graceful handling of full disks, network failures, and disconnected devices.
+Bounded caches and logs.
+No silent data loss during ordinary file and session operations.
+Clear, actionable errors.
+Broad localization, right-to-left text support, and correct regional formats.
+Consistent behavior across applications.
+Testing across different GPUs, display scales, input methods, accessibility tools, and hardware configurations.
+Maintained documentation, security updates, and a sustainable release process.

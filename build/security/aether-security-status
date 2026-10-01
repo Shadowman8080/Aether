@@ -1,0 +1,79 @@
+#!/usr/bin/env python3
+"""Report observed protections and limitations. No security score or secrets."""
+import json
+import os
+from pathlib import Path
+import shutil
+import subprocess
+import sys
+
+def read(path):
+    try:
+        return Path(path).read_text().strip()
+    except (OSError, UnicodeError):
+        return None
+
+def command(args):
+    try:
+        p = subprocess.run(args, capture_output=True, text=True, timeout=10)
+        return p.returncode, p.stdout.strip()
+    except (OSError, subprocess.TimeoutExpired):
+        return 127, ''
+
+def report():
+    rows = []
+    def add(id, state, detail):
+        rows.append(dict(control=id, state=state, detail=detail))
+    add('Release maintenance', 'development', 'Aether 0.3 has no production security-update repository or support SLA yet.')
+    secure = list(Path('/sys/firmware/efi/efivars').glob('SecureBoot-*'))
+    try:
+        value = secure[0].read_bytes()[4] if secure else None
+    except (OSError, IndexError):
+        value = None
+    add('Secure Boot', 'enabled' if value == 1 else 'disabled' if value == 0 else 'unavailable',
+        'Firmware state only; this does not establish that every Aether boot artifact is authenticated.')
+    code, mounts = command(['findmnt', '-n', '-o', 'SOURCE,FSTYPE', '/'])
+    add('System storage encryption', 'needs verification', mounts or 'Root backing device unavailable; LUKS tools alone do not encrypt the disk.')
+    swaps = read('/proc/swaps') or ''
+    entries = swaps.splitlines()[1:]
+    disk_swap = [s.split()[0] for s in entries if not s.split()[0].startswith('/dev/zram')]
+    add('Swap', 'needs verification' if disk_swap else 'protected from disk writes',
+        'Non-zram swap: ' + ', '.join(disk_swap) if disk_swap else 'No disk-backed swap is active. Compressed RAM is not disk encryption.')
+    nft = shutil.which('nft', path='/usr/bin:/usr/sbin')
+    code, text = command([nft, 'list', 'table', 'inet', 'aether_filter']) if nft else (127, '')
+    good = code == 0 and 'policy drop;' in text and 'chain input' in text and 'chain forward' in text
+    add('IPv4/IPv6 firewall', 'enforced' if good else 'unverified',
+        'Aether stateful incoming/forwarding filter loaded; outgoing traffic allowed.' if good else 'Run sudo aether-security-status to inspect active kernel rules.')
+    lsm = read('/sys/kernel/security/lsm')
+    profiles = read('/sys/kernel/security/apparmor/profiles')
+    enforcing = [p for p in (profiles or '').splitlines() if p.endswith('(enforce)')]
+    add('AppArmor', 'enforcing selected profiles' if enforcing else 'unverified',
+        ', '.join(enforcing) if enforcing else 'No enforcing profile could be read. Framework availability is not application coverage.')
+    add('Security modules', 'observed' if lsm else 'unavailable', lsm or 'Securityfs information unavailable.')
+    for name, path, wanted in [('Kernel log access', '/proc/sys/kernel/dmesg_restrict', '1'),
+                                ('Kernel pointer access', '/proc/sys/kernel/kptr_restrict', '2'),
+                                ('Process tracing', '/proc/sys/kernel/yama/ptrace_scope', '1'),
+                                ('Address randomization', '/proc/sys/kernel/randomize_va_space', '2')]:
+        actual = read(path)
+        add(name, 'enforced' if actual == wanted else 'degraded', 'Observed value: ' + str(actual))
+    session = os.environ.get('XDG_SESSION_TYPE', 'unknown')
+    if session in ('unknown', 'tty') and os.environ.get('SUDO_USER'):
+        rc, sessions = command(['loginctl', 'show-user', os.environ['SUDO_USER'], '-p', 'Sessions', '--value'])
+        types = [command(['loginctl', 'show-session', s, '-p', 'Type', '--value'])[1] for s in sessions.split()]
+        session = 'x11' if 'x11' in types else 'wayland' if 'wayland' in types else session
+    add('Desktop isolation', 'reduced isolation' if session == 'x11' else 'session dependent',
+        'X11 applications can access other applications in the same session. VMware clipboard uses X11.' if session == 'x11' else 'Wayland isolates ordinary clients; permissions and XWayland compatibility still matter.')
+    add('Backup', 'not configured' if not Path('/etc/aether-security/backup.json').exists() else 'configured; verify recent restore',
+        'Encrypted backups require a destination, credentials and successful restore test. Writable cloud sync is not immutable storage.')
+    code, failed = command(['systemctl', '--failed', '--no-legend', '--no-pager', '--plain'])
+    add('Failed system services', 'attention' if failed else 'none reported' if code == 0 else 'unavailable', failed or 'No failures returned.')
+    add('Checklist scope', 'incomplete', '192 requirements tracked in /usr/share/aether-security/checklist.json. Pending entries are not implemented controls.')
+    return rows
+
+if __name__ == '__main__':
+    rows = report()
+    if '--text' in sys.argv:
+        for row in rows:
+            print(row['control'] + ': ' + row['state'] + '\n  ' + row['detail'] + '\n')
+    else:
+        print(json.dumps(rows, indent=2))

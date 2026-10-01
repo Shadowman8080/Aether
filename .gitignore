@@ -99,6 +99,18 @@ venv/
 env/
 ENV/
 
+# NOTE: "build/" is NOT excluded. The bare "build/" above is Python's
+# setuptools artefact directory, but Aether's build host tree lives at the
+# repository root under build/ and is tracked on purpose. The negation below is
+# anchored to the root so it cannot re-enable setuptools output in subpackages.
+!/build/
+
+# Same reasoning for "lib/". Aether's initramfs helpers are real source that
+# ships in the image, and they live under a lib/ directory. Without this they
+# were silently dropped from the build tree. The pattern is fully anchored so it
+# only re-includes the one known path.
+!/build/desktop/assets/usr/lib/
+
 # Testing and type checking
 .pytest_cache/
 .mypy_cache/

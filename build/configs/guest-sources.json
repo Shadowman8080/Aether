@@ -1,0 +1,12 @@
+[
+  {
+    "filename": "open-vm-tools-13.1.0-25218885.tar.gz",
+    "url": "https://github.com/vmware/open-vm-tools/releases/download/stable-13.1.0/open-vm-tools-13.1.0-25218885.tar.gz",
+    "sha256": "67a23d505aca77127b081445f758e269b1009e8824cf7f6f2d6efafb0b14d0fd"
+  },
+  {
+    "filename": "VirtualBox-7.2.20.tar.bz2",
+    "url": "https://download.virtualbox.org/virtualbox/7.2.20/VirtualBox-7.2.20.tar.bz2",
+    "sha256": "5c2138213b72f36c129b92c2c267f2a40e9c98513f4c86a584327f09f9be706d"
+  }
+]

@@ -1,0 +1,527 @@
+[
+  {
+    "key": "glib2",
+    "url": "https://download.gnome.org/sources/glib/2.88/glib-2.88.3.tar.xz",
+    "filename": "glib-2.88.3.tar.xz",
+    "md5": "b61c04cfbf55b0d24fbe64e4ac9e9d56",
+    "sha256": "ab24d24e698dfa1e408b7bcdb508f4aafc906185a8b8ce72fdf79bbbdc9b383b"
+  },
+  {
+    "key": "libtirpc",
+    "url": "https://downloads.sourceforge.net/libtirpc/libtirpc-1.3.7.tar.bz2",
+    "filename": "libtirpc-1.3.7.tar.bz2",
+    "md5": "74f97df306b8d6149d3d9898a1d44c6e",
+    "sha256": "b47d3ac19d3549e54a05d0019a6c400674da716123858cfdb6d3bdd70a66c702"
+  },
+  {
+    "key": "fuse3",
+    "url": "https://github.com/libfuse/libfuse/releases/download/fuse-3.18.2/fuse-3.18.2.tar.gz",
+    "filename": "fuse-3.18.2.tar.gz",
+    "md5": "43c6f6cd2c1368d916f6fb080eb39cbb",
+    "sha256": "f01de85717e20adf5f98aff324acd85dd73d61a5ca3834d573dcf0bd6e54a298"
+  },
+  {
+    "key": "libpng",
+    "url": "https://downloads.sourceforge.net/libpng/libpng-1.6.58.tar.xz",
+    "filename": "libpng-1.6.58.tar.xz",
+    "md5": "c6c372a9d7754c66e0b77a8d34987a3b",
+    "sha256": "28eb403f51f0f7405249132cecfe82ea5c0ef97f1b32c5a65828814ae0d34775"
+  },
+  {
+    "key": "freetype2",
+    "url": "https://downloads.sourceforge.net/freetype/freetype-2.14.3.tar.xz",
+    "filename": "freetype-2.14.3.tar.xz",
+    "md5": "5e78e6fdce5a61d3075e4c25e9852f84",
+    "sha256": "36bc4f1cc413335368ee656c42afca65c5a3987e8768cc28cf11ba775e785a5f"
+  },
+  {
+    "key": "fontconfig",
+    "url": "https://gitlab.freedesktop.org/api/v4/projects/890/packages/generic/fontconfig/2.18.3/fontconfig-2.18.3.tar.xz",
+    "filename": "fontconfig-2.18.3.tar.xz",
+    "md5": "ce819e229ca6fb7d1be47a192d6681a3",
+    "sha256": "4f7b554a38cdf78c033f666c8871f3749e14a094f65a07f630c91ed0b43d35e3"
+  },
+  {
+    "key": "util-macros",
+    "url": "https://www.x.org/pub/individual/util/util-macros-1.20.2.tar.xz",
+    "filename": "util-macros-1.20.2.tar.xz",
+    "md5": "5f683a1966834b0a6ae07b3680bcb863",
+    "sha256": "9ac269eba24f672d7d7b3574e4be5f333d13f04a7712303b1821b2a51ac82e8e"
+  },
+  {
+    "key": "xorgproto",
+    "url": "https://xorg.freedesktop.org/archive/individual/proto/xorgproto-2025.1.tar.xz",
+    "filename": "xorgproto-2025.1.tar.xz",
+    "md5": "15534fa6fb13a6a70afe7561c1424f3c",
+    "sha256": "56898c716c0578df8a2d828c9c3e5c528277705c0484381a81960fe1a67668e8"
+  },
+  {
+    "key": "libXau",
+    "url": "https://www.x.org/pub/individual/lib/libXau-1.0.12.tar.xz",
+    "filename": "libXau-1.0.12.tar.xz",
+    "md5": "4c9f81acf00b62e5de56a912691bd737",
+    "sha256": "74d0e4dfa3d39ad8939e99bda37f5967aba528211076828464d2777d477fc0fb"
+  },
+  {
+    "key": "libXdmcp",
+    "url": "https://www.x.org/pub/individual/lib/libXdmcp-1.1.5.tar.xz",
+    "filename": "libXdmcp-1.1.5.tar.xz",
+    "md5": "ce0af51de211e4c99a111e64ae1df290",
+    "sha256": "d8a5222828c3adab70adf69a5583f1d32eb5ece04304f7f8392b6a353aa2228c"
+  },
+  {
+    "key": "xcb-proto",
+    "url": "https://xorg.freedesktop.org/archive/individual/proto/xcb-proto-1.17.0.tar.xz",
+    "filename": "xcb-proto-1.17.0.tar.xz",
+    "md5": "c415553d2ee1a8cea43c3234a079b53f",
+    "sha256": "2c1bacd2110f4799f74de6ebb714b94cf6f80fb112316b1219480fd22562148c"
+  },
+  {
+    "key": "libxcb",
+    "url": "https://xorg.freedesktop.org/archive/individual/lib/libxcb-1.17.0.tar.xz",
+    "filename": "libxcb-1.17.0.tar.xz",
+    "md5": "96565523e9f9b701fcb35d31f1d4086e",
+    "sha256": "599ebf9996710fea71622e6e184f3a8ad5b43d0e5fa8c4e407123c88a59a6d55"
+  },
+  {
+    "key": "pixman",
+    "url": "https://www.cairographics.org/releases/pixman-0.46.4.tar.gz",
+    "filename": "pixman-0.46.4.tar.gz",
+    "md5": "c08173c8e1d2cc79428d931c13ffda59",
+    "sha256": "d09c44ebc3bd5bee7021c79f922fe8fb2fb57f7320f55e97ff9914d2346a591c"
+  },
+  {
+    "key": "libdrm",
+    "url": "https://dri.freedesktop.org/libdrm/libdrm-2.4.134.tar.xz",
+    "filename": "libdrm-2.4.134.tar.xz",
+    "md5": "0e70607bb5c2f7ecbc411e6a2fab8b22",
+    "sha256": "ac5e74d157830eb8bee44c6a6bf3ad49774ef0dd2a72bdad74a8f20308b52a95"
+  },
+  {
+    "key": "cairo",
+    "url": "https://www.cairographics.org/releases/cairo-1.18.4.tar.xz",
+    "filename": "cairo-1.18.4.tar.xz",
+    "md5": "db575fb41bbda127e0147e401f36f8ac",
+    "sha256": "445ed8208a6e4823de1226a74ca319d3600e83f6369f99b14265006599c32ccb"
+  },
+  {
+    "key": "harfbuzz",
+    "url": "https://github.com/harfbuzz/harfbuzz/releases/download/14.3.1/harfbuzz-14.3.1.tar.xz",
+    "filename": "harfbuzz-14.3.1.tar.xz",
+    "md5": "4baccda978c92e5f27702ed8b3ceefa7",
+    "sha256": "9dae9538aae2ffdf70cec31f2c27bf68e2aaeeae3112688467697d5faf6194f7"
+  },
+  {
+    "key": "fribidi",
+    "url": "https://github.com/fribidi/fribidi/releases/download/v1.0.16/fribidi-1.0.16.tar.xz",
+    "filename": "fribidi-1.0.16.tar.xz",
+    "md5": "333ad150991097a627755b752b87f9ff",
+    "sha256": "1b1cde5b235d40479e91be2f0e88a309e3214c8ab470ec8a2744d82a5a9ea05c"
+  },
+  {
+    "key": "pango",
+    "url": "https://download.gnome.org/sources/pango/1.58/pango-1.58.2.tar.xz",
+    "filename": "pango-1.58.2.tar.xz",
+    "md5": "7b5640fd9adfa24554a88b2b9a6cd3f3",
+    "sha256": "342385b6ca3b7c73455d7c80a13b7dbe4489e00bc3bd4c5bd6ed4dce421e374a"
+  },
+  {
+    "key": "gdk-pixbuf",
+    "url": "https://download.gnome.org/sources/gdk-pixbuf/2.44/gdk-pixbuf-2.44.7.tar.xz",
+    "filename": "gdk-pixbuf-2.44.7.tar.xz",
+    "md5": "2a12da2133476b7b36fbfcadd7133315",
+    "sha256": "172f80e3626ec31520a970400f1a3694e04718f6c2cd2885f75250fb5a6995a4"
+  },
+  {
+    "key": "at-spi2-core",
+    "url": "https://download.gnome.org/sources/at-spi2-core/2.60/at-spi2-core-2.60.6.tar.xz",
+    "filename": "at-spi2-core-2.60.6.tar.xz",
+    "md5": "1082626c9a82694b7900f8283b20dfac",
+    "sha256": "a89b64a8b217a8042bdf0e35cbfab629ceee35640dba75df578afde9aa789d57"
+  },
+  {
+    "key": "libepoxy",
+    "url": "https://download.gnome.org/sources/libepoxy/1.5/libepoxy-1.5.10.tar.xz",
+    "filename": "libepoxy-1.5.10.tar.xz",
+    "md5": "10c635557904aed5239a4885a7c4efb7",
+    "sha256": "072cda4b59dd098bba8c2363a6247299db1fa89411dc221c8b81b8ee8192e623"
+  },
+  {
+    "key": "gtk3",
+    "url": "https://download.gnome.org/sources/gtk/3.24/gtk-3.24.52.tar.xz",
+    "filename": "gtk-3.24.52.tar.xz",
+    "md5": "4dfad1e56bf8ad25dfab58add17e7146",
+    "sha256": "80931fa472a77b9a164f6740e3c0b444fac6770054632d35a7ff9d679e5e7b9f"
+  },
+  {
+    "key": "xkeyboard-config",
+    "url": "https://www.x.org/pub/individual/data/xkeyboard-config/xkeyboard-config-2.48.tar.xz",
+    "filename": "xkeyboard-config-2.48.tar.xz",
+    "md5": "575106aff79b589abe4aff6c4bff4782",
+    "sha256": "b77041324f0109f77161ee43743fe04baa485866af8460d31e476ad3f7648fd5"
+  },
+  {
+    "key": "libxcvt",
+    "url": "https://www.x.org/pub/individual/lib/libxcvt-0.1.3.tar.xz",
+    "filename": "libxcvt-0.1.3.tar.xz",
+    "md5": "7fb9c51d33a680f724f34da41768b1d0",
+    "sha256": "a929998a8767de7dfa36d6da4751cdbeef34ed630714f2f4a767b351f2442e01"
+  },
+  {
+    "key": "xorg-server",
+    "url": "https://www.x.org/pub/individual/xserver/xorg-server-21.1.24.tar.xz",
+    "filename": "xorg-server-21.1.24.tar.xz",
+    "md5": "19c2d104a6c9ba85b4896ef75b2d1084",
+    "sha256": "1a4eb36ca65cc3b1b936566d677a9786e13c11cd5806e951ac55f3f5ce3984af"
+  },
+  {
+    "key": "xinit",
+    "url": "https://www.x.org/pub/individual/app/xinit-1.4.4.tar.xz",
+    "filename": "xinit-1.4.4.tar.xz",
+    "md5": "e7430a710261c9129b1280f26cb159a5",
+    "sha256": "40a47c7a164c7f981ce3787b4b37f7e411fb43231dcde543d70094075dacfef9"
+  },
+  {
+    "key": "twm",
+    "url": "https://www.x.org/pub/individual/app/twm-1.0.13.1.tar.xz",
+    "filename": "twm-1.0.13.1.tar.xz",
+    "md5": "2a337b776c904eab5b874eddc0124d4f",
+    "sha256": "a52534755aa8b492c884e52fa988bac84ab4d54641954679b9aaf08e323df2c5"
+  },
+  {
+    "key": "xterm",
+    "url": "https://invisible-mirror.net/archives/xterm/xterm-411.tgz",
+    "filename": "xterm-411.tgz",
+    "md5": "08193f9b11db32c37aad00be4e386933",
+    "sha256": "969be283670deadd66934865c4de6c5ab045e3a3facc2b228decf91a20d8c36c"
+  },
+  {
+    "key": "xbitmaps",
+    "url": "https://www.x.org/pub/individual/data/xbitmaps-1.1.4.tar.xz",
+    "filename": "xbitmaps-1.1.4.tar.xz",
+    "md5": "793992635c45250028eaec226af416fc",
+    "sha256": "895722f136e21e728c52f2d99fd2dae95018b9ddad1bac1f29d61bcd6593721d"
+  },
+  {
+    "key": "libevdev",
+    "url": "https://www.freedesktop.org/software/libevdev/libevdev-1.13.6.tar.xz",
+    "filename": "libevdev-1.13.6.tar.xz",
+    "md5": "4202ff132e3efe95fe9ca2c4f8f119f7",
+    "sha256": "73f215eccbd8233f414737ac06bca2687e67c44b97d2d7576091aa9718551110"
+  },
+  {
+    "key": "efivar",
+    "url": "https://github.com/rhboot/efivar/archive/39/efivar-39.tar.gz",
+    "filename": "efivar-39.tar.gz",
+    "md5": "a8fc3e79336cd6e738ab44f9bc96a5aa",
+    "sha256": "c9edd15f2eeeea63232f3e669a48e992c7be9aff57ee22672ac31f5eca1609a6"
+  },
+  {
+    "key": "efibootmgr",
+    "url": "https://github.com/rhboot/efibootmgr/archive/18/efibootmgr-18.tar.gz",
+    "filename": "efibootmgr-18.tar.gz",
+    "md5": "e170147da25e1d5f72721ffc46fe4e06",
+    "sha256": "442867d12f8525034a404fc8af3036dba8e1fc970998af2486c3b940dfad0874"
+  },
+  {
+    "key": "rpcsvc-proto",
+    "url": "https://github.com/thkukuk/rpcsvc-proto/releases/download/v1.4.4/rpcsvc-proto-1.4.4.tar.xz",
+    "filename": "rpcsvc-proto-1.4.4.tar.xz",
+    "md5": "bf908de360308d909e9cc469402ff2ef",
+    "sha256": "81c3aa27edb5d8a18ef027081ebb984234d5b5860c65bd99d4ac8f03145a558b"
+  },
+  {
+    "key": "libsigc",
+    "url": "https://download.gnome.org/sources/libsigc++/2.12/libsigc++-2.12.1.tar.xz",
+    "filename": "libsigc++-2.12.1.tar.xz",
+    "md5": "891f1b2dbaebd8007eda8c639bbe1149",
+    "sha256": "a9dbee323351d109b7aee074a9cb89ca3e7bcf8ad8edef1851f4cf359bd50843"
+  },
+  {
+    "key": "glibmm",
+    "url": "https://download.gnome.org/sources/glibmm/2.66/glibmm-2.66.10.tar.xz",
+    "filename": "glibmm-2.66.10.tar.xz",
+    "md5": "04fab47987ee9df63f808959577d153b",
+    "sha256": "2b61780203aed98e701d3ea57c8f353e7c8ada9706a79be782f6c5153dd035c0"
+  },
+  {
+    "key": "cairomm",
+    "url": "https://www.cairographics.org/releases/cairomm-1.14.6.tar.xz",
+    "filename": "cairomm-1.14.6.tar.xz",
+    "md5": "634242bb797fb6e9d7cfae1a83474d11",
+    "sha256": "7e0d5c7f29175d573a03ab5c45aef63f48dd91a5caf335a404cd763e4b7cea4a"
+  },
+  {
+    "key": "pangomm",
+    "url": "https://download.gnome.org/sources/pangomm/2.46/pangomm-2.46.5.tar.xz",
+    "filename": "pangomm-2.46.5.tar.xz",
+    "md5": "4fc19301ccc94e4fb72f1ed54bc65d4d",
+    "sha256": "38ca0b050b065de4e3da0c182df657437757063bbf0c4b6c9567ddba019b1d68"
+  },
+  {
+    "key": "atkmm",
+    "url": "https://download.gnome.org/sources/atkmm/2.28/atkmm-2.28.5.tar.xz",
+    "filename": "atkmm-2.28.5.tar.xz",
+    "md5": "c9bdc196eed368c274177b0c1caf140c",
+    "sha256": "ae449192a582a2582a95e0602b15d792bbd639e836339b81ef916aa87540ac5c"
+  },
+  {
+    "key": "gtkmm3",
+    "url": "https://download.gnome.org/sources/gtkmm/3.24/gtkmm-3.24.11.tar.xz",
+    "filename": "gtkmm-3.24.11.tar.xz",
+    "md5": "554154811621e1e411285dde09ca8913",
+    "sha256": "19e383c82d5dd89db275e00b82864e90414d4c3fb3d100b2f996bcc2338a4cc7"
+  },
+  {
+    "key": "shared-mime-info",
+    "url": "https://gitlab.freedesktop.org/xdg/shared-mime-info/-/archive/2.5.1/shared-mime-info-2.5.1.tar.gz",
+    "filename": "shared-mime-info-2.5.1.tar.gz",
+    "md5": "5f8baa7bac254ea9e65782f754a2880b",
+    "sha256": "ea248ea157b7fa0165f4fe282c84919fa84c3f175553642f229c8f1ab7539128"
+  },
+  {
+    "key": "mtdev",
+    "url": "https://bitmath.org/code/mtdev/mtdev-1.1.7.tar.bz2",
+    "filename": "mtdev-1.1.7.tar.bz2",
+    "md5": "483ed7fdf7c1e7b7375c05a62848cce7",
+    "sha256": "a107adad2101fecac54ac7f9f0e0a0dd155d954193da55c2340c97f2ff1d814e"
+  },
+  {
+    "key": "popt",
+    "url": "https://ftp.osuosl.org/pub/rpm/popt/releases/popt-1.x/popt-1.19.tar.gz",
+    "filename": "popt-1.19.tar.gz",
+    "md5": "eaa2135fddb6eb03f2c87ee1823e5a78",
+    "sha256": "c25a4838fc8e4c1c8aacb8bd620edb3084a3d63bf8987fdad3ca2758c63240f9"
+  },
+  {
+    "key": "which",
+    "url": "https://ftp.gnu.org/gnu/which/which-2.25.tar.gz",
+    "filename": "which-2.25.tar.gz",
+    "md5": "60140cb2637634e4f4e68c2e98c6a07b",
+    "sha256": "1cb83e4f702e60b8211ab5ec4c2afbab1b1dec80209456a7d2faf7584ed225ea"
+  },
+  {
+    "key": "xtrans",
+    "url": "https://www.x.org/pub/individual/lib/xtrans-1.6.0.tar.xz",
+    "filename": "xtrans-1.6.0.tar.xz",
+    "md5": "6ad67d4858814ac24e618b8072900664",
+    "sha256": "faafea166bf2451a173d9d593352940ec6404145c5d1da5c213423ce4d359e92"
+  },
+  {
+    "key": "libX11",
+    "url": "https://www.x.org/pub/individual/lib/libX11-1.8.13.tar.xz",
+    "filename": "libX11-1.8.13.tar.xz",
+    "md5": "b617a053d2003cc81309f4e13d01379c",
+    "sha256": "69606f485c2c07c14ef64f75b7bb326d48587af33795d9ab3e607c0b5f94f11c"
+  },
+  {
+    "key": "libXext",
+    "url": "https://www.x.org/pub/individual/lib/libXext-1.3.7.tar.xz",
+    "filename": "libXext-1.3.7.tar.xz",
+    "md5": "ea8149187a26e9df6dbd94a60b3d8da0",
+    "sha256": "6c643c7035cdacf67afd68f25d01b90ef889d546c9fcd7c0adf7c2cf91e3a32d"
+  },
+  {
+    "key": "libICE",
+    "url": "https://www.x.org/pub/individual/lib/libICE-1.1.2.tar.xz",
+    "filename": "libICE-1.1.2.tar.xz",
+    "md5": "d1ffde0a07709654b20bada3f9abdd16",
+    "sha256": "974e4ed414225eb3c716985df9709f4da8d22a67a2890066bc6dfc89ad298625"
+  },
+  {
+    "key": "libSM",
+    "url": "https://www.x.org/pub/individual/lib/libSM-1.2.6.tar.xz",
+    "filename": "libSM-1.2.6.tar.xz",
+    "md5": "3aeeea05091db1c69e6f768e0950a431",
+    "sha256": "be7c0abdb15cbfd29ac62573c1c82e877f9d4047ad15321e7ea97d1e43d835be"
+  },
+  {
+    "key": "libXScrnSaver",
+    "url": "https://www.x.org/pub/individual/lib/libXScrnSaver-1.2.5.tar.xz",
+    "filename": "libXScrnSaver-1.2.5.tar.xz",
+    "md5": "ec09c90a1cfd2c0630321d366a5e7203",
+    "sha256": "5057365f847253e0e275871441e10ff7846c8322a5d88e1e187d326de1cd8d00"
+  },
+  {
+    "key": "libXt",
+    "url": "https://www.x.org/pub/individual/lib/libXt-1.3.1.tar.xz",
+    "filename": "libXt-1.3.1.tar.xz",
+    "md5": "9acd189c68750b5028cf120e53c68009",
+    "sha256": "e0a774b33324f4d4c05b199ea45050f87206586d81655f8bef4dba434d931288"
+  },
+  {
+    "key": "libXmu",
+    "url": "https://www.x.org/pub/individual/lib/libXmu-1.3.1.tar.xz",
+    "filename": "libXmu-1.3.1.tar.xz",
+    "md5": "1ef8065f0284e76c2238770365012ab2",
+    "sha256": "81a99e94c4501e81c427cbaa4a11748b584933e94b7a156830c3621256857bc4"
+  },
+  {
+    "key": "libXpm",
+    "url": "https://www.x.org/pub/individual/lib/libXpm-3.5.19.tar.xz",
+    "filename": "libXpm-3.5.19.tar.xz",
+    "md5": "cdc7a83243dba674b1ea3c365a1deab1",
+    "sha256": "ad3576d689221a39dc728f0e0dc02ca7bb6a0d724c9a77fd1bfa1e9af83be900"
+  },
+  {
+    "key": "libXaw",
+    "url": "https://www.x.org/pub/individual/lib/libXaw-1.0.16.tar.xz",
+    "filename": "libXaw-1.0.16.tar.xz",
+    "md5": "2a9793533224f92ddad256492265dd82",
+    "sha256": "731d572b54c708f81e197a6afa8016918e2e06dfd3025e066ca642a5b8c39c8f"
+  },
+  {
+    "key": "libXfixes",
+    "url": "https://www.x.org/pub/individual/lib/libXfixes-6.0.2.tar.xz",
+    "filename": "libXfixes-6.0.2.tar.xz",
+    "md5": "baa39ada682dd524491a165bb0dfc708",
+    "sha256": "39f115d72d9c5f8111e4684164d3d68cc1fd21f9b27ff2401b08fddfc0f409ba"
+  },
+  {
+    "key": "libXcomposite",
+    "url": "https://www.x.org/pub/individual/lib/libXcomposite-0.4.7.tar.xz",
+    "filename": "libXcomposite-0.4.7.tar.xz",
+    "md5": "132816d5efccb883bbc2bf45eb905770",
+    "sha256": "8bdf310967f484503fa51714cf97bff0723d9b673e0eecbf92b3f97c060c8ccb"
+  },
+  {
+    "key": "libXrender",
+    "url": "https://www.x.org/pub/individual/lib/libXrender-0.9.12.tar.xz",
+    "filename": "libXrender-0.9.12.tar.xz",
+    "md5": "4c54dce455d96e3bdee90823b0869f89",
+    "sha256": "b832128da48b39c8d608224481743403ad1691bf4e554e4be9c174df171d1b97"
+  },
+  {
+    "key": "libXcursor",
+    "url": "https://www.x.org/pub/individual/lib/libXcursor-1.2.3.tar.xz",
+    "filename": "libXcursor-1.2.3.tar.xz",
+    "md5": "5ce55e952ec2d84d9817169d5fdb7865",
+    "sha256": "fde9402dd4cfe79da71e2d96bb980afc5e6ff4f8a7d74c159e1966afb2b2c2c0"
+  },
+  {
+    "key": "libXdamage",
+    "url": "https://www.x.org/pub/individual/lib/libXdamage-1.1.7.tar.xz",
+    "filename": "libXdamage-1.1.7.tar.xz",
+    "md5": "72bb73f2a07f81784ad69a39d7df1da2",
+    "sha256": "127067f521d3ee467b97bcb145aeba1078e2454d448e8748eb984d5b397bde24"
+  },
+  {
+    "key": "libfontenc",
+    "url": "https://www.x.org/pub/individual/lib/libfontenc-1.1.9.tar.xz",
+    "filename": "libfontenc-1.1.9.tar.xz",
+    "md5": "3cba344d6b351cf308114865afa0d91e",
+    "sha256": "9d8392705cb10803d5fe1d27d236cbab3f664e26841ce01916bbbe430cf273e2"
+  },
+  {
+    "key": "libXfont2",
+    "url": "https://www.x.org/pub/individual/lib/libXfont2-2.0.9.tar.xz",
+    "filename": "libXfont2-2.0.9.tar.xz",
+    "md5": "134b3f673f6ecd3e67c0e892dd1a89e8",
+    "sha256": "f042a370666815e7b941e9b7019024755bd1c6c2954afbfa515af378251799e2"
+  },
+  {
+    "key": "libXft",
+    "url": "https://www.x.org/pub/individual/lib/libXft-2.3.9.tar.xz",
+    "filename": "libXft-2.3.9.tar.xz",
+    "md5": "d378be0fcbd1f689f9a132e0d642bc4b",
+    "sha256": "60a25b78945ed6932635b3bb1899a517d31df7456e69867ffba27f89ff3976f5"
+  },
+  {
+    "key": "libXi",
+    "url": "https://www.x.org/pub/individual/lib/libXi-1.8.3.tar.xz",
+    "filename": "libXi-1.8.3.tar.xz",
+    "md5": "2b1cde310bc361464df43276fb969adf",
+    "sha256": "7ad60056f01af4f786cfe93b3a7707447711626fc8da2637bec71a90409babe5"
+  },
+  {
+    "key": "libXinerama",
+    "url": "https://www.x.org/pub/individual/lib/libXinerama-1.1.6.tar.xz",
+    "filename": "libXinerama-1.1.6.tar.xz",
+    "md5": "5f3f5754a40730d1518233a60ba5c48e",
+    "sha256": "d00fc1599c303dc5cbc122b8068bdc7405d6fcb19060f4597fc51bd3a8be51d7"
+  },
+  {
+    "key": "libXrandr",
+    "url": "https://www.x.org/pub/individual/lib/libXrandr-1.5.5.tar.xz",
+    "filename": "libXrandr-1.5.5.tar.xz",
+    "md5": "b550dfa388292a821aecdd52acecc94c",
+    "sha256": "72b922c2e765434e9e9f0960148070bd4504b288263e2868a4ccce1b7cf2767a"
+  },
+  {
+    "key": "libXtst",
+    "url": "https://www.x.org/pub/individual/lib/libXtst-1.2.5.tar.xz",
+    "filename": "libXtst-1.2.5.tar.xz",
+    "md5": "b62dc44d8e63a67bb10230d54c44dcb7",
+    "sha256": "b50d4c25b97009a744706c1039c598f4d8e64910c9fde381994e1cae235d9242"
+  },
+  {
+    "key": "libxkbfile",
+    "url": "https://www.x.org/pub/individual/lib/libxkbfile-1.2.0.tar.xz",
+    "filename": "libxkbfile-1.2.0.tar.xz",
+    "md5": "fa0faa5b6a8e726186c535d73712ccea",
+    "sha256": "7f71884e5faf56fb0e823f3848599cf9b5a9afce51c90982baeb64f635233ebf"
+  },
+  {
+    "key": "libpciaccess",
+    "url": "https://www.x.org/pub/individual/lib/libpciaccess-0.19.tar.xz",
+    "filename": "libpciaccess-0.19.tar.xz",
+    "md5": "0c11ea502b531e59563a9aa7979146fc",
+    "sha256": "3c55aa86c82e54a4e3109786f0463530d53b36b6d1cfd14616454f985dd2aa43"
+  },
+  {
+    "key": "xauth",
+    "url": "https://www.x.org/pub/individual/app/xauth-1.1.5.tar.xz",
+    "filename": "xauth-1.1.5.tar.xz",
+    "md5": "9cfdec89ad7bd86bcdfda150ae995955",
+    "sha256": "a4000e2f441facebf569026bedecc23ba262cc6927be52070abe0002625cfbe0"
+  },
+  {
+    "key": "xrandr",
+    "url": "https://www.x.org/pub/individual/app/xrandr-1.5.4.tar.xz",
+    "filename": "xrandr-1.5.4.tar.xz",
+    "md5": "211abd989eef11708cc0a4978d101014",
+    "sha256": "2cafccb2aaf2491a4068676117a0d4f90ab307724b96fffc54cd1da953779400"
+  },
+  {
+    "key": "xkbcomp",
+    "url": "https://www.x.org/pub/individual/app/xkbcomp-1.5.0.tar.xz",
+    "filename": "xkbcomp-1.5.0.tar.xz",
+    "md5": "b8128ff6816897bd385ca437cd2886ee",
+    "sha256": "2ac31f26600776db6d9cd79b3fcd272263faebac7eb85fb2f33c7141b8486060"
+  },
+  {
+    "key": "xdpyinfo",
+    "url": "https://www.x.org/pub/individual/app/xdpyinfo-1.4.0.tar.xz",
+    "filename": "xdpyinfo-1.4.0.tar.xz",
+    "md5": "700556957773d378fa16a65a4406be0a",
+    "sha256": "dc1de6e6e091ed46c4837b0ae9811e8182f7be0d2af638cab3e530ff081a48b6"
+  },
+  {
+    "key": "xprop",
+    "url": "https://www.x.org/pub/individual/app/xprop-1.2.8.tar.xz",
+    "filename": "xprop-1.2.8.tar.xz",
+    "md5": "5ef4784b406d11bed0fdf07cc6fba16c",
+    "sha256": "d689e2adb7ef7b439f6469b51cda8a7daefc83243854c2a3b8f84d0f029d67ee"
+  },
+  {
+    "key": "xset",
+    "url": "https://www.x.org/pub/individual/app/xset-1.2.6.tar.xz",
+    "filename": "xset-1.2.6.tar.xz",
+    "md5": "95fcb2ae70ee7e7ef7fe70b096b3d254",
+    "sha256": "623837349ea887bc003f01ee2e4b6b8ddd9c2774f632c6d70eead1b56306b695"
+  },
+  {
+    "key": "xmessage",
+    "url": "https://www.x.org/pub/individual/app/xmessage-1.0.7.tar.xz",
+    "filename": "xmessage-1.0.7.tar.xz",
+    "md5": "ba2dd3db3361e374fefe2b1c797c46eb",
+    "sha256": "703fccb7a0b772d61d7e603c189b9739866aa97ba985c727275420f829a30356"
+  },
+  {
+    "key": "xf86-input-evdev",
+    "url": "https://www.x.org/pub/individual/driver/xf86-input-evdev-2.11.0.tar.xz",
+    "filename": "xf86-input-evdev-2.11.0.tar.xz",
+    "md5": "faa89be0ef86aebd6fd0a03eed23839c",
+    "sha256": "730022de934cc366bb12439daf202a7bfff52a028cf4573e457642e25a071315"
+  }
+]

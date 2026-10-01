@@ -1,0 +1,22 @@
+#!/bin/sh
+echo "Aether guest integration: $(uname -m)"
+if [ -r /sys/class/dmi/id/product_name ]; then
+    printf 'Machine: '; cat /sys/class/dmi/id/product_name
+fi
+echo 'VMware tools:'
+test -x /usr/bin/vmtoolsd || exit 1
+vmware-checkvm >/dev/null 2>&1
+detected=$?
+case "$detected" in
+  0) vmtoolsd --version || exit 1 ;;
+  1) echo 'Installed; daemon inactive outside VMware.' ;;
+  *) echo "VMware detection failed: $detected"; exit 1 ;;
+esac
+echo 'VirtualBox additions:'
+VBoxService --version || exit 1
+VBoxControl --version || exit 1
+echo 'Guest processes:'
+ps | grep -E '[v]mtoolsd|[V]BoxService' || true
+echo 'Shared-folder filesystems:'
+grep -E 'fuse|vboxsf' /proc/filesystems || true
+echo 'Shared-folder availability depends on the host VM settings.'

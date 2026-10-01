@@ -1,0 +1,12 @@
+{
+  "KPlugin": {
+    "Id": "AetherTerracesDune",
+    "Name": "Aether \u00b7 Terraces Dune",
+    "License": "CC0-1.0",
+    "Authors": [
+      {
+        "Name": "Aether Project"
+      }
+    ]
+  }
+}

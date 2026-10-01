@@ -1,0 +1,12 @@
+{
+  "KPlugin": {
+    "Id": "AetherTerracesLagoon",
+    "Name": "Aether \u00b7 Terraces Lagoon",
+    "License": "CC0-1.0",
+    "Authors": [
+      {
+        "Name": "Aether Project"
+      }
+    ]
+  }
+}

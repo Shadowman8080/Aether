@@ -1,0 +1,17 @@
+#!/bin/sh
+# Linux supplies vboxguest/vboxsf; start the source-built userspace daemon
+# only when VirtualBox has exposed its guest device.
+case "$1" in
+  start)
+    [ -c /dev/vboxguest ] || exit 0
+    mkdir -p /run
+    /usr/sbin/VBoxService --pidfile /run/vboxservice.pid
+    ;;
+  stop)
+    [ -f /run/vboxservice.pid ] || exit 0
+    start-stop-daemon -K -p /run/vboxservice.pid
+    rm -f /run/vboxservice.pid
+    ;;
+  restart) "$0" stop; "$0" start ;;
+  *) echo "Usage: $0 {start|stop|restart}"; exit 1 ;;
+esac

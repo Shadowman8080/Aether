@@ -1,0 +1,11 @@
+[Desktop Entry]
+Type=Application
+Name=AuraSearch
+GenericName=Desktop Search
+Comment=Search applications, settings and local files
+Exec=aurasearch
+Icon=system-search
+Terminal=false
+Categories=Utility;
+Keywords=search;spotlight;applications;files;calculator;
+StartupNotify=false

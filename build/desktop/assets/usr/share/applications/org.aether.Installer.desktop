@@ -1,0 +1,9 @@
+[Desktop Entry]
+Type=Application
+Name=Install Aether Linux
+Comment=Set up Aether with a guided graphical installer
+Exec=aether-installer
+Icon=aether-logo
+Terminal=false
+Categories=System;
+StartupNotify=true

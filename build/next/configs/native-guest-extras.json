@@ -1,0 +1,12 @@
+[
+  {
+    "filename": "dejavu-fonts-ttf-2.37.tar.bz2",
+    "url": "https://downloads.sourceforge.net/dejavu/dejavu-fonts-ttf-2.37.tar.bz2",
+    "sha256": "fa9ca4d13871dd122f61258a80d01751d603b4d3ee14095d65453b4e846e17d7"
+  },
+  {
+    "filename": "efivar-39-upstream_fixes-1.patch",
+    "url": "https://www.linuxfromscratch.org/blfs/downloads/13.1-systemd/patches/efivar-39-upstream_fixes-1.patch",
+    "sha256": "5b53b8f151fbdb14a75b4b6548b6736f8bac01e1391bfa69b8247f31a12b0127"
+  }
+]

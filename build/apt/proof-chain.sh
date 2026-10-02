@@ -20,6 +20,12 @@ APT="apt-get -o APT::Sandbox::User=root"
 rm -rf "$R" /tmp/verify.* /tmp/conflict.out /tmp/ftp.err /tmp/apt*.out
 mkdir -p "$R/repo" "$R/build"
 
+# Baseline package count, so the run can prove it left the real database
+# exactly as it found it. dpkg can leave a "purge ok not-installed" stub for a
+# package whose install failed mid-way, which `dpkg -l` hides.
+BASE_PKGS=$(grep -c '^Package:' /var/lib/dpkg/status)
+echo "baseline package count: $BASE_PKGS"
+
 build_deb() {
   name="$1"; ver="$2"; path="$3"; content="$4"
   d="$R/build/$name"
@@ -77,11 +83,15 @@ else
 fi
 grep -i 'trying to overwrite' /tmp/conflict.out | sed 's/^/    /'
 [ "$(/usr/bin/aether-proof-hello 2>/dev/null)" = "hello-aether-v1" ] && pass "original file intact after refusal" || bad "original file clobbered"
+# A failed install can still register the package; force it out so it cannot
+# linger as a hidden stub in the real database.
+dpkg --purge --force-all aether-proof-conflict >/dev/null 2>&1 || true
 
 note "5. dpkg remove"
 if dpkg -r aether-proof-hello >/dev/null 2>&1; then pass "dpkg -r hello"; else bad "dpkg -r"; fi
 [ -e /usr/bin/aether-proof-hello ] && bad "file still present after remove" || pass "file removed"
 if dpkg -s aether-proof-hello >/dev/null 2>&1; then bad "package still known to dpkg"; else pass "package no longer installed"; fi
+dpkg --purge --force-all aether-proof-hello >/dev/null 2>&1 || true
 
 note "6. local file: apt repository -- update / install / remove"
 if command -v apt-ftparchive >/dev/null 2>&1; then
@@ -126,10 +136,17 @@ if $APT remove -y aether-proof-apt >/tmp/aptremove.out 2>&1; then pass "apt-get 
 note "7. cleanup of the transient source"
 rm -f /etc/apt/sources.list.d/aether-proof.list
 if $APT update >/tmp/aptupdate2.out 2>&1; then pass "apt-get update after removing the source"; else bad "final apt-get update"; fi
-dpkg --purge aether-proof-conflict >/dev/null 2>&1 || true
+dpkg --purge --force-all aether-proof-conflict aether-proof-hello aether-proof-apt >/dev/null 2>&1 || true
 rm -rf "$R" /tmp/verify.clean /tmp/verify.tampered /tmp/conflict.out /tmp/ftp.err /tmp/aptupdate.out /tmp/aptinstall.out /tmp/aptremove.out /tmp/aptupdate2.out
 pass "transient repo and proof packages removed"
 [ -f /etc/apt/sources.list.d/aether-proof.list ] && bad "source entry left behind" || pass "no proof source entry remains"
+AFTER_PKGS=$(grep -c '^Package:' /var/lib/dpkg/status)
+if [ "$AFTER_PKGS" = "$BASE_PKGS" ] && ! grep -qi proof /var/lib/dpkg/status; then
+  pass "real database restored to baseline ($BASE_PKGS packages, no stubs)"
+else
+  bad "database changed: $BASE_PKGS -> $AFTER_PKGS"
+  grep -ni proof /var/lib/dpkg/status | sed 's/^/    /'
+fi
 
 echo
 if [ "$fail" -eq 0 ]; then

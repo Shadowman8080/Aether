@@ -116,3 +116,12 @@ from the extracted desktop ISO; `gen-dpkg-db.py` and `proof-chain.sh` here are
 the two artifacts that are worth re-running as-is. `docs/licensing.md`
 documents the GPL-2+ / GPL-2.0-only boundary that made dpkg and apt usable
 alongside Aether's `GPL-3.0-or-later` code.
+
+## Shipping it
+
+The chain reaches a bootable image through the scripts in [`iso/`](iso/): one
+rebuilds the desktop ISO from this chroot, one merges the chain into the
+AI image to make the single x86_64 `aether-0.3-x86_64-unified.iso`, and two
+prove it (serial boot to login, and a baseline-CPU probe). See
+[`iso/README.md`](iso/README.md) for the sizes, digests, the union method and
+the image-`ldconfig` trap that silently breaks `apt-get`.

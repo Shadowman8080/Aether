@@ -22,5 +22,6 @@ AETHER_VMTOOLS_POST_PATCH_HOOKS += AETHER_VMTOOLS_FIX_CONFIGURE
 define AETHER_VMTOOLS_INSTALL_INIT_SYSV
 	$(INSTALL) -D -m755 $(BR2_EXTERNAL_AETHER_PATH)/package/aether-vmtools/S50vmtoolsd $(TARGET_DIR)/etc/init.d/S50vmtoolsd
 	$(INSTALL) -D -m755 package/openvmtools/shutdown $(TARGET_DIR)/sbin/shutdown
+	$(INSTALL) -D -m755 $(BR2_EXTERNAL_AETHER_PATH)/package/aether-vmtools/aether-vmware-tools $(TARGET_DIR)/usr/bin/aether-vmware-tools
 endef
 $(eval $(autotools-package))

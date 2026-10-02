@@ -48,10 +48,24 @@ write('/etc/lightdm/lightdm.conf.d/50-aether-session.conf',
 write('/usr/libexec/aether-guest-display-setup', '''#!/bin/sh
 set -eu
 config=/etc/lightdm/lightdm.conf.d/60-aether-vmware-session.conf
+session=''' + shlex.quote(x11) + '''
 if [ "$(systemd-detect-virt --vm 2>/dev/null || true)" = vmware ]; then
-    printf '%s\\n' '[Seat:*]' ''' + shlex.quote('user-session=' + x11) + ''' > "$config.tmp"
+    printf '%s\\n' '[Seat:*]' "user-session=$session" > "$config.tmp"
     chmod 644 "$config.tmp"
     mv -f "$config.tmp" "$config"
+    # LightDM reads Session= from ~/.dmrc, which overrides the seat default.
+    # open-vm-tools clipboard and drag-and-drop need X11, so keep VMware users
+    # on the X11 session even if they previously saved a Wayland choice.
+    for dmrc in /home/*/.dmrc; do
+        [ -f "$dmrc" ] || continue
+        grep -qi "^[[:space:]]*Session[[:space:]]*=[[:space:]]*$session$" "$dmrc" && continue
+        tmp=$(mktemp)
+        grep -v -i '^[[:space:]]*Session[[:space:]]*=' "$dmrc" > "$tmp" || true
+        grep -q '^\\[Desktop\\]' "$tmp" || printf '%s\\n' '[Desktop]' >> "$tmp"
+        printf 'Session=%s\\n' "$session" >> "$tmp"
+        cat "$tmp" > "$dmrc"
+        rm -f "$tmp"
+    done
 else
     rm -f "$config"
 fi
@@ -76,10 +90,13 @@ TryExec=/usr/bin/vmware-user-suid-wrapper
 NoDisplay=true
 X-KDE-autostart-phase=1
 ''')
+# First-class integration manager: reports and enables the bundled components.
+write('/usr/bin/aether-vmware-tools', Path('/recipes/guest/aether-vmware-tools').read_text(), 0o755)
 os.chown('/usr/bin/vmware-user-suid-wrapper', 0, 0)
 Path('/usr/bin/vmware-user-suid-wrapper').chmod(0o4755)
 for service in ('vmtoolsd.service', 'vmware-vmblock.service'):
     subprocess.run(['systemctl', '--root=/', 'enable', service], check=True)
 subprocess.run(['sh', '-n', '/usr/bin/aether-vmware-session'], check=True)
 subprocess.run(['sh', '-n', '/usr/libexec/aether-guest-display-setup'], check=True)
+subprocess.run(['sh', '-n', '/usr/bin/aether-vmware-tools'], check=True)
 print('VMware integration configured; native-host validation still required.')

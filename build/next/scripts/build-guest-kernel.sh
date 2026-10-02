@@ -6,11 +6,11 @@ date -u '+STARTED %FT%TZ' > logs/next/guest-kernel.status
 trap 'echo "EXIT $?" >>/opt/aether/logs/next/guest-kernel.status' EXIT
 src=/opt/aether/sources/linux-6.18.54
 out=/opt/aether/build/kernel-6.18.54
-for opt in DRM_FBDEV_EMULATION DRM_BOCHS DRM_VBOXVIDEO; do
+for opt in DRM_FBDEV_EMULATION DRM_BOCHS DRM_VBOXVIDEO MOUSE_PS2_VMMOUSE; do
  "$src/scripts/config" --file "$out/.config" --enable "$opt"
 done
 make -C "$src" O="$out" olddefconfig
-for opt in DRM_FBDEV_EMULATION DRM_BOCHS DRM_VBOXVIDEO EFIVAR_FS; do grep -qx "CONFIG_$opt=y" "$out/.config"; done
+for opt in DRM_FBDEV_EMULATION DRM_BOCHS DRM_VBOXVIDEO EFIVAR_FS MOUSE_PS2_VMMOUSE; do grep -qx "CONFIG_$opt=y" "$out/.config"; done
 make -C "$src" O="$out" -j"$(nproc)" bzImage modules
 stage=/opt/aether/build/guest-kernel-stage
 mkdir -p "$stage/boot"

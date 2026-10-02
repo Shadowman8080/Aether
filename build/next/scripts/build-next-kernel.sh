@@ -29,7 +29,7 @@ for option in BLK_DEV_INITRD DEVTMPFS DEVTMPFS_MOUNT \
   SERIAL_8250 SERIAL_8250_CONSOLE BLK_DEV_NVME \
   INPUT_EVDEV INPUT_MOUSEDEV USB_XHCI_HCD USB_EHCI_HCD USB_OHCI_HCD \
   USB_HID HID_GENERIC HID_MULTITOUCH DRM DRM_KMS_HELPER \
-  SOUND SND CFG80211 MAC80211 RFKILL; do
+  SOUND SND CFG80211 MAC80211 RFKILL MOUSE_PS2_VMMOUSE; do
   "${cfg[@]}" --enable "$option"
 done
 for option in BLK_DEV_LOOP BLK_DEV_DM DM_CRYPT BTRFS_FS VFAT_FS \
@@ -43,7 +43,7 @@ done
 make -C "$source_dir" O="$build_dir" olddefconfig
 grep -qx '# CONFIG_X86_NATIVE_CPU is not set' "$build_dir/.config"
 for option in X86_64 DEVTMPFS CGROUPS USER_NS SECCOMP_FILTER \
-  EXT4_FS SATA_AHCI VIRTIO_BLK EFI_STUB; do
+  EXT4_FS SATA_AHCI VIRTIO_BLK EFI_STUB MOUSE_PS2_VMMOUSE; do
   grep -qx "CONFIG_$option=y" "$build_dir/.config" || { echo "Missing required option: $option"; exit 1; }
 done
 cp "$build_dir/.config" next/configs/kernel.config

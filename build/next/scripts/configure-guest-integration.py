@@ -165,9 +165,11 @@ case "$(systemd-detect-virt --vm)" in
 esac
 printf 'Mounted at %s\\n' "$dest"
 ''',0o755)
+write('/usr/bin/aether-vmware-tools', Path('/recipes/guest/aether-vmware-tools').read_text(), 0o755)
 flags=subprocess.check_output(['pkg-config','--cflags','--libs','gtk+-3.0'],text=True).split()
 call('cc','-O2','-march=x86-64','/recipes/guest/aether-guest-panel.c','-o','/usr/bin/aether-guest-panel',*flags)
 Path('/var/lib/xkb').mkdir(parents=True,exist_ok=True)
+call('sh','-n','/usr/bin/aether-vmware-tools')
 call('ldconfig')
 call('systemd-analyze','--man=no','verify','/etc/systemd/system/vmtoolsd.service','/etc/systemd/system/vmware-vmblock.service','/etc/systemd/system/vboxservice.service','/etc/systemd/system/vboxdrmclient.service')
 print('Configured source-native guest services and integration session.')

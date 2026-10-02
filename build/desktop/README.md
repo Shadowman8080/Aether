@@ -12,6 +12,7 @@ REQUIREMENTS.txt preserves the extracted text of the supplied **Desktop shell an
 - Slim top bar with launcher, application menu, input method panel, system tray and clock. Centered floating dock with application switching and show-desktop.
 - AuraSearch patch on the pinned KDE KRunner frontend, preserving KDE attribution and all existing search/result accessibility behavior. Super+Space opens it; the aurasearch command delegates arguments without shell evaluation.
 - Local search defaults: no retained query/history, no web shortcuts or bookmark search, no shell runner. Basic filename indexing; content indexing is opt-in through settings.
+- VMware guest integration: x86/x86_64 desktop kernels build the in-kernel vmmouse driver (`CONFIG_MOUSE_PS2_VMMOUSE=y`) for seamless pointer control, and the image ships `aether-vmware-tools` to report and enable the open-vm-tools desktop integration. Copy/paste and drag-and-drop remain X11-only; the greeter preselects and pins the X11 session under VMware. See `../VMWARE-GUEST-INTEGRATION.md`.
 - Source-verified native dependency build recipes using all available build CPUs. The native x86_64 desktop has completed its first full disk runtime test; image release validation is tracked below.
 
 ## Current build verification

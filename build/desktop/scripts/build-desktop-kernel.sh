@@ -10,12 +10,12 @@ date -u '+STARTED %FT%TZ' >"$base/logs/desktop/kernel.status"
 trap 'echo "EXIT $?" >>/opt/aether/logs/desktop/kernel.status' EXIT
 # This existing build tree is reusable; no released image is mounted or edited here.
 cp "$base/next/configs/guest-kernel.config" "$out/.config"
-for opt in BLK_DEV_LOOP INPUT_UINPUT OVERLAY_FS SQUASHFS SQUASHFS_XZ SQUASHFS_ZSTD; do
+for opt in BLK_DEV_LOOP INPUT_UINPUT OVERLAY_FS SQUASHFS SQUASHFS_XZ SQUASHFS_ZSTD MOUSE_PS2_VMMOUSE; do
  "$src/scripts/config" --file "$out/.config" --enable "$opt"
 done
 "$src/scripts/config" --file "$out/.config" --set-str LOCALVERSION '-aether3'
 make -C "$src" O="$out" olddefconfig
-for opt in EFI EFIVAR_FS DRM_BOCHS DRM_VBOXVIDEO OVERLAY_FS SQUASHFS BLK_DEV_LOOP INPUT_UINPUT; do
+for opt in EFI EFIVAR_FS DRM_BOCHS DRM_VBOXVIDEO OVERLAY_FS SQUASHFS BLK_DEV_LOOP INPUT_UINPUT MOUSE_PS2_VMMOUSE; do
  grep -qx "CONFIG_$opt=y" "$out/.config"
 done
 make -C "$src" O="$out" -j"$(nproc)" bzImage modules

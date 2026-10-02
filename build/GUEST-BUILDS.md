@@ -6,7 +6,9 @@ The existing Ubuntu build VM provides build tools only. Target executables are b
 
 ## Components
 
-- open-vm-tools 13.1.0-25218885: hardware-detected daemon startup and the `vmhgfs-fuse` shared-folder helper. The console profile excludes X11, VGAuth/PAM, deployment plugins, and TLS components.
+- open-vm-tools 13.1.0-25218885: hardware-detected daemon startup and the `vmhgfs-fuse` shared-folder helper. The console profile excludes X11, VGAuth/PAM, deployment plugins, and TLS components. The graphical x86/x86_64 profile adds the GTK3 desktop plugins (`libdndcp.so`, `libresolutionSet.so`) for host copy/paste and drag-and-drop, which open-vm-tools supports only in an X11 session.
+- Seamless pointer: the in-kernel `CONFIG_MOUSE_PS2_VMMOUSE` driver is enabled for x86/x86_64 guest kernels. The userspace `xf86-input-vmmouse` driver is deliberately not built, because the kernel driver and that driver must not be mixed. The option is x86-only, so ARM64 guests have no seamless pointer.
+- `aether-vmware-tools` reports the integration state and, with `enable`, starts the guest services and selects the X11 session. See `VMWARE-GUEST-INTEGRATION.md`.
 - VirtualBox 7.2.20 source: VBoxService, VBoxControl, mount.vboxsf. The kernel supplies vboxguest and vboxsf. The proprietary Extension Pack is not used.
 - The x86 VirtualBox build defines `RT_WITH_OLD_CPU_SUPPORT` to avoid an unconditional SSE2 memory fence on Pentium III-class CPUs.
 - VMware and VirtualBox daemons start only when their respective guest hardware is detected. The first Ethernet interface uses DHCP.
@@ -41,7 +43,7 @@ bash scripts/finish-guest-arm64.sh
 
 Each finish script records success only after its ISO boot test passes. Inspect `logs/guest-x64.status`, `logs/guest-x86.status`, or `logs/guest-arm64.status`; `STARTED` without `EXIT 0` is not a completed build. A test failure leaves an ISO on disk, but that file is not a validated deliverable.
 
-`aether-guest-status` reports installed tools and detected guest services. VMware's vmtoolsd intentionally exits outside VMware, even when asked for its version. The QEMU tests check the supported non-VMware path; they do not validate VMware host/guest RPC operations. Native VMware testing from this Windows agent was blocked by access denial to VMware's authorization pipe. A native VirtualBox host was not available.
+`aether-guest-status` reports installed tools and detected guest services. On VMware, `aether-vmware-tools` additionally reports the desktop integration and can enable it; clipboard and drag-and-drop require an X11 session. VMware's vmtoolsd intentionally exits outside VMware, even when asked for its version. The QEMU tests check the supported non-VMware path; they do not validate VMware host/guest RPC operations. Native VMware testing from this Windows agent was blocked by access denial to VMware's authorization pipe. A native VirtualBox host was not available.
 
 ARM64 VM images require ARM virtualization hardware, or full-system emulation such as QEMU. Raspberry Pi images require board-specific kernels, firmware and SD-card layouts; the Pi model selection remains pending.
 

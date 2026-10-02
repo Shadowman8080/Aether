@@ -1,0 +1,203 @@
+#!/bin/sh
+# aether-vmware-tools - inspect and enable VMware guest integration on Aether.
+#
+# open-vm-tools provides host<->guest copy/paste and drag-and-drop, but only in
+# an X11 session; upstream does not support these features on Wayland. The
+# ungrabbed (seamless) pointer needs the in-kernel vmmouse driver, enabled by
+# CONFIG_MOUSE_PS2_VMMOUSE in the Aether x86/x86_64 kernels.
+#
+# Usage:
+#   aether-vmware-tools              show hypervisor, components, services, session
+#   sudo aether-vmware-tools enable  enable services and select the X11 session
+#   aether-vmware-tools check        exit non-zero unless integration is active
+#
+# This command installs nothing and makes no network request: every component
+# it reports on is part of the Aether image.
+
+set -u
+
+PATH=/usr/sbin:/usr/bin:/sbin:/bin
+export PATH
+
+action=${1:-status}
+case "$action" in
+    status|enable|check) ;;
+    -h|--help)
+        printf 'usage: aether-vmware-tools [status|enable|check]\n'
+        printf '  status (default)  show integration state\n'
+        printf '  enable            enable services and the X11 session (root)\n'
+        printf '  check             exit non-zero unless integration is active\n'
+        exit 0 ;;
+    *)
+        printf 'aether-vmware-tools: unknown action: %s\n' "$action" >&2
+        printf 'usage: aether-vmware-tools [status|enable|check]\n' >&2
+        exit 2 ;;
+esac
+
+is_vmware=no
+if command -v systemd-detect-virt >/dev/null 2>&1; then
+    [ "$(systemd-detect-virt --vm 2>/dev/null || true)" = vmware ] && is_vmware=yes
+fi
+if [ "$is_vmware" = no ] && [ -x /usr/bin/vmware-checkvm ]; then
+    /usr/bin/vmware-checkvm >/dev/null 2>&1 && is_vmware=yes
+fi
+if [ "$is_vmware" = no ] && [ -r /sys/class/dmi/id/sys_vendor ]; then
+    grep -qi vmware /sys/class/dmi/id/sys_vendor 2>/dev/null && is_vmware=yes
+fi
+
+case "$(uname -m)" in
+    x86_64|i?86) arch=x86 ;;
+    aarch64|arm64) arch=arm64 ;;
+    *) arch=$(uname -m) ;;
+esac
+
+fail=0
+vmtoolsd_active=no
+vmusr=no
+
+printf 'Aether VMware guest integration\n'
+if [ "$is_vmware" = yes ]; then
+    printf '  hypervisor:   VMware\n'
+else
+    printf '  hypervisor:   not VMware\n'
+fi
+printf '  architecture: %s\n' "$arch"
+if [ "$arch" = arm64 ]; then
+    printf '  note:         vmmouse is x86-only; ARM64 guests have no seamless pointer\n'
+fi
+
+if [ "$is_vmware" != yes ]; then
+    printf '\nThis machine is not running under VMware, so guest integration is idle.\n'
+    exit 0
+fi
+
+printf '\nComponents:\n'
+for f in /usr/bin/vmtoolsd /usr/bin/vmware-user-suid-wrapper \
+         /usr/bin/vmware-vmblock-fuse /usr/bin/vmhgfs-fuse; do
+    if [ -x "$f" ]; then
+        printf '  present  %s\n' "$f"
+    else
+        printf '  MISSING  %s\n' "$f"
+        fail=1
+    fi
+done
+plugin=
+for p in /usr/lib/open-vm-tools/plugins/vmusr/libdndcp.so \
+         /usr/lib64/open-vm-tools/plugins/vmusr/libdndcp.so; do
+    [ -f "$p" ] && plugin=$p
+done
+if [ -n "$plugin" ]; then
+    printf '  present  %s\n' "$plugin"
+else
+    printf '  MISSING  clipboard/drag-and-drop plugin (libdndcp.so)\n'
+    fail=1
+fi
+
+printf '\nServices:\n'
+if command -v systemctl >/dev/null 2>&1 && [ -d /run/systemd/system ]; then
+    systemctl -q is-active vmtoolsd.service 2>/dev/null && vmtoolsd_active=yes
+    for s in vmtoolsd.service vmware-vmblock.service; do
+        if [ "$s" = vmtoolsd.service ]; then
+            [ "$vmtoolsd_active" = yes ] || fail=1
+        fi
+        if systemctl -q is-active "$s" 2>/dev/null; then
+            printf '  active   %s\n' "$s"
+        elif systemctl -q is-enabled "$s" 2>/dev/null; then
+            printf '  enabled  %s (not active)\n' "$s"
+        else
+            printf '  inactive %s\n' "$s"
+        fi
+    done
+elif [ -x /etc/init.d/S50vmtoolsd ]; then
+    if pgrep -f '/usr/bin/vmtoolsd' >/dev/null 2>&1; then
+        vmtoolsd_active=yes
+        printf '  active   S50vmtoolsd\n'
+    else
+        printf '  inactive S50vmtoolsd\n'
+        fail=1
+    fi
+else
+    printf '  no supported init system found\n'
+fi
+
+printf '\nSession:\n'
+printf '  XDG_SESSION_TYPE: %s\n' "${XDG_SESSION_TYPE:-unknown}"
+printf '  DISPLAY:          %s\n' "${DISPLAY:-unset}"
+if [ "${XDG_SESSION_TYPE:-}" = x11 ]; then
+    if pgrep -f 'vmtoolsd -n vmusr' >/dev/null 2>&1; then
+        vmusr=yes
+        printf '  user daemon:      running\n'
+    else
+        printf '  user daemon:      not running\n'
+    fi
+else
+    printf '  user daemon:      unavailable outside an X11 session\n'
+    printf '  NOTE: copy/paste and drag-and-drop require X11; Wayland is unsupported.\n'
+fi
+
+if [ "$action" = enable ]; then
+    if [ "$(id -u)" != 0 ]; then
+        printf '\nenable requires root: use sudo aether-vmware-tools enable\n' >&2
+        exit 1
+    fi
+    printf '\nEnabling:\n'
+    if command -v systemctl >/dev/null 2>&1 && [ -d /run/systemd/system ]; then
+        systemctl enable --now vmtoolsd.service 2>/dev/null || true
+        if systemctl cat vmware-vmblock.service >/dev/null 2>&1; then
+            systemctl enable --now vmware-vmblock.service 2>/dev/null || true
+        fi
+        printf '  systemd services enabled\n'
+    elif [ -x /etc/init.d/S50vmtoolsd ]; then
+        /etc/init.d/S50vmtoolsd start 2>/dev/null || true
+        printf '  S50vmtoolsd started\n'
+    fi
+    if [ -d /etc/lightdm ]; then
+        session=plasmax11
+        mkdir -p /etc/lightdm/lightdm.conf.d
+        {
+            printf '%s\n' '[Seat:*]'
+            printf 'user-session=%s\n' "$session"
+        } > /etc/lightdm/lightdm.conf.d/60-aether-vmware-session.conf
+        # LightDM reads Session= from ~/.dmrc, which overrides the seat default.
+        # A saved Wayland session would keep clipboard/drag-and-drop broken.
+        for dmrc in /home/*/.dmrc; do
+            [ -f "$dmrc" ] || continue
+            grep -qi "^[[:space:]]*Session[[:space:]]*=[[:space:]]*$session$" "$dmrc" && continue
+            tmp=$(mktemp)
+            grep -v -i '^[[:space:]]*Session[[:space:]]*=' "$dmrc" > "$tmp" || true
+            grep -q '^\[Desktop\]' "$tmp" || printf '%s\n' '[Desktop]' >> "$tmp"
+            printf 'Session=%s\n' "$session" >> "$tmp"
+            cat "$tmp" > "$dmrc"
+            rm -f "$tmp"
+            printf '  corrected saved session in %s\n' "$dmrc"
+        done
+        printf '  LightDM default session set to X11 (%s)\n' "$session"
+    fi
+    if [ "${XDG_SESSION_TYPE:-}" = x11 ] && [ -x /usr/bin/vmware-user-suid-wrapper ]; then
+        if ! pgrep -f 'vmtoolsd -n vmusr' >/dev/null 2>&1; then
+            if [ -n "${SUDO_USER:-}" ]; then
+                su "$SUDO_USER" -c /usr/bin/vmware-user-suid-wrapper >/dev/null 2>&1 || true
+            else
+                /usr/bin/vmware-user-suid-wrapper >/dev/null 2>&1 || true
+            fi
+        fi
+    fi
+    printf '  Log out and back in to the X11 session for clipboard and drag-and-drop.\n'
+    exit 0
+fi
+
+if [ "$action" = check ]; then
+    if [ "$fail" != 0 ] || [ "$vmtoolsd_active" != yes ] || [ "$vmusr" != yes ]; then
+        printf '\nFAIL: VMware integration is not fully active.\n'
+        exit 1
+    fi
+    printf '\nPASS: VMware integration is active in an X11 session.\n'
+    exit 0
+fi
+
+if [ "$fail" != 0 ] || [ "$vmtoolsd_active" != yes ] || [ "$vmusr" != yes ]; then
+    printf '\nIncomplete. Run "sudo aether-vmware-tools enable", then log in to X11.\n'
+else
+    printf '\nIntegration looks active.\n'
+fi
+exit 0

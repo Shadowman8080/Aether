@@ -1,8 +1,9 @@
 # Aether signed-package foundation
 
-Status: implemented and tested locally on Windows, **not deployed to Aether**.
-The Ubuntu build VM at 192.168.48.135 was unreachable during this work. There is
-no production repository, installed automatic checker, or upgraded ISO/VMDK yet.
+Status: implemented and tested on Windows and on the Linux build VM, **not
+deployed to Aether**. There is no production repository, installed automatic
+checker, or upgraded ISO/VMDK yet, and no production release keys have been
+created.
 
 ## What exists
 
@@ -39,9 +40,33 @@ is not counted as a fully passed validation. No release credential is needed.
 `dependency-install-report.json` records the actual locally installed dependency
 artifacts and hashes; it is not a Linux dependency lock file.
 
+The suite also passes on the Linux build VM: 24 tests, 0 failures, 0 errors,
+0 skips, Python 3.14.4, with `tuf` 7.0.1, `securesystemslib` 1.4.0,
+`cryptography` 50.0.1 and `urllib3` 2.8.0.
+
+## Bootstrap the trust root
+
+`make_root.py` is the one-time ceremony that creates the four role keys and the
+self-signed root:
+
+```text
+AETHER_KEY_PASSPHRASE='...' python make_root.py --output /secure/aether-root
+```
+
+It writes `root/root-1.pem .. root-N.pem` (the offline trust anchors),
+`signers/{targets,snapshot,timestamp}.pem` (the online signer directory that
+`release.py` consumes) and `trusted-root.json`. Private keys are mode 0600 and
+the signer directory is mode 0700. At least two root signers are required.
+`--no-encrypt` exists only for throwaway test roots.
+
+Two root keys created on one machine are a bootstrap/development root, not
+independent custody. Move each `root/*.pem` to separate offline media, and use
+a real signing ceremony on separate hosts before trusting this root for
+releases.
+
 ## Release assembly
 
-After build-VM recovery and key provisioning:
+After key provisioning:
 
 ```text
 python release.py --plan release-plan.json --root trusted-root.json --signer-directory /protected/online-signers --output /staging/release-1

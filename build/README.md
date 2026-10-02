@@ -13,6 +13,7 @@ sources into a bootable image.
 ```
 configs/        Buildroot defconfig, kernel config, build settings
 desktop/        Plasma desktop build recipes and scripts
+apt/            apt/dpkg package-manager chain and the synthetic dpkg database
 next/           in-progress work: assistant, guest, packages, release, scripts
 overlay/        root filesystem overlay for the console base
 overlay-x86/    overlay additions for x86

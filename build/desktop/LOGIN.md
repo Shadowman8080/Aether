@@ -134,11 +134,11 @@ the system: the automatic login drop-in and its contents, `seat_session`
 reading `user-session`, the missing-user failure in `check`, the full
 `ad join` and `ad leave` round trip against a stub sssd and a stub adcli,
 `sssd.conf` and `krb5.conf` contents, `nsswitch.conf` insertion and reversal,
-and rejection of bad input.
+the join tool being reported present and absent, and rejection of bad input.
 
 ```
 sh build/desktop/scripts/test-aether-login.sh
-PASS=58 FAIL=0 SKIP=1
+PASS=62 FAIL=0 SKIP=1
 ```
 
 The skip is `sssd.conf`'s 0600 mode: the filesystem used for that run ignores
@@ -163,11 +163,28 @@ additionally needs a real domain controller, which Aether has never been
 pointed at.
 
 Joining a domain also needs **adcli**, which performs the machine account join.
-adcli is *not* in `configs/direct-sources.json`: its upstream hosts
-(freedesktop.org and gitlab.freedesktop.org) served an anti-bot challenge
-instead of the tarball while this was written, and no digest was invented in
-its place. Until it is added, `aether-login ad join` fails with a clear message
-and `ad leave`/`ad status` still work.
+adcli is *not* in `configs/direct-sources.json`, because its upstream could not be
+obtained and no digest was invented in its place. Until it is added,
+`aether-login ad join` fails with a clear message, `ad status` reports the join
+tool as missing and says why, and `ad leave` still works. A machine joined by
+other means still signs in through sssd.
+
+Routes ruled out while looking for it, so they need not be tried again:
+
+| Source | Result |
+| --- | --- |
+| `freedesktop.org/software/adcli/releases/` (http and https) | HTTP 418 anti-bot challenge |
+| `gitlab.freedesktop.org/.../-/archive/...tar.gz` | HTTP 200 but a 7 KB `<!do...` HTML challenge, not a tarball |
+| `git ls-remote gitlab.freedesktop.org/polkit-gnome/adcli` | `HTTP Basic: Access denied`; anonymous git now needs a token |
+| Nixpkgs `fetchFromGitLab` hash for `realmd/adcli` `0.9.3a` | resolves, but it is a NAR hash of the *unpacked* tree, not the tarball sha256, so it is not usable as `sha256_expected` |
+| Fedora `src.fedoraproject.org` dist-git and lookaside | HTML login interstitial instead of the tarball |
+| `sources.debian.org` | proof-of-work challenge; `snapshot.debian.org` has no adcli at all |
+| Launchpad, Buildroot, Gentoo distfiles, Termux, Void | no adcli package |
+
+Adding it needs a real tarball plus its digest, from either upstream on a host
+that is not being challenged or a mirror that serves the identical upstream
+bytes. It also pulls in two more dependencies Aether does not yet build:
+openldap and cyrus-sasl.
 
 Source digests are pinned in `configs/direct-sources.json` and enforced at
 fetch time. sssd's digest was verified against the `sha256sum` file published

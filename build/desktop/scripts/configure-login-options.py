@@ -77,6 +77,13 @@ session    include       system-session
         subprocess.run(['systemctl', '--root=/', 'enable', 'sssd.service'], check=True)
     print('Automatic login available; Active Directory wired up through sssd.')
     print('Join a domain with: sudo aether-login ad join DOMAIN')
+    # sssd signs a joined machine in, but the join itself is done by adcli, which
+    # Aether does not build. Say so at build time rather than letting the join
+    # fail later on a machine that looks domain-ready.
+    if not Path('/usr/bin/adcli').exists():
+        print('WARNING: adcli is absent, so "aether-login ad join" cannot run.')
+        print('         Sign-in works on a machine joined by other means;')
+        print('         add adcli to the build to join one from here.')
 else:
     missing = []
     if not sssd:

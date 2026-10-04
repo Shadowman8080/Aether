@@ -192,6 +192,16 @@ ad_status_report() {
     else
         printf '  sssd.conf:      absent (not joined)\n'
     fi
+    # adcli performs the join itself; sssd only signs a joined machine in. Aether
+    # does not build adcli, so a machine cannot be joined from here yet.
+    if find_tool /usr/bin/adcli /usr/local/bin/adcli >/dev/null 2>&1; then
+        printf '  adcli:          installed (domain join available)\n'
+    else
+        printf '  adcli:          not installed\n'
+        printf '  NOTE: "ad join" runs adcli, which Aether does not build yet.\n'
+        printf '        A joined machine still signs in through sssd, but it\n'
+        printf '        has to be joined by some other means.\n'
+    fi
     if have_systemd; then
         if systemctl -q is-active sssd.service 2>/dev/null; then
             printf '  sssd.service:   active\n'
@@ -306,7 +316,7 @@ ad)
         [ -n "$domain" ] || die 'usage: aether-login ad join DOMAIN [--user NAME] [--password-stdin]'
         valid_domain "$domain" || die "invalid domain: $domain"
         have_sssd || die 'sssd is not installed; build the sssd dependency chain first'
-        adcli=$(find_tool /usr/bin/adcli /usr/local/bin/adcli) || die 'adcli is not installed; it performs the domain join'
+        adcli=$(find_tool /usr/bin/adcli /usr/local/bin/adcli) || die 'adcli is not installed and it is what performs the join; Aether does not build it, so join this machine another way'
         realm=$(printf '%s' "$domain" | tr 'a-z' 'A-Z')
         join_user=${AETHER_LOGIN_USER:-}
         while [ "$#" -gt 0 ]; do

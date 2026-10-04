@@ -175,6 +175,14 @@ echo "== 14. ad status =="
 out=$(run ad status)
 has "reports sssd installed" "$out" "sssd:           installed"
 has "reports not joined" "$out" "sssd.conf:      absent (not joined)"
+# The join tool is reported separately from sssd: sssd signs a joined machine
+# in, adcli is what joins one in the first place.
+has "reports join tool present" "$out" "adcli:          installed (domain join available)"
+rm -f "$R/usr/bin/adcli"
+out=$(run ad status)
+has "reports join tool absent" "$out" "adcli:          not installed"
+has "explains the join is unavailable" "$out" "Aether does not build yet"
+has "says a joined machine still signs in" "$out" "joined machine still signs in through sssd"
 
 echo "== 15. unknown verbs are rejected =="
 out=$(run bogus); rc=$?

@@ -5,7 +5,7 @@ if [ "${AETHER_DESKTOP_NS:-}" != 1 ]; then
 fi
 script=${1:-build-desktop-foundation.py}
 case "$script" in
- build-desktop-foundation.py|build-desktop-dependencies.py|build-desktop-frameworks.py|build-desktop-plasma.py|build-desktop-apps.py) ;;
+ build-desktop-foundation.py|build-desktop-dependencies.py|build-desktop-frameworks.py|build-desktop-plasma.py|build-desktop-apps.py|build-desktop-domain.py) ;;
  *) echo 'Unknown desktop build stage' >&2; exit 1 ;;
 esac
 exec 9>/opt/aether/build/native-desktop/build.lock

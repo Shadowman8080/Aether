@@ -1,0 +1,376 @@
+#!/bin/sh
+# aether-login - inspect and configure Aether login options.
+#
+# Two options are supported:
+#
+#   automatic login  signs one local account in at boot with no password
+#                    prompt. It is a LightDM seat setting plus greeter support
+#                    and is deliberately opt-in.
+#   Active Directory signs a domain user in through sssd. It needs the machine
+#                    to have been joined to a domain first; this command writes
+#                    the sssd and Kerberos configuration and calls adcli.
+#
+# Usage:
+#   aether-login                        show both options and their state
+#   sudo aether-login autologin on [user]
+#   sudo aether-login autologin off
+#   aether-login autologin status
+#   sudo aether-login ad join DOMAIN [--user NAME] [--password-stdin]
+#   sudo aether-login ad leave
+#   aether-login ad status
+#   aether-login check                  exit non-zero unless the state is usable
+#
+# Nothing here contacts the network except "ad join", which contacts the domain.
+
+set -u
+
+PATH=/usr/sbin:/usr/bin:/sbin:/bin
+export PATH
+
+# AETHER_LOGIN_ROOT points every managed path at another directory instead of
+# /. It exists so the file handling can be exercised offline; host-only actions
+# (service control, account lookup) are skipped when it is set.
+R=${AETHER_LOGIN_ROOT:-}
+STATE=$R/etc/aether/login.conf
+LIGHTCONF_DIR=$R/etc/lightdm/lightdm.conf.d
+AUTOLOGIN_CONF=$LIGHTCONF_DIR/70-aether-autologin.conf
+SSSD_CONF=$R/etc/sssd/sssd.conf
+KRB5_CONF=$R/etc/krb5.conf
+NSSWITCH=$R/etc/nsswitch.conf
+MARKER=$R/etc/aether/domain-login
+
+have_systemd() {
+    [ -z "$R" ] || return 1
+    command -v systemctl >/dev/null 2>&1 || return 1
+    [ -d /run/systemd/system ]
+}
+
+user_exists() {
+    if [ -n "$R" ]; then
+        grep -q "^$1:" "$R/etc/passwd" 2>/dev/null
+    else
+        id "$1" >/dev/null 2>&1
+    fi
+}
+
+# PATH is pinned above for safety, so tools are looked up by explicit path
+# rather than by bare name.
+find_tool() {
+    for candidate in "$@"; do
+        if [ -x "$R$candidate" ]; then printf '%s' "$R$candidate"; return 0; fi
+        case ":$PATH:" in
+        *":$candidate:"*) printf '%s' "$candidate"; return 0 ;;
+        esac
+    done
+    return 1
+}
+
+die() { printf '%s\n' "$*" >&2; exit 1; }
+# A test root never touches the live system, so the privilege check is skipped
+# there; it is unchanged when operating on the real filesystem.
+need_root() {
+    [ -n "$R" ] && return 0
+    [ "$(id -u)" = 0 ] || die "$1 requires root: use sudo aether-login $2"
+}
+
+state_get() {
+    [ -f "$STATE" ] || return 0
+    value=$(sed -n "s/^[[:space:]]*$1=//p" "$STATE" 2>/dev/null | tail -n 1)
+    [ -n "$value" ] || return 0
+    printf '%s' "$value"
+}
+
+state_set() {
+    [ -d "$R/etc/aether" ] || install -d -m 755 "$R/etc/aether"
+    [ -f "$STATE" ] || { : > "$STATE"; chmod 644 "$STATE"; }
+    tmp=$(mktemp "$STATE.XXXXXX") || die 'cannot write login state'
+    grep -v "^[[:space:]]*$1=" "$STATE" > "$tmp" 2>/dev/null || true
+    printf '%s=%s\n' "$1" "$2" >> "$tmp"
+    cat "$tmp" > "$STATE"
+    rm -f "$tmp"
+}
+
+valid_user() { printf '%s' "$1" | grep -Eq '^[a-z_][a-z0-9_-]{0,30}$'; }
+valid_domain() { printf '%s' "$1" | grep -Eq '^[A-Za-z0-9]([A-Za-z0-9.-]*[A-Za-z0-9])?$'; }
+
+default_user() {
+    if [ -r "$R/etc/aether/default-user" ]; then
+        head -c 128 "$R/etc/aether/default-user" | tr -d '\r\n'
+        return
+    fi
+    printf 'aether'
+}
+
+# The seat's default session, so automatic login lands in the same session a
+# manual sign-in would have chosen.
+seat_session() {
+    session=
+    for file in "$R"/etc/lightdm/lightdm.conf "$R"/etc/lightdm/lightdm.conf.d/*.conf; do
+        [ -f "$file" ] || continue
+        found=$(sed -n 's/^[[:space:]]*user-session[[:space:]]*=[[:space:]]*//p' "$file" | tail -n 1)
+        [ -n "$found" ] && session=$found
+    done
+    [ -n "$session" ] || session=plasma
+    printf '%s' "$session"
+}
+
+autologin_active() {
+    [ -f "$AUTOLOGIN_CONF" ] || return 1
+    user=$(sed -n 's/^[[:space:]]*autologin-user[[:space:]]*=[[:space:]]*//p' "$AUTOLOGIN_CONF" | tail -n 1)
+    [ -n "$user" ]
+}
+
+autologin_user() {
+    [ -f "$AUTOLOGIN_CONF" ] || return 0
+    sed -n 's/^[[:space:]]*autologin-user[[:space:]]*=[[:space:]]*//p' "$AUTOLOGIN_CONF" | tail -n 1
+}
+
+write_autologin_conf() {
+    install -d -m 755 "$LIGHTCONF_DIR"
+    tmp=$(mktemp "$AUTOLOGIN_CONF.XXXXXX") || die 'cannot write autologin configuration'
+    {
+        printf '%s\n' '# Managed by aether-login. Removed by "aether-login autologin off".'
+        printf '%s\n' '[Seat:*]'
+        printf 'autologin-user=%s\n' "$1"
+        printf 'autologin-user-timeout=0\n'
+        printf 'autologin-session=%s\n' "$(seat_session)"
+    } > "$tmp"
+    chmod 644 "$tmp"
+    mv -f "$tmp" "$AUTOLOGIN_CONF"
+}
+
+# sss is inserted directly after the first source, normally "files", so existing
+# local accounts keep working. Appending to the end of the line would be wrong:
+# a hosts line ends in an action such as [NOTFOUND=return], which short
+# circuits before a later source is ever consulted.
+nsswitch_set_sss() {
+    [ -f "$NSSWITCH" ] || return 0
+    tmp=$(mktemp) || die 'cannot read nsswitch.conf'
+    awk -v want="$1" '
+        function rebuild(insert_after,   i, kept, out) {
+            kept = 0
+            for (i = 1; i <= nt; i++) {
+                if (tok[i] == "sss" || tok[i] == "") continue
+                ktok[++kept] = tok[i]
+            }
+            if (kept == 0) return insert_after ? "sss" : ""
+            out = ""
+            for (i = 1; i <= kept; i++) {
+                if (i == insert_after) out = out " sss"
+                out = out (i > 1 ? " " : "") ktok[i]
+            }
+            if (insert_after > kept) out = out " sss"
+            return out
+        }
+        /^(passwd|group|shadow|hosts):/ {
+            if (split($0, field, /:/) < 2) { print; next }
+            nt = split(field[2], tok, /[ \t]+/)
+            print field[1] ": " rebuild(want == "on" ? 2 : 0)
+            next
+        }
+        { print }
+    ' "$NSSWITCH" > "$tmp" || { rm -f "$tmp"; die 'cannot rewrite nsswitch.conf'; }
+    cat "$tmp" > "$NSSWITCH"
+    rm -f "$tmp"
+}
+
+have_sssd() {
+    [ -x "$R/usr/sbin/sssd" ] || [ -x "$R/usr/bin/sssd" ] || command -v sssd >/dev/null 2>&1
+}
+
+ad_status_report() {
+    if ! have_sssd; then
+        printf '  sssd:           not installed\n'
+        printf '  NOTE: build the sssd dependency chain to enable domain login.\n'
+        return 1
+    fi
+    printf '  sssd:           installed\n'
+    if [ -f "$SSSD_CONF" ]; then
+        printf '  sssd.conf:      %s\n' "$SSSD_CONF"
+        sed -n 's/^[[:space:]]*id_provider[[:space:]]*=[[:space:]]*//p' "$SSSD_CONF" | \
+            while read -r p; do printf '  id_provider:    %s\n' "$p"; done
+    else
+        printf '  sssd.conf:      absent (not joined)\n'
+    fi
+    if have_systemd; then
+        if systemctl -q is-active sssd.service 2>/dev/null; then
+            printf '  sssd.service:   active\n'
+        elif systemctl -q is-enabled sssd.service 2>/dev/null; then
+            printf '  sssd.service:   enabled (not active)\n'
+        else
+            printf '  sssd.service:   inactive\n'
+        fi
+    fi
+    return 0
+}
+
+case ${1:-status} in
+status)
+    printf 'Automatic login:\n'
+    if autologin_active; then
+        printf '  enabled for user: %s\n' "$(autologin_user)"
+        printf '  session:          %s\n' "$(seat_session)"
+        printf '  NOTE: the greeter is skipped at boot; no password is asked.\n'
+    else
+        printf '  disabled\n'
+    fi
+    printf '\nActive Directory:\n'
+    domain=$(state_get AD_DOMAIN)
+    if [ -n "$domain" ]; then printf '  domain:          %s\n' "$domain"; fi
+    ad_status_report
+    exit 0
+    ;;
+check)
+    rc=0
+    if autologin_active; then
+        user=$(autologin_user)
+        if user_exists "$user"; then
+            printf 'automatic login: configured for existing user %s\n' "$user"
+        else
+            printf 'automatic login: configured for unknown user %s\n' "$user"
+            rc=1
+        fi
+    else
+        printf 'automatic login: disabled\n'
+    fi
+    if have_sssd; then
+        printf 'Active Directory: sssd available\n'
+    else
+        printf 'Active Directory: sssd not installed\n'
+    fi
+    [ "$rc" = 0 ] || { printf 'FAIL: automatic login points at a user that does not exist.\n'; exit 1; }
+    printf 'PASS: login options are consistent.\n'
+    exit 0
+    ;;
+esac
+
+action=${1:-status}
+shift || true
+
+case $action in
+autologin)
+    sub=${1:-status}
+    if [ "$sub" = status ]; then
+        if autologin_active; then printf 'enabled for user: %s\n' "$(autologin_user)"
+        else printf 'disabled\n'; fi
+        exit 0
+    fi
+    case $sub in
+    on)  need_root 'automatic login' 'autologin on';;
+    off) need_root 'automatic login' 'autologin off';;
+    *)   die "usage: aether-login autologin [on [user]|off|status]";;
+    esac
+    case $sub in
+    on)
+        user=${2:-$(autologin_user)}
+        [ -n "$user" ] || user=$(default_user)
+        valid_user "$user" || die "invalid local user name: $user"
+        user_exists "$user" || die "no such local user: $user"
+        write_autologin_conf "$user"
+        state_set AUTOLOGIN_USER "$user"
+        printf 'Automatic login enabled for %s (session %s).\n' "$user" "$(seat_session)"
+        printf 'Undo with: sudo aether-login autologin off\n'
+        ;;
+    off)
+        rm -f "$AUTOLOGIN_CONF"
+        state_set AUTOLOGIN_USER ''
+        printf 'Automatic login disabled. The greeter asks for a password again.\n'
+        ;;
+    esac
+    exit 0
+    ;;
+ad)
+    sub=${1:-status}
+    shift || true
+    case $sub in
+    status)
+        ad_status_report || exit 0
+        exit 0
+        ;;
+    leave)
+        need_root 'leaving a domain' 'ad leave'
+        rm -f "$SSSD_CONF" "$MARKER"
+        nsswitch_set_sss off
+        state_set AD_ENABLED 0
+        state_set AD_DOMAIN ''
+        state_set AD_REALM ''
+        if have_systemd; then
+            systemctl disable --now sssd.service 2>/dev/null || true
+        fi
+        printf 'Removed the sssd domain configuration. Local accounts are unaffected.\n'
+        ;;
+    join)
+        need_root 'joining a domain' 'ad join DOMAIN'
+        domain=${1:-}
+        shift || true
+        [ -n "$domain" ] || die 'usage: aether-login ad join DOMAIN [--user NAME] [--password-stdin]'
+        valid_domain "$domain" || die "invalid domain: $domain"
+        have_sssd || die 'sssd is not installed; build the sssd dependency chain first'
+        adcli=$(find_tool /usr/bin/adcli /usr/local/bin/adcli) || die 'adcli is not installed; it performs the domain join'
+        realm=$(printf '%s' "$domain" | tr 'a-z' 'A-Z')
+        join_user=${AETHER_LOGIN_USER:-}
+        while [ "$#" -gt 0 ]; do
+            case $1 in
+            --user) join_user=${2:-}; shift 2 || die '--user needs a value';;
+            --password-stdin) AETHER_LOGIN_PASSWORD=$(cat); shift;;
+            *) die "unknown option: $1";;
+            esac
+        done
+        [ -n "$join_user" ] || die 'a domain join needs --user NAME (an account allowed to join)'
+        printf '[libdefaults]\n  dns_lookup_realm = false\n  dns_lookup_kdc = true\n  default_realm = %s\n\n[realms]\n  %s = {\n    default_domain = %s\n  }\n\n[domain_realm]\n  .%s = %s\n  %s = %s\n' \
+            "$realm" "$realm" "$(printf '%s' "$domain" | tr 'A-Z' 'a-z')" \
+            "$(printf '%s' "$domain" | tr 'A-Z' 'a-z')" "$realm" \
+            "$(printf '%s' "$domain" | tr 'A-Z' 'a-z')" "$realm" > "$KRB5_CONF" \
+            || die 'cannot write krb5.conf'
+        chmod 644 "$KRB5_CONF"
+        install -d -m 755 "$R/etc/sssd"
+        tmp=$(mktemp) || die 'cannot write sssd.conf'
+        {
+            printf '%s\n' '# Managed by aether-login. Removed by "aether-login ad leave".'
+            printf '%s\n' '[sssd]'
+            printf '%s\n' 'config_file_version = 2'
+            printf '%s\n' 'services = nss, pam'
+            printf '%s\n' "domains = $realm"
+            printf 'default_domain_suffix = %s\n' "$(printf '%s' "$domain" | tr 'A-Z' 'a-z')"
+            printf '\n%s\n' "[domain/$realm]"
+            printf 'ad_domain = %s\n' "$(printf '%s' "$domain" | tr 'A-Z' 'a-z')"
+            printf '%s\n' 'id_provider = ad'
+            printf '%s\n' 'auth_provider = ad'
+            printf '%s\n' 'access_provider = ad'
+            printf '%s\n' 'cache_credentials = true'
+        } > "$tmp"
+        chmod 600 "$tmp"
+        [ -n "$R" ] || chown root:sssd "$tmp" 2>/dev/null || true
+        mv -f "$tmp" "$SSSD_CONF"
+        printf 'Joining %s as %s. Enter the domain account password when asked.\n' "$realm" "$join_user"
+        if [ -n "${AETHER_LOGIN_PASSWORD:-}" ]; then
+            printf '%s' "$AETHER_LOGIN_PASSWORD" | "$adcli" domain join --user "$join_user" "$realm" || {
+                rm -f "$SSSD_CONF"
+                die 'the domain join failed; the sssd configuration was removed'
+            }
+        else
+            "$adcli" domain join --user "$join_user" "$realm" || {
+                rm -f "$SSSD_CONF"
+                die 'the domain join failed; the sssd configuration was removed'
+            }
+        fi
+        unset AETHER_LOGIN_PASSWORD
+        nsswitch_set_sss on
+        touch "$MARKER"; chmod 644 "$MARKER"
+        state_set AD_ENABLED 1
+        state_set AD_DOMAIN "$realm"
+        state_set AD_REALM "$realm"
+        if have_systemd; then
+            systemctl enable sssd.service 2>/dev/null || true
+            systemctl restart sssd.service 2>/dev/null || true
+        fi
+        printf 'Joined %s. Sign in with user@%s or DOMAIN\\user.\n' "$realm" "$(printf '%s' "$domain" | tr 'A-Z' 'a-z')"
+        ;;
+    *) die 'usage: aether-login ad {join DOMAIN|status|leave}';;
+    esac
+    exit 0
+    ;;
+*)
+    die 'usage: aether-login [status|check|autologin ...|ad ...]'
+    ;;
+esac

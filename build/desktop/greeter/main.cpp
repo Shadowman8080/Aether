@@ -3,6 +3,7 @@
 #include <QComboBox>
 #include <QCheckBox>
 #include <QDateTime>
+#include <QDir>
 #include <QFrame>
 #include <QFile>
 #include <QRegularExpression>
@@ -43,12 +44,51 @@ protected:
     }
 };
 
+// LightDM performs automatic login itself. Reporting the account lets the
+// greeter stay out of the way instead of starting a competing PAM transaction
+// that would cancel it and leave the seat at an empty password prompt.
+QString autologinUser() {
+    static const QRegularExpression re(
+        QStringLiteral("^\\s*autologin-user\\s*=\\s*(\\S+)"),
+        QRegularExpression::MultilineOption);
+    QStringList paths{QStringLiteral("/etc/lightdm/lightdm.conf")};
+    QDir drops(QStringLiteral("/etc/lightdm/lightdm.conf.d"));
+    for (const QString &name : drops.entryList({QStringLiteral("*.conf")}, QDir::Files, QDir::Name))
+        paths << drops.filePath(name);
+    QString user;
+    for (const QString &path : paths) {
+        QFile file(path);
+        if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) continue;
+        const auto found = re.match(QString::fromUtf8(file.readAll()));
+        if (found.hasMatch()) user = found.captured(1);
+    }
+    return user;
+}
+
+// Present only where the sssd chain was built, so the greeter never offers a
+// domain field on a system that cannot resolve one.
+bool domainLoginAvailable() {
+    return QFile::exists(QStringLiteral("/etc/aether/domain-login"));
+}
+
+// Local names stay restricted. Domain names arrive as user@domain or
+// DOMAIN\user and are passed to LightDM unchanged for sssd to resolve.
+bool acceptableUser(const QString &name) {
+    if (name.isEmpty()) return false;
+    static const QRegularExpression local(QStringLiteral("^[a-z][a-z0-9_-]{0,30}$"));
+    static const QRegularExpression qualified(
+        QStringLiteral("^[A-Za-z0-9._-]+(@[A-Za-z0-9.-]+|\\\\[A-Za-z0-9._-]+)$"));
+    return local.match(name).hasMatch() || qualified.match(name).hasMatch();
+}
+
 class Login final : public QWidget {
     QLightDM::Greeter greeter;
     QLightDM::PowerInterface power;
     QSvgRenderer wallpaper{QStringLiteral("/usr/share/wallpapers/AetherAurora/contents/images/3840x2160.svg")};
     QLabel *clock, *user, *prompt, *message;
     QLineEdit *answer;
+    // Only built when sssd is present, so a domain name can be typed directly.
+    QLineEdit *usernameEdit = nullptr;
     QCheckBox *showPassword;
     QPushButton *submit;
     QQuickWidget *keyboard;
@@ -70,6 +110,16 @@ class Login final : public QWidget {
         waitingForAnswer = false;
         showPassword->setChecked(false); showPassword->setEnabled(false);
         answer->clear(); answer->setEnabled(false); submit->setEnabled(false);
+        if (usernameEdit) {
+            const QString typed = usernameEdit->text().trimmed();
+            if (!acceptableUser(typed)) {
+                prompt->setText(tr("That user name is not valid here."));
+                answer->setEnabled(true); submit->setEnabled(true);
+                usernameEdit->setFocus();
+                return;
+            }
+            username = typed;
+        }
         user->setText(username); prompt->setText(tr("Signing in…"));
         greeter.authenticate(username);
     }
@@ -135,6 +185,14 @@ public:
         logo->setPixmap(icon); logo->setAlignment(Qt::AlignCenter); form->addWidget(logo);
         auto title = new QLabel(tr("Welcome to Aether")); title->setStyleSheet("font-size: 27px; font-weight: 600;"); title->setAlignment(Qt::AlignCenter); form->addWidget(title);
         user = new QLabel(username); user->setAlignment(Qt::AlignCenter); form->addWidget(user);
+        if (domainLoginAvailable()) {
+            usernameEdit = new QLineEdit(username);
+            usernameEdit->setAccessibleName(tr("User name"));
+            usernameEdit->setPlaceholderText(tr("user, user@domain or DOMAIN\\user"));
+            form->addWidget(usernameEdit);
+            auto domainHint = new QLabel(tr("Add a domain to sign in with an Active Directory account."));
+            domainHint->setWordWrap(true); form->addWidget(domainHint);
+        }
         session = new QComboBox; session->setAccessibleName(tr("Desktop session"));
         session->setModel(new QLightDM::SessionsModel(QLightDM::SessionsModel::LocalSessions, session));
         connect(session, qOverload<int>(&QComboBox::activated), this, [this](int) { sessionChosen = true; });
@@ -164,7 +222,7 @@ public:
         auto other = new QPushButton(tr("Other user")); form->addWidget(other);
         connect(other, &QPushButton::clicked, this, [this] {
             bool ok=false; auto name=QInputDialog::getText(this,tr("Other user"),tr("Username"),QLineEdit::Normal,QString(),&ok).trimmed();
-            if (!ok || name.isEmpty()) return;
+            if (!ok || !acceptableUser(name)) return;
             message->clear(); answer->clear(); pendingUser=name;
             if (greeter.inAuthentication()) greeter.cancelAuthentication();
             else { username=pendingUser; pendingUser.clear(); authenticate(); }
@@ -233,6 +291,15 @@ public:
         QTimer::singleShot(0,this,[this] {
             if (!greeter.connectToDaemonSync()) { message->setText(tr("Cannot connect to the login service.")); answer->setEnabled(false); submit->setEnabled(false); return; }
             preferSession();
+            const QString automatic = autologinUser();
+            if (!automatic.isEmpty() && automatic == username) {
+                // LightDM signs this account in itself. Starting a PAM
+                // transaction here would cancel that and strand the seat at an
+                // empty password prompt.
+                prompt->setText(tr("Signing in automatically…"));
+                answer->setEnabled(false); submit->setEnabled(false);
+                return;
+            }
             authenticate();
         });
     }

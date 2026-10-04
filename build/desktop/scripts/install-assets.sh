@@ -11,7 +11,7 @@ done < <(find "$assets" -mindepth 1 -type d -print0)
 while IFS= read -r -d '' source; do
  install -D -o 0 -g 0 -m 644 "$source" "$root/${source#"$assets/"}"
 done < <(find "$assets" -type f -print0)
-chmod 755 "$root/usr/bin/aurasearch"
+chmod 755 "$root/usr/bin/aurasearch" "$root/usr/bin/aether-login"
 chmod 755 "$root/usr/lib/aether-initramfs/start-splash" "$root/usr/lib/aether-initramfs/unlock-root"
 # XDG system defaults affect new accounts without overwriting user configuration.
 if [ -x "$root/usr/bin/update-desktop-database" ]; then

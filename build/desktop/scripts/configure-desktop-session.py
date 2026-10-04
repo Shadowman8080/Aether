@@ -144,6 +144,7 @@ subprocess.run(['systemctl', '--root=/', 'set-default', 'graphical.target'], che
 subprocess.run(['systemctl', '--root=/', '--global', 'enable', 'pipewire.socket',
                 'pipewire-pulse.socket', 'wireplumber.service'], check=True)
 subprocess.run(['python3', '/recipes/scripts/configure-vmware-desktop.py'], check=True)
+subprocess.run(['python3', '/recipes/scripts/configure-login-options.py'], check=True)
 print('Offline session configured. Login, lock, networking and sound require boot tests.')
 
 # Preserve installed Aether security defaults on subsequent desktop rebuilds.

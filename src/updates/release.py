@@ -12,6 +12,7 @@ from __future__ import annotations
 import argparse
 import getpass
 import hashlib
+import io
 import json
 import os
 import re
@@ -48,20 +49,53 @@ def load_signers(directory: Path) -> dict:
     return signers
 
 
+def ar_members(data: bytes):
+    """Yield (name, payload) for each member of a Unix `ar` archive.
+
+    A .deb is an ar archive of debian-binary, control.tar.* and data.tar.*.
+    """
+    if not data.startswith(b"!<arch>\n"):
+        raise ValueError("Package is not a dpkg archive")
+    offset = 8
+    while offset < len(data):
+        header = data[offset:offset + 60]
+        if len(header) < 60:
+            raise ValueError("Truncated dpkg archive header")
+        name = header[0:16].decode("ascii", "replace").strip().rstrip("/")
+        try:
+            size = int(header[48:58].decode("ascii").strip())
+        except ValueError:
+            raise ValueError("Invalid dpkg archive member header") from None
+        start = offset + 60
+        payload = data[start:start + size]
+        if len(payload) != size:
+            raise ValueError("Truncated dpkg archive member")
+        yield name, payload
+        offset = start + size + (size % 2)
+
+
 def inspect_package(path: Path) -> dict:
-    with tarfile.open(path, "r:*") as archive:
-        item = archive.getmember(".PKGINFO")
-        if not item.isfile() or item.size > 65536:
+    """Read Package/Version/Architecture from a .deb's control member."""
+    control = None
+    for name, payload in ar_members(path.read_bytes()):
+        if name.startswith("control.tar"):
+            control = payload
+            break
+    if control is None:
+        raise ValueError("Package has no control member")
+    with tarfile.open(fileobj=io.BytesIO(control), mode="r:*") as archive:
+        item = next((m for m in archive.getmembers() if m.name.lstrip("./") == "control"), None)
+        if item is None or not item.isfile() or item.size > 65536:
             raise ValueError("Invalid package metadata")
         content = archive.extractfile(item).read().decode("utf-8")
     result = {}
     for line in content.splitlines():
-        if " = " in line:
-            key, value = line.split(" = ", 1)
-            if key in ("pkgname", "pkgver", "arch"):
+        if ":" in line and line[:1] not in (" ", "\t"):
+            key, value = line.split(":", 1)
+            if key in ("Package", "Version", "Architecture"):
                 if key in result:
                     raise ValueError("Duplicate package identity field")
-                result[key] = value
+                result[key] = value.strip()
     return result
 
 
@@ -76,7 +110,7 @@ def prepare_files(plan: dict, temporary: Path, *, gpgv="gpgv") -> dict:
         if archive.is_symlink() or not archive.is_file():
             raise ValueError("Package must be a regular file")
         archive = archive.resolve()
-        if archive.name in names or not re.fullmatch(r"[A-Za-z0-9_+.-]+\.pkg\.tar\.(zst|xz|gz)", archive.name):
+        if archive.name in names or not re.fullmatch(r"[A-Za-z0-9_.+:%~-]+\.deb", archive.name):
             raise ValueError("Duplicate or invalid package filename")
         names.add(archive.name)
         if archive.is_symlink() or not archive.is_file():
@@ -86,9 +120,9 @@ def prepare_files(plan: dict, temporary: Path, *, gpgv="gpgv") -> dict:
             raise ValueError("Package differs from the reviewed release plan")
         verify_package(archive, Path(plan["public_keyring"]), plan["signer_fingerprint"], gpgv=gpgv)
         identity = inspect_package(archive)
-        if identity.get("pkgname") != entry["name"] or identity.get("pkgver") != entry["version"]:
+        if identity.get("Package") != entry["name"] or identity.get("Version") != entry["version"]:
             raise ValueError("Package name or version differs from release plan")
-        if identity.get("arch") not in ("any", plan["architecture"]):
+        if identity.get("Architecture") not in ("all", plan["architecture"]):
             raise ValueError("Package architecture differs from release channel")
         target = "packages/" + archive.name
         # Copy the verified bytes into a private staging directory so later
@@ -101,7 +135,7 @@ def prepare_files(plan: dict, temporary: Path, *, gpgv="gpgv") -> dict:
         verify_package(frozen, Path(plan["public_keyring"]), plan["signer_fingerprint"], gpgv=gpgv)
         files[target], files[target + ".sig"] = frozen, frozen_sig
         packages.append({"name": entry["name"], "version": entry["version"], "target": target,
-            "sha256": entry["sha256"], "architecture": identity["arch"]})
+            "sha256": entry["sha256"], "architecture": identity["Architecture"]})
     if not packages:
         raise ValueError("No packages in release plan")
     catalog = temporary / "catalog.json"

@@ -22,8 +22,8 @@ def check_fingerprint(fingerprint):
 
 def sign_package(package: Path, home: Path, fingerprint: str, *, gpg="gpg") -> Path:
     check_fingerprint(fingerprint)
-    if not package.name.endswith((".pkg.tar.zst", ".pkg.tar.xz", ".pkg.tar.gz")):
-        raise ValueError("Expected a pacman package archive")
+    if not package.name.endswith(".deb"):
+        raise ValueError("Expected a dpkg package archive")
     if not package.is_file() or package.is_symlink():
         raise ValueError("Package must be a regular file")
     signature = Path(str(package) + ".sig")

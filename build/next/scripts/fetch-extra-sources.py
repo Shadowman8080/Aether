@@ -7,7 +7,6 @@ import subprocess
 root = Path('/opt/aether')
 repos = [
     ('llama.cpp', 'llama.cpp', 'https://github.com/ggml-org/llama.cpp.git'),
-    ('pacman', 'pacman-7.1.0', 'https://gitlab.archlinux.org/pacman/pacman.git'),
 ]
 for name, directory, url in repos:
     revision = (root/'next/configs'/f'{name}.commit').read_text().strip()

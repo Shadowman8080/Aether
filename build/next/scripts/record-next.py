@@ -16,7 +16,7 @@ for path in sorted((root/'sources/lfs-cache').iterdir()):
     with path.open('rb') as handle: checksum = hashlib.file_digest(handle, 'sha256').hexdigest()
     sources[path.name] = {'bytes':path.stat().st_size, 'sha256':checksum}
 (root/'next/configs/source-cache-lock.json').write_text(json.dumps(sources, indent=2)+'\n')
-for name, directory in [('llama.cpp','llama.cpp'), ('pacman','pacman-7.1.0')]:
+for name, directory in [('llama.cpp','llama.cpp')]:
     commit = subprocess.check_output(['git','-C',str(root/'sources'/directory),'rev-parse','HEAD'], text=True)
     (root/'next/configs'/f'{name}.commit').write_text(commit)
 for path in (root/'next/desktop').rglob('*.json'): json.loads(path.read_text())

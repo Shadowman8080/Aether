@@ -12,9 +12,9 @@ Confirmed by the user on 2026-09-28:
 
 This is a recorded product decision, not an installed update service.
 
-The existing host-side pacman repository test successfully installs and removes a signed test package and rejects unsigned packages, modified packages, and a modified database. Its temporary development signing key is not a production trust root.
+The dpkg and apt chain is built and shipped. `proof-chain.sh` installs, verifies and removes real signed `.deb` packages in a disposable root, and rejects unsigned, modified and database-tampered cases. Any signing key it uses is a temporary development key, not a production trust root.
 
-The current desktop root does not contain pacman, Flatpak, or OSTree. Most software was installed directly from source, without package ownership records. Do not attach Arch or Ubuntu repositories or perform a package upgrade against this unmanaged base.
+The current desktop root contains dpkg and apt with a synthetic ownership database. It contains no pacman, Flatpak or OSTree, and no package repository is attached to it. Most software was still installed directly from source, without package ownership records for every file. Do not attach Arch or Ubuntu repositories or perform a package upgrade against that unmanaged base.
 
 R2 currently holds private installer artifacts, not a usable operating-system update repository. The publisher credential must remain on the build VM. Client read access, production signing and trust provisioning, package ownership/migration, interrupted-update recovery, and desktop notification integration remain to be implemented and tested before automatic checks can be enabled.
 

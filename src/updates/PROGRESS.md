@@ -24,8 +24,8 @@ the same failed start command or claim that the VM was started.
 
 Next: upload this source tree (excluding .venv/test caches) to /opt/aether/updates;
 install pinned Linux dependencies in an isolated venv and record their hashes;
-run the test suite on Linux; integrate real pacman install/upgrade/removal tests
-in a disposable root; build native Aether pacman only in an isolated image.
+run the test suite on Linux; integrate real dpkg/apt install/upgrade/removal tests
+in a disposable root against the shipped dpkg and apt.
 Check available disk capacity first (last known 2.7 GiB free).
 
 Production key custody, trust provisioning, rotation/revocation, private read-only

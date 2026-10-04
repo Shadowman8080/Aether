@@ -17,7 +17,7 @@ Aether 0.2.1 adds source-native VMware and VirtualBox tools, a basic X11/GTK gra
 - BIOS and UEFI boot. Desktop kernel follows the maintained 6.18 long-term branch, beginning at 6.18.54. The LFS book's 7.1.8 API headers are separate from the runtime kernel.
 - Plasma top bar and floating application dock, with original Aether wallpaper and branding.
 - Local AI first, optional cloud support later. No cloud provider, credentials, or remote chat path is configured.
-- Planned package management is source-built pacman with Aether's own signed repository. This is not an Arch binary distribution.
+- Package management is dpkg and apt, both built from upstream source inside the image, with a synthetic ownership database synthesised from the files already present. There is no pacman, Flatpak or OSTree. See `../apt/README.md`.
 
 ## Historical base-build work
 
@@ -35,15 +35,17 @@ The model starts with the first question and stops when the session closes. Chat
 
 All seven `test_ai.py` tests pass, covering downloader integrity, oversized downloads, path handling, corrupt cached models and requests rejected before model startup. `test_inference.py` passed with real model inference in a network namespace containing only loopback. It also verified authentication, proxy bypass and process/key cleanup. The host UI has been compiled and rendered for initial layout review. Native desktop integration is still pending.
 
-## Package workflow tested on the build host
+## Package workflow
 
-Pacman 7.1.0 was built from its pinned upstream source into an isolated host prefix. An original Aether wallpaper package was created and signed with a temporary development test key. A signed file-based repository installed and removed it in a disposable root. Tests also rejected unsigned packages, altered packages and an altered repository database. See `scripts/build-package-tools.sh` and `scripts/test-package-repository.sh`.
+Superseded. The earlier plan was a source-built pacman with an Aether-owned signed repository, exercised against an isolated host prefix. That approach was dropped: pacman is not in the image, and its build and repository-test scripts have been removed.
 
-This proves the package/signature workflow, not native package-manager integration or recovery from interrupted OS updates. The test key expires after 30 days and must not become a production release key. Private keys stay under the ignored build directory and are excluded from source archives. Build pacman and its dependencies natively before installing it in Aether.
+What replaced it is dpkg and apt, built from upstream source inside a chroot of the extracted desktop rootfs, with AppStream, PackageKit (apt backend) and plasma-discover on top. `gen-dpkg-db.py` synthesises `/var/lib/dpkg/status` from the build metadata that survived, and `proof-chain.sh` proves real `.deb` install, verification, tamper detection, refusal to overwrite another package's file, removal, and a local `file:` repository through `apt-get update` / `install` / `remove`. See `../apt/README.md`.
+
+No package repository is attached to the shipped image, and no private key is stored in it. The temporary development signing key that the old pacman test used expires and must never become a production release key.
 
 ## Remaining release gates
 
-Complete native hypervisor integration testing; build native pacman and libraries; create a signed test repository and verify rejection of tampered packages; build Plasma and service dependencies; extend first-boot setup beyond the existing password change; test networking, audio and suspend where hardware allows; rebuild and package the assistant; implement and test installer/recovery flows on disposable disks; record checksums, licenses and source manifests; produce a new bootable release image.
+Complete native hypervisor integration testing; create an Aether-owned signed `.deb` repository and verify rejection of tampered packages; attach no third-party distribution repository; extend first-boot setup beyond the existing password change; test networking, audio and suspend where hardware allows; rebuild and package the assistant; implement and test installer/recovery flows on disposable disks; record checksums, licenses and source manifests; produce a new bootable release image.
 
 Physical hardware coverage, Secure Boot and public update hosting are not yet established. Do not advertise these as supported based solely on VM tests.
 

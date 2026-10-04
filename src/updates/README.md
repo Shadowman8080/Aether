@@ -105,7 +105,7 @@ this implementation does not yet automate publication.
    Expired metadata must produce a visible failure, not “no updates available.”
 6. Establish package file ownership and dependencies for the existing source-built
    base before core upgrades. Do not attach Arch or Ubuntu binary repositories.
-7. Test native pacman install/upgrade/removal and recovery from interrupted kernel,
+7. Test native dpkg/apt install/upgrade/removal and recovery from interrupted kernel,
    initramfs and desktop updates on an isolated disk before user-disk deployment.
 8. Preserve the requested policy: check automatically, ask before installation,
    no automatic restart. This policy is recorded; no timer is enabled yet.
@@ -115,5 +115,6 @@ architectures have been built or tested. x64 and x86_64 are the same architectur
 
 References:
 - https://theupdateframework.io/docs/security/
-- https://man.archlinux.org/man/pacman.conf.5
+- https://manpages.debian.org/bookworm/apt/apt-get.8.en.html
+- https://manpages.debian.org/bookworm/dpkg/dpkg.1.en.html
 - https://github.com/theupdateframework/python-tuf

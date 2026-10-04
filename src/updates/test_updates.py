@@ -26,6 +26,41 @@ from release import prepare_files
 from r2_fetcher import R2Fetcher
 
 
+def _ar_member(name, data):
+    """One entry of a Unix `ar` archive, which is what a .deb is built on."""
+    header = "%-16s%-12d%-6d%-6d%-8o%-10d`\n" % (name, 0, 0, 0, 0o100644, len(data))
+    member = header.encode("ascii") + data
+    return member + b"\n" if len(data) % 2 else member
+
+
+def _tar_gz(members):
+    buffer = io.BytesIO()
+    with tarfile.open(fileobj=buffer, mode="w:gz") as archive:
+        for path, data in members.items():
+            info = tarfile.TarInfo(path)
+            info.size, info.mode, info.mtime = len(data), 0o644, 0
+            archive.addfile(info, io.BytesIO(data))
+    return buffer.getvalue()
+
+
+def write_minimal_deb(path, name, version, architecture, payload):
+    """Write a real, dpkg-acceptable .deb: ar + debian-binary + control + data.
+
+    The signing tests only need a well-formed archive to sign and verify, but a
+    renamed tarball would not prove the artifact is something dpkg can actually
+    consume, so the container is built properly here.
+    """
+    control = _tar_gz({"./control": (
+        "Package: %s\nVersion: %s\nArchitecture: %s\n"
+        "Maintainer: Aether\nDescription: Disposable signing test\n"
+        % (name, version, architecture)).encode("utf-8")})
+    data = _tar_gz({"./" + member: blob for member, blob in payload.items()})
+    path.write_bytes(b"!<arch>\n"
+                     + _ar_member("debian-binary", b"2.0\n")
+                     + _ar_member("control.tar.gz", control)
+                     + _ar_member("data.tar.gz", data))
+
+
 class DirectoryFetcher(FetcherInterface):
     def __init__(self, directory):
         self.directory = directory
@@ -47,9 +82,9 @@ class UpdateTests(unittest.TestCase):
         self.root = create_root(self.keys, root_threshold=2)
         self.catalog = self.base / "catalog.json"
         self.catalog.write_text(json.dumps({"schema": 1, "architecture": "x86_64", "channel": "development"}))
-        self.package = self.base / "sample.pkg.tar.gz"
+        self.package = self.base / "sample.deb"
         self.package.write_bytes(b"test-only target bytes")
-        self.files = {"aether/catalog.json": self.catalog, "packages/sample.pkg.tar.gz": self.package}
+        self.files = {"aether/catalog.json": self.catalog, "packages/sample.deb": self.package}
         self.repo = self.base / "repo"
         self.receipt = build_repository(self.repo, self.files, self.root, self.keys, version=1)
         self.transport = DirectoryFetcher(self.repo)
@@ -59,13 +94,13 @@ class UpdateTests(unittest.TestCase):
             "https://updates.example.invalid", fetcher=self.transport)
 
     def target_path(self):
-        digest = self.receipt["targets"]["packages/sample.pkg.tar.gz"]["sha256"]
-        return self.repo / "targets/packages" / (digest + ".sample.pkg.tar.gz")
+        digest = self.receipt["targets"]["packages/sample.deb"]["sha256"]
+        return self.repo / "targets/packages" / (digest + ".sample.deb")
 
     def test_valid_repository_and_download(self):
         client = self.client()
         client.refresh()
-        self.assertEqual(client.stage("packages/sample.pkg.tar.gz").read_bytes(), self.package.read_bytes())
+        self.assertEqual(client.stage("packages/sample.deb").read_bytes(), self.package.read_bytes())
         self.assertEqual(client.catalog("x86_64", "development")["schema"], 1)
 
     def test_no_install_or_restart_policy(self):
@@ -73,14 +108,14 @@ class UpdateTests(unittest.TestCase):
 
     def test_requires_fresh_metadata_before_download(self):
         with self.assertRaises(RuntimeError):
-            self.client().stage("packages/sample.pkg.tar.gz")
+            self.client().stage("packages/sample.deb")
 
     def test_tampered_package_rejected(self):
         self.target_path().write_bytes(b"tampered")
         client = self.client()
         client.refresh()
         with self.assertRaises((exceptions.LengthOrHashMismatchError, exceptions.DownloadLengthMismatchError)):
-            client.stage("packages/sample.pkg.tar.gz")
+            client.stage("packages/sample.deb")
 
     def test_tampered_timestamp_rejected(self):
         path = self.repo / "metadata/timestamp.json"
@@ -141,7 +176,7 @@ class UpdateTests(unittest.TestCase):
         client = self.client()
         client.refresh()
         with self.assertRaises(ValueError):
-            client.stage("packages/not-signed.pkg.tar.gz")
+            client.stage("packages/not-signed.deb")
 
     def test_root_threshold_enforced(self):
         keys = dict(self.keys)
@@ -182,11 +217,11 @@ class UpdateTests(unittest.TestCase):
     def test_cached_file_tampering_cannot_bypass_validation(self):
         client = self.client()
         client.refresh()
-        path = client.stage("packages/sample.pkg.tar.gz")
+        path = client.stage("packages/sample.deb")
         path.write_bytes(b"tampered")
         self.target_path().write_bytes(b"also tampered")
         with self.assertRaises((exceptions.LengthOrHashMismatchError, exceptions.DownloadLengthMismatchError)):
-            client.stage("packages/sample.pkg.tar.gz")
+            client.stage("packages/sample.deb")
 
 
 class PackageSignatureTests(unittest.TestCase):
@@ -209,15 +244,9 @@ class PackageSignatureTests(unittest.TestCase):
                 fingerprint = next(line.split(":")[9] for line in listed.stdout.splitlines() if line.startswith("fpr:"))
                 keyring = base / "public.gpg"
                 keyring.write_bytes(subprocess.run(command + ["--export", fingerprint], check=True, capture_output=True).stdout)
-                package = base / "aether-signing-smoke-0.1-1-any.pkg.tar.gz"
-                with tarfile.open(package, "w:gz") as archive:
-                    for path, data in {
-                        ".PKGINFO": b"pkgname = aether-signing-smoke\npkgver = 0.1-1\npkgdesc = Disposable signing test\narch = any\nsize = 7\n",
-                        "usr/share/aether-signing-smoke/result.txt": b"Aether\n",
-                    }.items():
-                        info = tarfile.TarInfo(path)
-                        info.size, info.mode, info.mtime = len(data), 0o644, 0
-                        archive.addfile(info, io.BytesIO(data))
+                package = base / "aether-signing-smoke_0.1-1_all.deb"
+                write_minimal_deb(package, "aether-signing-smoke", "0.1-1", "all",
+                                  {"usr/share/aether-signing-smoke/result.txt": b"Aether\n"})
                 signature = sign_package(package, home, fingerprint, gpg=gpg)
                 verify_package(package, keyring, fingerprint, gpgv=gpgv)
                 plan = {"version": 1, "channel": "development", "architecture": "x86_64",
@@ -240,8 +269,8 @@ class PackageSignatureTests(unittest.TestCase):
                 downloaded = client.stage(target)
                 downloaded_signature = client.stage(target + ".sig")
                 # ngclient uses URL-encoded local names. Copy to a conventional
-                # sibling pair before handing the package to GnuPG/pacman.
-                checked = base / "checked.pkg.tar.gz"
+                # sibling pair before handing the package to GnuPG/dpkg.
+                checked = base / "checked.deb"
                 checked.write_bytes(downloaded.read_bytes())
                 Path(str(checked) + ".sig").write_bytes(downloaded_signature.read_bytes())
                 verify_package(checked, keyring, fingerprint, gpgv=gpgv)

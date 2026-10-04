@@ -109,6 +109,59 @@ packages with unverified binaries.
 
 All checks pass. See `logs/apt/` on the build host for the captured transcripts.
 
+## Running it: what is checked, and what is not
+
+The chain is **built and shipped in `aether-0.3-x86_64-unified.iso`**. That is a
+build-time claim. This section is the runtime one, and it is deliberately blunt
+about the difference.
+
+`aether-apt-check` (installed at `/usr/bin/aether-apt-check`) is the runtime
+check, and the boot self-test (`S99aether`) runs it on every
+`aether.selftest=1` boot. It verifies that:
+
+- `dpkg`, `apt-get` and `apt-cache` **execute**, not merely exist. This is the
+  check that matters: with a wrongly regenerated loader cache `apt-get` is
+  present and still dies on `libapt-private.so.0.0`.
+- `/var/lib/dpkg/status` is present and reports installed packages, so dpkg and
+  apt are reasoning about a populated system.
+- `dpkg --audit` is clean. `--audit` exits 0 even when it reports damage, so its
+  output is what gets checked.
+- the PackageKit pieces Discover needs are in place: the unit, the D-Bus
+  activation file, `libpk_backend_apt.so`, and `plasma-discover`.
+- **no package repository is attached.** This is asserted, not assumed. Aether
+  attaches no Arch or Ubuntu repository by policy, so a source appearing in
+  `sources.list` or `sources.list.d` fails the check.
+
+Exit status is `0` healthy, `1` present but broken, `2` no chain on this profile.
+The self-test reports `1` as FAIL and `2` as an explicit SKIP, so an absent
+chain can never be mistaken for a passing one.
+
+Its test suite runs offline against a throwaway tree and needs no dpkg:
+
+```
+sh build/scripts/test-apt-check.sh
+PASS=20 FAIL=0
+```
+
+Cases include the broken-loader-cache failure, an empty dpkg database, audit
+damage, a repository attached in either `sources.list` or `sources.list.d`, and
+a comment-only file correctly *not* counting as a repository.
+
+### Honest gaps
+
+- **Nothing has been booted.** The chain was proven in a chroot
+  (`proof-chain.sh`) and by inspection of the ISO contents, but
+  `aether-apt-check` has never run inside a booted Aether. The ARM64 console
+  image has no package chain and will report SKIP, which is correct.
+- **No repository exists**, so `apt-get install` cannot fetch anything. The
+  chain can install a local `.deb` and nothing more. Aether's own signed
+  repository is still unimplemented; see [`../src/updates`](../../src/updates).
+- **The Discover UI was never clicked through**, so "the store works" is not
+  claimed. PackageKit is D-Bus activated and is deliberately *not*
+  `systemctl enable`d.
+- `build-unified-iso.sh` now fails the build if `apt-get` will not execute or
+  dpkg reports no packages, instead of printing the result and continuing.
+
 ## Reproducing
 
 The steps are incremental and were driven per stage against the chroot created

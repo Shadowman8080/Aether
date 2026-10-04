@@ -1,0 +1,106 @@
+#!/bin/sh
+# aether-apt-check - verify that the dpkg/apt chain is present and usable.
+#
+# Run from the boot self-test. Exit status:
+#   0  the chain is installed and healthy
+#   1  the chain is present but something is broken
+#   2  this profile has no package-manager chain at all
+#
+# The point is that "apt was built" is a build-time claim. This is the runtime
+# check for it, and it deliberately verifies the failure mode that actually
+# bites: apt-get failing to load libapt-private.so.0.0 when the dynamic loader
+# cache was regenerated with the wrong ldconfig.
+#
+# AETHER_APT_ROOT points every path at another directory instead of /, so the
+# checks can be exercised without a chroot. It is unset on a real boot.
+
+PATH=/usr/sbin:/usr/bin:/sbin:/bin
+export PATH
+
+R=${AETHER_APT_ROOT:-}
+
+failed=0
+check() {
+    if "$@" >/dev/null 2>&1; then
+        printf '  ok   %s\n' "$*"
+    else
+        printf '  FAIL %s\n' "$*"
+        failed=1
+    fi
+}
+
+echo "apt chain:"
+
+if [ ! -x "$R/usr/bin/dpkg" ] || [ ! -x "$R/usr/bin/apt-get" ]; then
+    echo "  dpkg or apt-get is not installed; this profile has no package chain."
+    exit 2
+fi
+
+# The loaders, not just the paths. apt-get existing as a file is not the same
+# as apt-get running; the loader cache is what decides.
+check "$R/usr/bin/dpkg" --version
+check "$R/usr/bin/apt-get" --version
+check "$R/usr/bin/apt-cache" stats
+
+# The synthetic ownership database has to be readable and non-empty, or dpkg
+# and apt are reasoning about an empty system.
+if [ -f "$R/var/lib/dpkg/status" ]; then
+    installed=$("$R/usr/bin/dpkg" -l 2>/dev/null | grep -c '^ii')
+    if [ "${installed:-0}" -gt 0 ]; then
+        printf '  ok   dpkg database: %s installed packages\n' "$installed"
+    else
+        echo "  FAIL dpkg database is empty or unreadable"
+        failed=1
+    fi
+else
+    echo "  FAIL var/lib/dpkg/status is missing"
+    failed=1
+fi
+
+# --audit prints what it found and still exits 0, so the output is the check.
+audit=$("$R/usr/bin/dpkg" --audit 2>&1)
+if [ -z "$audit" ]; then
+    echo "  ok   dpkg --audit is clean"
+else
+    printf '  FAIL dpkg --audit reported:\n%s\n' "$audit"
+    failed=1
+fi
+
+# No distribution repository is attached, deliberately: everything in the
+# image was built from pinned upstream source. If a source ever appears it is a
+# policy change and must fail this check rather than pass quietly. Comments and
+# blank lines are dropped before looking, so a documented placeholder file does
+# not read as a repository.
+sources=$(cat "$R/etc/apt/sources.list" 2>/dev/null; cat "$R"/etc/apt/sources.list.d/* 2>/dev/null)
+if [ -z "$(printf '%s\n' "$sources" | sed 's/#.*//' | tr -d '[:space:]')" ]; then
+    echo "  ok   no package repository is attached (expected)"
+else
+    printf '%s\n' "$sources"
+    echo "  FAIL a package repository is configured; Aether attaches none by policy"
+    failed=1
+fi
+
+# PackageKit is what the Discover front end talks to. It is D-Bus activated, so
+# the unit is expected to sit inactive until something asks for it.
+if [ -e "$R/usr/lib/systemd/system/packagekit.service" ]; then
+    echo "  ok   packagekit.service is installed"
+else
+    echo "  FAIL packagekit.service is missing"
+    failed=1
+fi
+if [ -e "$R/usr/share/dbus-1/system-services/org.freedesktop.PackageKit.service" ]; then
+    echo "  ok   PackageKit is D-Bus activatable"
+else
+    echo "  FAIL PackageKit D-Bus activation file is missing"
+    failed=1
+fi
+check test -e "$R/usr/lib/packagekit-backend/libpk_backend_apt.so"
+check test -x "$R/usr/bin/plasma-discover"
+
+if [ "$failed" = 0 ]; then
+    echo "apt chain is installed and healthy."
+    echo "Note: no repository is attached, so apt can only install local .deb files."
+    exit 0
+fi
+echo "apt chain is present but unhealthy."
+exit 1

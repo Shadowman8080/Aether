@@ -75,6 +75,13 @@ df -h / | sed 's/^/  /'
 
 # Overlay the chain. Keep every apt-root-only file except caches, dev headers
 # and anything that could carry operator secrets (root/.*).
+#
+# etc/systemd is excluded on purpose: this is a union, and local-ai's root is the
+# base, so apt-root's enablement symlinks must not overwrite the base's. Nothing
+# in the apt chain needs `systemctl enable` -- PackageKit is D-Bus activated and
+# apt/dpkg are on-demand commands -- so nothing is lost by leaving it out. If a
+# future component does need enabling, enable it in the base root and rebuild,
+# rather than relying on it being copied in here.
 echo "--- overlaying package-manager chain ---"
 grep -vE '^(root/|var/cache/|var/log/|usr/include/|usr/cmake/|etc/systemd/)' "$LIST" \
   | grep -v '^$' > /tmp/add.txt
@@ -94,11 +101,26 @@ for d in dev proc sys; do mount --bind "/$d" "$AIROOT/$d" 2>/dev/null || true; d
 echo "--- ldconfig (image) ---"
 chroot "$AIROOT" /sbin/ldconfig && echo "  cache regenerated" \
   || { echo "  ldconfig failed"; exit 1; }
-chroot "$AIROOT" /usr/bin/apt-get --version 2>&1 | head -1 | sed 's/^/  apt-get:   /' || true
-printf '  dpkg ii:   '; chroot "$AIROOT" /usr/bin/dpkg -l 2>/dev/null | grep -c '^ii'
+# The package chain must be proven to *run*, not merely to exist. apt-get
+# resolving to a file is not apt-get working: if the loader cache is wrong it
+# dies on libapt-private.so.0.0, and that must stop the build rather than be
+# reported and ignored.
+echo "--- apt chain (must run, not just exist) ---"
+chroot "$AIROOT" /usr/bin/apt-get --version 2>&1 | head -1 | sed 's/^/  apt-get:   /'
+chroot "$AIROOT" /usr/bin/apt-get --version >/dev/null 2>&1 \
+  || { echo "  apt-get is present but will not execute; check ldconfig"; exit 1; }
+packages=$(chroot "$AIROOT" /usr/bin/dpkg -l 2>/dev/null | grep -c '^ii' || true)
+echo "  dpkg ii:   $packages"
+[ "${packages:-0}" -gt 0 ] || { echo "  dpkg reports no installed packages"; exit 1; }
 chroot "$AIROOT" /usr/bin/plasma-discover --version 2>&1 | head -1 | sed 's/^/  discover:  /' || true
 chroot "$AIROOT" /usr/bin/plasmashell --version 2>&1 | head -1 | sed 's/^/  plasmashell: /' || true
 chroot "$AIROOT" /usr/bin/nimbrel --help 2>&1 | head -1 | sed 's/^/  nimbrel:   /' || true
+# If the runtime check is in the tree, run it: it also verifies the dpkg
+# database, the PackageKit pieces, and that no repository is attached.
+if [ -x "$AIROOT/usr/bin/aether-apt-check" ]; then
+  echo "--- aether-apt-check ---"
+  chroot "$AIROOT" /usr/bin/aether-apt-check || { echo "  aether-apt-check failed"; exit 1; }
+fi
 for d in dev proc sys; do umount "$AIROOT/$d" 2>/dev/null || true; done
 
 # Rebuild the rootfs.

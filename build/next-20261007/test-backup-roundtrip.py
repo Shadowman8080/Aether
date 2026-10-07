@@ -39,6 +39,9 @@ with tempfile.TemporaryDirectory(prefix='aether-backup-fixture-') as temporary:
  results.append({'check':'restore contents permissions and symlink into new directory','passed':True})
  # Deliberately damage this throwaway encrypted repository only.
  pack=next(path for path in (repo/'data').rglob('*') if path.is_file())
+ # restic makes packs read-only. Permit deliberate corruption of this owned
+ # fixture even when CI runs without root; never change a real repository.
+ pack.chmod(0o600)
  with pack.open('r+b') as stream:
   original=stream.read(1);assert original;stream.seek(0);stream.write(bytes([original[0]^1]))
  damaged=run('check','--read-data',expect_success=False)

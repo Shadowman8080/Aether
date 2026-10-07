@@ -1,4 +1,4 @@
-name: Aether source regressions
+name: Aether source and desktop checks
 on:
   push:
     branches: [main]
@@ -10,6 +10,40 @@ concurrency:
   group: regressions-${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 jobs:
+  desktop-build:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - name: settings
+            source: src/controlcenter
+          - name: installer
+            source: src/desktop/installer
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false
+      - name: Install desktop build dependencies
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y --no-install-recommends cmake ninja-build g++ qt6-base-dev qt6-svg-dev
+      - name: Compile desktop component
+        run: |
+          cmake -S "${{ matrix.source }}" -B build-ci/${{ matrix.name }} -G Ninja -DCMAKE_BUILD_TYPE=Release
+          cmake --build build-ci/${{ matrix.name }} --parallel "$(nproc)"
+      - name: Exercise Settings pages without running administrator actions
+        if: matrix.name == 'settings'
+        run: QT_QPA_PLATFORM=offscreen build-ci/settings/aether-settings --capture-dir test-results/desktop/settings
+      - name: Preserve Settings page captures
+        if: always() && matrix.name == 'settings'
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: settings-build-captures
+          path: test-results/desktop/
+          if-no-files-found: ignore
+          retention-days: 14
   regressions:
     runs-on: ubuntu-24.04
     timeout-minutes: 20

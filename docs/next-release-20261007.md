@@ -72,3 +72,9 @@ assets must match their source revision and verification checksums.
   and module-signature enforcement enabled. A modified UKI failed both signature
   verification and firmware boot. This probe uses a minimal test initramfs;
   it does not certify the desktop, production key custody or hardware enrollment.
+- Initial desktop candidate boots reached graphical login, but failed the
+  on-demand AI assertion. Replacing systemd removed the empty machine-ID
+  template, which triggered first-boot presets and enabled Nimbrel directly.
+  Added an explicit desktop service allowlist with optional services disabled
+  by default, plus a real `systemctl --root` regression covering AI and console
+  instance enablement. The corrected image is being rebuilt and retested.

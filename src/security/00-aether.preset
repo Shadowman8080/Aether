@@ -1,0 +1,30 @@
+# Aether desktop first-boot policy. Unknown/optional services remain opt-in.
+# Disabling a preset does not mask a service or prevent socket/D-Bus activation.
+enable lightdm.service
+enable getty@.service tty1
+enable serial-getty@.service ttyS0
+enable dbus.socket
+enable NetworkManager.service
+enable NetworkManager-wait-online.service
+enable systemd-resolved.service
+enable systemd-timesyncd.service
+enable systemd-oomd.service
+enable systemd-oomd.socket
+enable systemd-journald-audit.socket
+enable systemd-userdbd.socket
+enable remote-fs.target
+enable apparmor.service
+enable aether-firewall.service
+enable aether-zram.service
+enable aether-system-health.service
+enable aether-update-check.timer
+enable nimbrel-local.socket
+enable cups.socket
+enable bluetooth.service
+enable vmtoolsd.service
+enable vmware-vmblock.service
+enable vboxservice.service
+enable vboxdrmclient.service
+enable fstrim.timer
+enable update-pki.timer
+disable *

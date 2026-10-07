@@ -12,11 +12,18 @@ def put(origin,name,mode=0o755):
 import shutil
 shutil.copy2(b/'stage/controlcenter/usr/bin/aether-settings',package/'usr/bin/aether-settings')
 for origin,name in [('controlcenter/diagnostics.py','usr/bin/aether-diagnostics'),('controlcenter/aether-system-admin','usr/libexec/aether-system-admin'),('security/aether-firewall','usr/bin/aether-firewall'),('security/90-aether-network-profile','etc/NetworkManager/dispatcher.d/90-aether-network-profile')]:put(source/origin,name)
+put(source/'security/00-aether.preset','etc/systemd/system-preset/00-aether.preset',0o644)
 for directory in ('pre-up.d','pre-down.d'):
  link=package/'etc/NetworkManager/dispatcher.d'/directory/'90-aether-network-profile';link.parent.mkdir(exist_ok=True);link.symlink_to('../90-aether-network-profile')
 control=package/'DEBIAN/control';control.write_text(control.read_text().replace('0.3.2~dev20261006-1','0.3.3~dev20261007-1'))
-configs=package/'DEBIAN/conffiles';configs.write_text(configs.read_text()+'/etc/NetworkManager/dispatcher.d/90-aether-network-profile\n')
+configs=package/'DEBIAN/conffiles';configs.write_text(configs.read_text()+'/etc/NetworkManager/dispatcher.d/90-aether-network-profile\n/etc/systemd/system-preset/00-aether.preset\n')
 archive=b/'packages/aether-experience_0.3.3~dev20261007-1_amd64.deb'
 subprocess.run(['dpkg-deb','--build','--root-owner-group',str(package),str(archive)],check=True)
 subprocess.run(['dpkg','--root='+str(root),'--force-confdef','--force-confold','--install',str(archive)],check=True)
+# This disposable template has the historical four-line default, not user policy.
+policy=root/'etc/systemd/system-preset/00-aether.preset'
+legacy='enable systemd-networkd.service\nenable systemd-resolved.service\nenable systemd-timesyncd.service\nenable fstrim.timer\n'
+if policy.read_text()==legacy:policy.write_bytes((source/'security/00-aether.preset').read_bytes().replace(b'\r\n',b'\n'))
+assert policy.read_bytes()==(package/'etc/systemd/system-preset/00-aether.preset').read_bytes()
+subprocess.run(['systemctl','--root='+str(root),'preset-all'],check=True)
 (b/'experience-package.json').write_text(json.dumps({'archive':archive.name,'sha256':hashlib.file_digest(archive.open('rb'),'sha256').hexdigest()},indent=2)+'\n')

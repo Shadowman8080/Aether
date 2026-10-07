@@ -3,7 +3,7 @@
 import json,subprocess
 from pathlib import Path
 b=Path('/opt/aether/build/next-20261007');root=b/'root';checked=[];failures=[];contexts=[]
-for name in ('libcbor','libfido2','tpm2-tss','apparmor','devmapper','cryptsetup','systemd','controlcenter'):
+for name in ('libcbor','libfido2','tpm2-tss','apparmor','devmapper','cryptsetup','systemd','controlcenter','abseil','libqb','protobuf','usbguard'):
  stage=b/'stage'/name
  for path in stage.rglob('*'):
   if path.is_symlink() or not path.is_file():continue

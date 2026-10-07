@@ -1,0 +1,26 @@
+[
+  {
+    "key": "abseil",
+    "version": "20250512.1",
+    "url": "https://github.com/abseil/abseil-cpp/releases/download/20250512.1/abseil-cpp-20250512.1.tar.gz",
+    "sha256": "9b7a064305e9fd94d124ffa6cc358592eb42b5da588fb4e07d09254aa40086db",
+    "archive": "abseil-cpp-20250512.1.tar.gz",
+    "verification": "Pinned upstream GitHub release asset SHA-256 over HTTPS"
+  },
+  {
+    "key": "libqb",
+    "version": "2.0.10",
+    "url": "https://github.com/ClusterLabs/libqb/releases/download/v2.0.10/libqb-2.0.10.tar.xz",
+    "sha256": "326a69fb5b2ee4479f0db4f98d10d670ad0798b5ded8c4cfd585b765fd8941e8",
+    "archive": "libqb-2.0.10.tar.xz",
+    "verification": "Pinned upstream GitHub release asset SHA-256 over HTTPS"
+  },
+  {
+    "key": "protobuf",
+    "version": "36.2",
+    "url": "https://github.com/protocolbuffers/protobuf/releases/download/v36.2/protobuf-36.2.tar.gz",
+    "sha256": "3d9642a662d10e68ebae5e53f14dcce5105684212d5078f8e0d47d1ab3ae6b64",
+    "archive": "protobuf-36.2.tar.gz",
+    "verification": "Pinned upstream GitHub release asset SHA-256 over HTTPS"
+  }
+]

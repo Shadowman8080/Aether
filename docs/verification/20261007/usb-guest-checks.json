@@ -1,0 +1,34 @@
+[
+  {
+    "check": "mount test packages",
+    "exit_code": 0
+  },
+  {
+    "check": "install verified native packages",
+    "exit_code": 0
+  },
+  {
+    "check": "protection initially off",
+    "exit_code": 0
+  },
+  {
+    "check": "automatic rollback",
+    "exit_code": 0
+  },
+  {
+    "check": "trusted keyboard allowed",
+    "exit_code": 0
+  },
+  {
+    "check": "unknown mouse blocked",
+    "exit_code": 0
+  },
+  {
+    "check": "explicit device approval",
+    "exit_code": 0
+  },
+  {
+    "check": "disable waits for manual reboot",
+    "exit_code": 0
+  }
+]

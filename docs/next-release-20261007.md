@@ -88,3 +88,13 @@ assets must match their source revision and verification checksums.
   systemd was on PATH; the final run uses Aether's actual installed path.
 - This remains an internal candidate. No new VMDK or public release has been
   published, and the remaining acceptance criteria above are still outstanding.
+- Built USBGuard 1.1.4 and its native dependencies with all available build CPUs.
+  Four upstream test suites and eleven Aether trial/recovery tests pass.
+  Added an opt-in Settings page and [recovery instructions](usb-protection.md).
+- A disposable Aether guest passed USB policy tests: default-off state, automatic
+  rollback, trusted-keyboard access, unknown-mouse blocking, explicit device
+  approval, and disabling protection for the next manual reboot.
+  [Guest checks](verification/20261007/usb-guest-checks.json) record the results.
+  The first run exposed systemd's default timer tolerance; setting one-second
+  timer accuracy fixed the rollback deadline. Physical USB hardware and
+  interrupted-trial reboot behavior still require integration testing.

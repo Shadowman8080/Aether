@@ -108,6 +108,11 @@ public:
   button(v,"Mark a connection as Public","Remove home trust from an active connection","security-high",[=]{networkProfile(false);});
   settings(v,"Network connections","kcm_networkmanagement","network-wireless");
   note(v,"A private IP address alone does not establish trust. Phone sharing requires a Home connection and separate approval. Previously opened global ports are unchanged.");
+  v=page("USB protection","Optional device authorization. Enroll your keyboard and mouse before blocking unknown USB devices.","drive-removable-media-usb");
+  button(v,"Try USB protection","Start an administrator-authorized trial with automatic rollback unless you confirm","security-high",[=]{launch("konsole",{"--hold","-e","sudo","aether-usbguard","setup"});});
+  button(v,"USB protection status","Review the USBGuard service status","dialog-information",[=]{launch("konsole",{"--hold","-e","sudo","aether-usbguard","status"});});
+  button(v,"Disable on next boot","Disable USB protection after your next manual restart","security-low",[=]{launch("konsole",{"--hold","-e","sudo","aether-usbguard","disable"});});
+  note(v,"Protection stays off until you choose it. Setup captures connected devices and asks you to confirm that input still works. Keep recovery media available. A connected device's identity is not proof that its firmware is trustworthy.");
   v=page("Phone connection","Pair devices you trust. Features become available after you approve pairing.","smartphone");
   button(v,"Open KDE Connect","Pair your phone and choose sharing plugins","kdeconnect",[=]{launch("kdeconnect-app");});
   button(v,"Allow phone connections on Home networks","Open KDE Connect ports only on trusted connections, from private and link-local addresses","network-connect",[=]{if(QMessageBox::question(this,"Allow phone connections?","Allow KDE Connect on connections marked Home in Network privacy? Public connections remain closed. Approve only devices you trust.")==QMessageBox::Yes)admin("phone-enable");});

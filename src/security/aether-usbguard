@@ -1,0 +1,145 @@
+#!/usr/bin/env python3
+"""Opt-in USB policy trial with an independent rollback timer."""
+import contextlib,errno,fcntl,json,os,re,stat,subprocess,sys,tempfile,time,uuid
+from pathlib import Path
+DIRECTORY=Path('/etc/usbguard');RUNTIME=Path('/run/aether-usbguard');SYS=Path('/sys/bus/usb/devices')
+STATEDIR=Path('/var/lib/aether-usbguard')
+CONFIG=DIRECTORY/'usbguard-daemon.conf';RULES=DIRECTORY/'rules.conf';STATE=STATEDIR/'trial.json'
+UNIT='aether-usbguard-revert';SECONDS=60
+DEVICE_NAME=r'(?:usb[0-9]+|[0-9]+-[0-9]+(?:[.:][0-9]+)*)'
+
+def command(*args,**kwargs):
+ kwargs.setdefault('timeout',20)
+ return subprocess.run(args,check=True,text=True,**kwargs)
+def boot_id():return str(uuid.UUID(Path('/proc/sys/kernel/random/boot_id').read_text().strip()))
+def atomic(path,text):
+ fd,name=tempfile.mkstemp(prefix='.'+path.name,dir=path.parent)
+ try:
+  with os.fdopen(fd,'w') as stream:stream.write(text);stream.flush();os.fsync(stream.fileno())
+  os.replace(name,path)
+ finally:
+  if os.path.exists(name):os.unlink(name)
+
+def trusted_directory(path):
+ path.mkdir(mode=0o700,parents=True,exist_ok=True);info=path.lstat()
+ if not stat.S_ISDIR(info.st_mode) or info.st_uid!=os.geteuid() or info.st_mode&0o022:raise RuntimeError('Unsafe administrator configuration directory')
+
+@contextlib.contextmanager
+def locked():
+ trusted_directory(RUNTIME)
+ trusted_directory(STATEDIR)
+ fd=os.open(RUNTIME/'lock',os.O_CREAT|os.O_RDWR|os.O_NOFOLLOW,0o600)
+ with os.fdopen(fd,'w') as stream:fcntl.flock(stream,fcntl.LOCK_EX);yield
+
+def read_optional(path):
+ try:info=path.lstat()
+ except FileNotFoundError:return None
+ if not stat.S_ISREG(info.st_mode) or info.st_uid!=os.geteuid() or info.st_mode&0o022:raise RuntimeError('Unsafe USB policy file')
+ return {'text':path.read_text(),'mode':stat.S_IMODE(info.st_mode)}
+
+def restore_file(path,previous):
+ if previous is None:path.unlink(missing_ok=True)
+ else:atomic(path,previous['text']);path.chmod(previous['mode'])
+
+def capture_authorization():
+ saved=[]
+ for device in SYS.iterdir():
+  if not re.fullmatch(DEVICE_NAME,device.name):continue
+  for attribute in ('authorized','authorized_default'):
+   path=device/attribute
+   if path.is_file():
+    value=path.read_text().strip()
+    if value not in ('0','1','2'):raise RuntimeError('Unknown USB authorization value')
+    saved.append({'device':device.name,'attribute':attribute,'value':value})
+ return saved
+
+def restore_authorization(saved):
+ for item in saved:
+  if not re.fullmatch(DEVICE_NAME,item['device']) or item['attribute'] not in ('authorized','authorized_default') or item['value'] not in ('0','1','2'):raise ValueError('Invalid USB recovery state')
+  path=SYS/item['device']/item['attribute']
+  try:
+   if path.is_file():path.write_text(item['value']+'\n')
+  except OSError as error:
+   if error.errno not in (errno.ENOENT,errno.ENODEV,errno.ENXIO):raise
+
+def rollback(token):
+ with locked():
+  if not STATE.exists():return
+  record=json.loads(STATE.read_text())
+  if record['token']!=token:raise RuntimeError('USB trial identity mismatch')
+  # Stop policy evaluation first, then restore pre-trial kernel authorization.
+  command('systemctl','disable','--now','usbguard.service')
+  # Device numbering can change after a reboot. New kernels already reset USB
+  # authorization; only restore saved sysfs state during the original boot.
+  if record['boot_id']==boot_id():restore_authorization(record['authorization'])
+  restore_file(CONFIG,record['config']);restore_file(RULES,record['rules'])
+  STATE.unlink()
+ subprocess.run(['systemctl','stop',UNIT+'-'+token+'.timer'],check=False,timeout=20)
+ print('USB trial reverted. Previous policy files and authorization states restored.')
+
+def setup():
+ if not sys.stdin.isatty():raise RuntimeError('USB setup requires an interactive terminal')
+ print('Connect the keyboard, mouse and other USB devices you trust before continuing.')
+ print('Protection blocks unknown USB devices. Keep recovery media available.')
+ print('A 60-second trial automatically restores the previous state unless you type KEEP.')
+ if input('Type TRIAL to prepare a policy from connected devices: ')!='TRIAL':return
+ with locked():
+  trusted_directory(DIRECTORY)
+  if STATE.exists():raise RuntimeError('A USB trial is already pending')
+  if subprocess.run(['systemctl','is-active','--quiet','usbguard.service']).returncode==0:raise RuntimeError('USBGuard is already active; preserve its existing policy')
+  if subprocess.run(['systemctl','is-enabled','--quiet','usbguard.service']).returncode==0:raise RuntimeError('USBGuard is already enabled; preserve its existing policy')
+  previous_rules=read_optional(RULES)
+  if previous_rules and any(line.strip() and not line.lstrip().startswith('#') for line in previous_rules['text'].splitlines()):raise RuntimeError('An existing USB policy was found. Review it instead of replacing it')
+  rules=command('/usr/bin/usbguard','generate-policy',capture_output=True).stdout
+  if not rules.strip() or len(rules)>1024*1024:raise RuntimeError('No usable connected-device policy was generated')
+  token=uuid.uuid4().hex
+  record={'token':token,'boot_id':boot_id(),'expires':time.monotonic()+SECONDS,'config':read_optional(CONFIG),'rules':previous_rules,'authorization':capture_authorization()}
+  atomic(STATE,json.dumps(record))
+  try:
+   # Arm recovery before changing files or starting the daemon.
+   command('systemd-run','--quiet','--collect','--unit='+UNIT+'-'+token,'--on-active='+str(SECONDS)+'s','--timer-property=AccuracySec=1s','/usr/bin/aether-usbguard','rollback',token)
+   atomic(RULES,rules)
+   atomic(CONFIG,'RuleFile=/etc/usbguard/rules.conf\nImplicitPolicyTarget=block\nPresentDevicePolicy=apply-policy\nPresentControllerPolicy=keep\nInsertedDevicePolicy=apply-policy\nAuthorizedDefault=none\nRestoreControllerDeviceState=false\nDeviceManagerBackend=uevent\nIPCAllowedUsers=root\nIPCAllowedGroups=\n')
+   command('systemctl','start','usbguard.service')
+  except Exception:
+   # Release the lock before rollback acquires it below.
+   error=True
+  else:error=False
+ if error:rollback(token);raise RuntimeError('USB trial could not start; previous state restored')
+ try:answer=input('Move the mouse and test the keyboard. Type KEEP within 60 seconds to keep protection: ')
+ except (EOFError,KeyboardInterrupt):answer=''
+ if answer!='KEEP':rollback(token);return
+ with locked():
+  if not STATE.exists():raise RuntimeError('The trial expired and was reverted. Start again when ready')
+  record=json.loads(STATE.read_text())
+  if record['token']!=token or time.monotonic()>=record['expires']:raise RuntimeError('The trial expired; automatic recovery will restore the previous state')
+  command('systemctl','enable','usbguard.service')
+  STATE.unlink()
+ subprocess.run(['systemctl','stop',UNIT+'-'+token+'.timer'],check=False,timeout=20)
+ print('USB protection enabled. Only enrolled devices are allowed. Review new devices with sudo usbguard list-devices.')
+ print('For recovery, append aether.usbguard=off to the kernel boot command or use your recovery ISO.')
+
+def main():
+ os.umask(0o077)
+ if os.geteuid()!=0:raise PermissionError('Use sudo aether-usbguard for administration')
+ args=sys.argv[1:]
+ if args==['setup']:setup()
+ elif len(args)==2 and args[0]=='rollback' and re.fullmatch(r'[0-9a-f]{32}',args[1]):rollback(args[1])
+ elif args==['status']:command('systemctl','status','usbguard.service','--no-pager')
+ elif args==['recover']:
+  # Starting USBGuard during setup waits for this dependency while setup owns
+  # the lock. Reading an atomically saved same-boot record must not acquire it.
+  try:record=json.loads(STATE.read_text())
+  except FileNotFoundError:record=None
+  if record and record['boot_id']!=boot_id():rollback(record['token'])
+ elif args==['disable']:
+  if not sys.stdin.isatty():raise RuntimeError('Disabling protection requires an interactive terminal')
+  if input('Type DISABLE to disable USB protection on the next boot: ')=='DISABLE':
+   with locked():
+    if STATE.exists():raise RuntimeError('Finish or cancel the pending trial first')
+    command('systemctl','disable','usbguard.service')
+   print('USB protection remains active until you restart. No automatic restart occurs.')
+ else:raise ValueError('Usage: aether-usbguard setup|status|disable')
+if __name__=='__main__':
+ try:main()
+ except (OSError,ValueError,RuntimeError,subprocess.SubprocessError) as error:print(str(error),file=sys.stderr);sys.exit(1)

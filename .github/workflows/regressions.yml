@@ -37,6 +37,8 @@ jobs:
         run: python src/controlcenter/test_diagnostics.py
       - name: Verify first-boot service policy
         run: python src/security/test_presets.py
+      - name: Verify USB policy trial recovery
+        run: python src/security/test_usb_trial.py
       - name: Verify live Home to Public firewall transition
         run: |
           sudo apt-get update -qq

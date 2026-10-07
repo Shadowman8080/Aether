@@ -1,0 +1,14 @@
+[Unit]
+Description=Recover an interrupted Aether USB policy trial
+After=local-fs.target
+Before=usbguard.service graphical.target
+ConditionPathExists=/var/lib/aether-usbguard/trial.json
+
+[Service]
+Type=oneshot
+ExecStart=/usr/bin/aether-usbguard recover
+UMask=0077
+TimeoutStartSec=90
+
+[Install]
+WantedBy=multi-user.target

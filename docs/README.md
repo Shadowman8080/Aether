@@ -23,6 +23,7 @@ desktop release is 0.3.2 development for x86_64 (also called x64).
 - [Release signing-key setup](../src/updates/LOCAL-KEY-SETUP.md): operator procedures
   for establishing release trust. Ordinary users do not need publisher keys.
 - [Security implementation](../src/security/SECURITY.md): protection mechanisms and limitations.
+- [Optional USB protection](usb-protection.md): next-image trial and recovery instructions.
 - [Report a vulnerability](../SECURITY.md): the project's reporting policy.
 
 Public OS update trust is not configured. Automatic checks do not mean a
@@ -38,6 +39,7 @@ production update feed is available. Flatpak sources are a separate, explicit op
 
 ## Release records and future work
 
+- [Next-release work log](next-release-20261007.md): accepted scope, candidate results and outstanding work.
 - [0.3.2 development record](modern-desktop-20261006.md) is the current validation summary.
   Its release includes `VERIFICATION.json` and `SHA256SUMS` for the exact images.
 - [0.3.1 build record](release-20261006.md) describes an unpublished, superseded draft.

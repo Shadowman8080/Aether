@@ -17,6 +17,7 @@ enable apparmor.service
 enable aether-firewall.service
 enable aether-zram.service
 enable aether-system-health.service
+enable aether-usbguard-recover.service
 enable aether-update-check.timer
 enable nimbrel-local.socket
 enable cups.socket

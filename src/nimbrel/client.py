@@ -164,6 +164,12 @@ def diagnostics():
 
 def perform(item):
     action = item.get("action")
+    if action == "library-search":
+        query=item.get('query','')
+        if not isinstance(query,str) or len(query)>2000:raise ValueError('Search text is too long.')
+        result=subprocess.run(['/usr/bin/nimbrel-library','search',query],capture_output=True,text=True,timeout=20)
+        if result.returncode:raise ValueError('Local document search is unavailable. Review approved folders in Aether Settings.')
+        return {'results':json.loads(result.stdout)}
     if action == "pair":
         config = {"server": item["server"].rstrip("/"), "fingerprint": fingerprint(item["fingerprint"])}
         endpoint(config["server"])

@@ -1,0 +1,31 @@
+#!/usr/bin/env python3
+# SPDX-License-Identifier: GPL-3.0-or-later
+"""Narrow administrator operations; no user-supplied command or paths."""
+import os,subprocess,sys
+from pathlib import Path
+def run(*args):subprocess.run(args,check=True)
+def main():
+ if os.geteuid()!=0:raise PermissionError('Administrator authorization is required')
+ if len(sys.argv)!=2:raise ValueError('One operation is required')
+ action=sys.argv[1]
+ if action=='ai-disable':
+  Path('/etc/nimbrel').mkdir(exist_ok=True,mode=0o755)
+  Path('/etc/nimbrel/disabled').touch(mode=0o600)
+  run('systemctl','disable','--now','nimbrel-local.socket')
+  run('systemctl','stop','nimbrel-local.service','nimbrel-engine.service')
+  print('Local AI is disabled for this device.')
+ elif action=='ai-enable':
+  Path('/etc/nimbrel/disabled').unlink(missing_ok=True)
+  run('systemctl','enable','--now','nimbrel-local.socket')
+  print('On-demand local AI is enabled. The model starts when Nimbrel is opened.')
+ elif action=='firmware-check':
+  run('fwupdmgr','refresh');run('fwupdmgr','get-updates')
+ elif action in ('phone-enable','phone-disable'):
+  run('aether-firewall',action)
+ elif action=='bless':
+  sys.path.insert(0,'/usr/lib/aether-updates');from slots import lock,bless
+  with lock():bless()
+ else:raise ValueError('Unknown administrator operation')
+if __name__=='__main__':
+ try:main()
+ except (ValueError,PermissionError,OSError,subprocess.CalledProcessError) as e:print(str(e),file=sys.stderr);sys.exit(1)

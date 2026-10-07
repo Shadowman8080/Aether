@@ -19,13 +19,14 @@ exists to bootstrap a development root, or to prepare keys that the operator
 then moves into independent custody. It never uploads anything and never
 installs software.
 
-Encrypted key output uses the passphrase in AETHER_KEY_PASSPHRASE (a local
-prompt is intentionally avoided so the command is scriptable); pass
+Encrypted key output uses a hidden local passphrase prompt. Automation may
+supply AETHER_KEY_PASSPHRASE through a protected environment; pass
 --no-encrypt to write unencrypted PEMs for a throwaway test root.
 """
 from __future__ import annotations
 
 import argparse
+import getpass
 import os
 import sys
 from pathlib import Path
@@ -42,20 +43,21 @@ def new_signer():
     return key, CryptoSigner(key)
 
 
-def write_private(path: Path, key, *, encrypt: bool) -> None:
+def write_private(path: Path, key, *, encrypt: bool, passphrase=None) -> None:
     if encrypt:
-        passphrase = os.environ.get("AETHER_KEY_PASSPHRASE")
         if not passphrase:
-            raise SystemExit("Set AETHER_KEY_PASSPHRASE, or pass --no-encrypt")
+            raise SystemExit("An encryption passphrase is required")
         encryption = serialization.BestAvailableEncryption(passphrase.encode())
     else:
         encryption = serialization.NoEncryption()
     path.parent.mkdir(parents=True, exist_ok=True)
-    path.write_bytes(key.private_bytes(
+    data = key.private_bytes(
         serialization.Encoding.PEM,
         serialization.PrivateFormat.PKCS8,
         encryption,
-    ))
+    )
+    with path.open('xb') as f:
+        f.write(data); f.flush(); os.fsync(f.fileno())
     os.chmod(path, 0o600)
 
 
@@ -67,6 +69,16 @@ def main() -> int:
     args = parser.parse_args()
     if args.root_signers < 2:
         parser.error("at least two root signers are required")
+    os.umask(0o077)
+    if args.output.exists() or args.output.is_symlink():parser.error('Choose a new output directory; existing keys are never overwritten')
+    passphrase=None
+    if not args.no_encrypt:
+        passphrase=os.environ.get('AETHER_KEY_PASSPHRASE')
+        if passphrase is None:
+            if not sys.stdin.isatty():parser.error('Run in a local terminal for the hidden passphrase prompt')
+            passphrase=getpass.getpass('Encrypt signing keys with a new passphrase: ')
+            if passphrase!=getpass.getpass('Confirm passphrase: '):parser.error('Passphrases did not match')
+        if len(passphrase)<16:parser.error('Use an encryption passphrase of at least 16 characters')
 
     keys, signers = {}, {}
     for role in ROLES:
@@ -81,20 +93,20 @@ def main() -> int:
     root = create_root(signers, root_threshold=args.root_signers)
 
     output = args.output
-    output.mkdir(parents=True, exist_ok=True)
+    output.mkdir(parents=True, mode=0o700, exist_ok=False)
 
     signer_dir = output / "signers"
     signer_dir.mkdir(mode=0o700, exist_ok=True)
     os.chmod(signer_dir, 0o700)
     for role in ("targets", "snapshot", "timestamp"):
-        write_private(signer_dir / f"{role}.pem", keys[role], encrypt=not args.no_encrypt)
+        write_private(signer_dir / f"{role}.pem", keys[role], encrypt=not args.no_encrypt,passphrase=passphrase)
 
     root_dir = output / "root"
     root_dir.mkdir(mode=0o700, exist_ok=True)
     os.chmod(root_dir, 0o700)
     for name in sorted(k for k in keys if k.startswith("root")):
         number = "1" if name == "root" else name.split("-", 1)[1]
-        write_private(root_dir / f"root-{number}.pem", keys[name], encrypt=not args.no_encrypt)
+        write_private(root_dir / f"root-{number}.pem", keys[name], encrypt=not args.no_encrypt,passphrase=passphrase)
 
     (output / "trusted-root.json").write_bytes(root.to_bytes())
     threshold = root.signed.roles["root"].threshold

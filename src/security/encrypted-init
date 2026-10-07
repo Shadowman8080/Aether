@@ -8,10 +8,12 @@ mount -t tmpfs -o mode=0755 tmpfs /run
 [ ! -x /usr/lib/aether-initramfs/start-splash ] || /usr/lib/aether-initramfs/start-splash
 root_uuid=''
 luks_uuid=''
+slot=''
 for argument in $(cat /proc/cmdline); do
     case "$argument" in
         root=UUID=*) root_uuid=${argument#root=UUID=} ;;
         aether.luks=*) luks_uuid=${argument#aether.luks=} ;;
+        aether.slot=*) slot=${argument#aether.slot=} ;;
     esac
 done
 fail() {
@@ -46,6 +48,19 @@ fi
 [ -n "$root_uuid" ] || fail
 device=$(find_uuid "$root_uuid") || fail
 mount -t ext4 -o rw "$device" /newroot || fail
+if [ -n "$slot" ]; then
+    echo "$slot" | grep -Eq '^[0-9]{8}T[0-9]{6}-[0-9a-f]{8}$' || fail
+    candidate="/newroot/var/lib/aether/slots/$slot/root"
+    [ -d "$candidate" ] && [ ! -L "$candidate" ] || fail
+    [ "$(stat -c %u "$candidate")" = 0 ] || fail
+    [ "$(cat "$candidate/etc/aether-slot-id")" = "$slot" ] || fail
+    mkdir -p /rollbackroot /run/aether-origin
+    chmod 700 /run/aether-origin
+    mount --bind "$candidate" /rollbackroot || fail
+    mount --bind /newroot/home /rollbackroot/home || fail
+    mount --move /newroot /run/aether-origin || fail
+    mount --move /rollbackroot /newroot || fail
+fi
 /usr/bin/udevadm control --exit 2>/dev/null || :
 /usr/bin/plymouth update-root-fs --new-root-dir=/newroot 2>/dev/null || :
 for directory in dev proc sys run; do

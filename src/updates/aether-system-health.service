@@ -1,0 +1,12 @@
+[Unit]
+Description=Commit a successful Aether system trial boot
+After=lightdm.service
+ConditionKernelCommandLine=aether.slot
+
+[Service]
+Type=oneshot
+ExecStart=/usr/libexec/aether-system-admin bless
+TimeoutStartSec=120
+
+[Install]
+WantedBy=graphical.target

@@ -1,9 +1,10 @@
 # Aether signed-package foundation
 
-Status: implemented and tested on Windows and on the Linux build VM, **not
-deployed to Aether**. There is no production repository, installed automatic
-checker, or upgraded ISO/VMDK yet, and no production release keys have been
-created.
+Status: the verifier and installed updater are prepared in the development build.
+Public OS updates remain disabled pending operator-provisioned release trust.
+No production release keys have been created. See [local key setup](LOCAL-KEY-SETUP.md).
+The new recovery/install path still needs boot and interruption validation before
+deployment to a user's disk; source availability is not a completed release.
 
 ## What exists
 
@@ -50,7 +51,7 @@ The suite also passes on the Linux build VM: 24 tests, 0 failures, 0 errors,
 self-signed root:
 
 ```text
-AETHER_KEY_PASSPHRASE='...' python make_root.py --output /secure/aether-root
+python make_root.py --output /secure/aether-root
 ```
 
 It writes `root/root-1.pem .. root-N.pem` (the offline trust anchors),

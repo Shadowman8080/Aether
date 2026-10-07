@@ -12,9 +12,10 @@ CONFIG = Path('/etc/aether-security/firewall.json')
 NFT = '/usr/sbin/nft' if Path('/usr/sbin/nft').exists() else '/usr/bin/nft'
 
 def validate(c):
-    if set(c) != {'tcp', 'udp'}:
+    if set(c) not in ({'tcp', 'udp'},{'tcp','udp','phone_private_lan'}):
         raise ValueError('Unexpected firewall configuration fields')
-    for ports in c.values():
+    if not isinstance(c.get('phone_private_lan',False),bool):raise ValueError('Phone access must be a boolean')
+    for ports in (c['tcp'],c['udp']):
         if not isinstance(ports, list) or any(type(p) is not int or not 1 <= p <= 65535 for p in ports):
             raise ValueError('Ports must be integers from 1 to 65535')
 
@@ -24,6 +25,10 @@ def rules(c):
     for protocol in ('tcp', 'udp'):
         if c[protocol]:
             ports += '        ' + protocol + ' dport { ' + ', '.join(map(str, sorted(set(c[protocol])))) + ' } counter accept\n'
+    if c.get('phone_private_lan',False):
+        for protocol in ('tcp','udp'):
+            ports += '        ip saddr { 10.0.0.0/8, 172.16.0.0/12, 192.168.0.0/16 } '+protocol+' dport 1714-1764 counter accept\n'
+            ports += '        ip6 saddr { fc00::/7, fe80::/10 } '+protocol+' dport 1714-1764 counter accept\n'
     return '''# Aether owns this table only. Reload replaces its chains atomically.
 add table inet aether_filter
 flush table inet aether_filter
@@ -61,7 +66,7 @@ def main():
     if args == ['status']:
         subprocess.run([NFT, 'list', 'table', 'inet', 'aether_filter'], check=True)
         return
-    if not args or args[0] not in ('apply', 'check', 'allow-tcp', 'allow-udp', 'remove-tcp', 'remove-udp'):
+    if not args or args[0] not in ('apply', 'check', 'allow-tcp', 'allow-udp', 'remove-tcp', 'remove-udp','phone-enable','phone-disable'):
         raise SystemExit('Usage: aether-firewall apply|check|status|allow-tcp PORT|allow-udp PORT|remove-tcp PORT|remove-udp PORT')
     lockdir = Path('/run/aether-firewall')
     lockdir.mkdir(mode=0o700, exist_ok=True)
@@ -77,15 +82,14 @@ def main():
         if args == ['apply']:
             apply(config)
             return
-        if len(args) != 2 or not args[1].isdigit() or not 1 <= int(args[1]) <= 65535:
-            raise SystemExit('Provide one valid port number.')
-        operation, protocol = args[0].split('-')
-        port = int(args[1])
         previous = json.loads(json.dumps(config))
-        if operation == 'allow':
-            config[protocol] = sorted(set(config[protocol]) | {port})
+        if args in (['phone-enable'],['phone-disable']):
+            config['phone_private_lan']=args[0]=='phone-enable'
         else:
-            config[protocol] = [p for p in config[protocol] if p != port]
+            if len(args) != 2 or not args[1].isdigit() or not 1 <= int(args[1]) <= 65535:raise SystemExit('Provide one valid port number.')
+            operation, protocol = args[0].split('-');port=int(args[1])
+            if operation == 'allow':config[protocol] = sorted(set(config[protocol]) | {port})
+            else:config[protocol] = [p for p in config[protocol] if p != port]
         # Save only after validation and a successful atomic kernel transaction.
         apply(config)
         try:
@@ -99,7 +103,7 @@ def main():
         except Exception:
             apply(previous)
             raise
-        print('Firewall updated. Explicitly opened ports apply on every network.')
+        print('Firewall updated. Phone access, when enabled, permits private and link-local source addresses. Other explicitly opened ports apply on every network.')
 
 if __name__ == '__main__':
     main()

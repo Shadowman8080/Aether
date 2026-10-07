@@ -1,5 +1,6 @@
 [Unit]
 Description=Nimbrel local desktop API
+ConditionPathExists=!/etc/nimbrel/disabled
 After=nimbrel-engine.service
 Wants=nimbrel-engine.service
 [Service]
@@ -19,6 +20,7 @@ TasksMax=128
 UMask=0077
 RuntimeDirectory=nimbrel
 RuntimeDirectoryMode=0755
+RuntimeDirectoryPreserve=yes
 StateDirectory=nimbrel
 StateDirectoryMode=0700
 ExecStart=/usr/bin/python3 /opt/nimbrel/local_server.py

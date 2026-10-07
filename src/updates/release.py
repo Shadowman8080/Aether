@@ -122,7 +122,8 @@ def prepare_files(plan: dict, temporary: Path, *, gpgv="gpgv") -> dict:
         identity = inspect_package(archive)
         if identity.get("Package") != entry["name"] or identity.get("Version") != entry["version"]:
             raise ValueError("Package name or version differs from release plan")
-        if identity.get("Architecture") not in ("all", plan["architecture"]):
+        native_arch = {"x86_64":"amd64", "i686":"i386", "aarch64":"arm64", "armv7h":"armhf"}[plan["architecture"]]
+        if identity.get("Architecture") not in ("all", native_arch):
             raise ValueError("Package architecture differs from release channel")
         target = "packages/" + archive.name
         # Copy the verified bytes into a private staging directory so later
@@ -140,7 +141,7 @@ def prepare_files(plan: dict, temporary: Path, *, gpgv="gpgv") -> dict:
         raise ValueError("No packages in release plan")
     catalog = temporary / "catalog.json"
     catalog.write_text(json.dumps({"schema": 1, "architecture": plan["architecture"],
-        "channel": plan["channel"], "packages": packages}, indent=2) + "\n")
+        "channel": plan["channel"], "summary": str(plan.get("summary", ""))[:4000], "packages": packages}, indent=2) + "\n")
     files["aether/catalog.json"] = catalog
     return files
 

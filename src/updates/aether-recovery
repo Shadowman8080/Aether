@@ -1,0 +1,48 @@
+#!/usr/bin/env python3
+# SPDX-License-Identifier: GPL-3.0-or-later
+import argparse,json,os,sys
+from pathlib import Path
+sys.path.insert(0,'/usr/lib/aether-updates')
+import slots
+HELP='''Aether recovery
+
+Create a system checkpoint: sudo aether-recovery create
+List checkpoints: aether-recovery status
+Try a checkpoint once: sudo aether-recovery boot CHECKPOINT_ID
+
+Restart and use the GRUB menu to choose the original system or an older checkpoint.
+A trial update becomes the default only after its desktop health check succeeds.
+No automatic restart occurs. If a trial boot hangs, restart the computer and the
+previous default remains available. Manual checkpoints do not contain user homes.
+
+For an unbootable disk, start the Aether live ISO and open a terminal. Use lsblk
+to identify the installed disk. Unlock encrypted storage with cryptsetup, then
+mount the root and separate boot filesystems before diagnosing them. Never run
+filesystem repair on a mounted filesystem. The live ISO provides e2fsck,
+cryptsetup, grub-install and restic; device selection must be reviewed locally.
+
+Encrypted personal-file restore uses:
+sudo aether-backup snapshots
+sudo aether-backup restore SNAPSHOT_ID NEW_EMPTY_DIRECTORY
+
+System copies on the same disk are not independent backups. No checkpoints are
+deleted automatically. Keep sufficient free space for each complete system copy.
+'''
+def main():
+ p=argparse.ArgumentParser();p.add_argument('action',choices=['status','create','boot','help']);p.add_argument('identifier',nargs='?');a=p.parse_args()
+ if a.action=='help':print(HELP);return
+ if a.action=='status':
+  f=Path('/var/lib/aether-recovery-status.json');print(f.read_text() if f.exists() else 'No system checkpoints recorded yet.');return
+ if not sys.stdin.isatty():raise ValueError('Review this operation in an interactive terminal')
+ with slots.lock():
+  if a.action=='create':
+   print('This saves a complete system copy on this disk. User homes remain shared. It does not replace an independent backup.')
+   if input('Type CREATE to continue: ')!='CREATE':return
+   root,m=slots.create();slots.register(root,m);print('Checkpoint ready:',m['id'])
+  else:
+   slots.checked_slot(a.identifier or '')
+   if input('Type BOOT to select one trial boot: ')!='BOOT':return
+   slots.activate(a.identifier)
+if __name__=='__main__':
+ try:main()
+ except Exception as e:print('Recovery operation stopped:',str(e),file=sys.stderr);sys.exit(1)

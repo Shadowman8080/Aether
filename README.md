@@ -2,7 +2,12 @@
 
 **A Linux distribution built from source. Work in progress — not release-ready.**
 
-[Download the unified 0.3.1 development snapshot](https://github.com/Shadowman8080/Aether/releases/tag/0.3.1-dev.20261006) · [What was verified](docs/release-20261006.md)
+[Development downloads](https://github.com/Shadowman8080/Aether/releases) · [October 6 progress](docs/modern-desktop-20261006.md) · [Image verification](docs/release-20261006.md)
+
+**In development now:** Aether Settings, a Flatpak app store, on-demand Nimbrel,
+privacy controls, phone connection and signed-update preparation. These additions
+are in source and a candidate filesystem; rebuilt-image and recovery validation
+must finish before a new download is published. Aether remains a work in progress.
 
 Aether is a from-scratch desktop Linux built by compiling every package in its
 base system from pinned upstream sources. No binary distribution is downloaded

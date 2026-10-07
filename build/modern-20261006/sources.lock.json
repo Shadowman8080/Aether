@@ -1,0 +1,102 @@
+[
+  {
+    "key": "libseccomp",
+    "version": "v2.6.1",
+    "url": "https://github.com/seccomp/libseccomp/releases/download/v2.6.1/libseccomp-2.6.1.tar.gz",
+    "filename": "libseccomp-2.6.1.tar.gz",
+    "sha256": "501f66c667225d53791b97e1d7cf85ab764c297d04881f60f38f451c4b0ee1be"
+  },
+  {
+    "key": "flatpak",
+    "version": "1.18.4",
+    "url": "https://github.com/flatpak/flatpak/releases/download/1.18.4/flatpak-1.18.4.tar.xz",
+    "filename": "flatpak-1.18.4.tar.xz",
+    "sha256": "b899a7a00c48d2c626cb8ec33fe556720b376c25805d7222430c0fdca4c6ac8d"
+  },
+  {
+    "key": "ostree",
+    "version": "v2026.4",
+    "url": "https://github.com/ostreedev/ostree/releases/download/v2026.4/libostree-2026.4.tar.xz",
+    "filename": "libostree-2026.4.tar.xz",
+    "sha256": "b26c9016eb03bb4ee52cc00c642d56e00fc79ae7faac6bf4aa317d7451339ef7"
+  },
+  {
+    "key": "fwupd",
+    "version": "2.1.8",
+    "url": "https://github.com/fwupd/fwupd/releases/download/2.1.8/fwupd-2.1.8.tar.xz",
+    "filename": "fwupd-2.1.8.tar.xz",
+    "sha256": "8724305a52621ab6586de3290f6a78edb8393a4aa4bcb6c63f9228ae5e00acf8"
+  },
+  {
+    "key": "libxmlb",
+    "version": "0.3.29",
+    "url": "https://github.com/hughsie/libxmlb/releases/download/0.3.29/libxmlb-0.3.29.tar.xz",
+    "filename": "libxmlb-0.3.29.tar.xz",
+    "sha256": "448294be33bfae62f00fa66e506f1cae80237ce71b7ab6530aefa75005eeb08a"
+  },
+  {
+    "key": "libjcat",
+    "version": "0.2.6",
+    "url": "https://github.com/hughsie/libjcat/releases/download/0.2.6/libjcat-0.2.6.tar.xz",
+    "filename": "libjcat-0.2.6.tar.xz",
+    "sha256": "d54ad936ceb654e99f59b0227e4d1974b858970d250d98c6484abcfdc8334722"
+  },
+  {
+    "key": "bubblewrap",
+    "version": "v0.13.0",
+    "url": "https://github.com/containers/bubblewrap/releases/download/v0.13.0/bubblewrap-0.13.0.tar.xz",
+    "filename": "bubblewrap-0.13.0.tar.xz",
+    "sha256": "4734237473c0e5d695e4e9034a34e43b2dbf5164655bd13fa59ae376b2b7a765"
+  },
+  {
+    "key": "xdg-dbus-proxy",
+    "version": "0.1.9",
+    "url": "https://github.com/flatpak/xdg-dbus-proxy/releases/download/0.1.9/xdg-dbus-proxy-0.1.9.tar.xz",
+    "filename": "xdg-dbus-proxy-0.1.9.tar.xz",
+    "sha256": "5450dda586ec3bb3ca709d311e845487883faa3b09cf562608d7e84f4311dced"
+  },
+  {
+    "key": "kdeconnect",
+    "version": "26.08.1",
+    "url": "https://download.kde.org/stable/release-service/26.08.1/src/kdeconnect-kde-26.08.1.tar.xz",
+    "filename": "kdeconnect-kde-26.08.1.tar.xz",
+    "sha256": "2aed54ecd6b88a91d047714b384d7bd20d0a8d8bf399923c73cf3509372b36e0"
+  },
+  {
+    "key": "pyparsing",
+    "version": "3.3.3",
+    "url": "https://files.pythonhosted.org/packages/e4/11/b213bebff182584360cb8d17c72c1677fec5c5c228de439e63bcf8ab1c8f/pyparsing-3.3.3.tar.gz",
+    "filename": "pyparsing-3.3.3.tar.gz",
+    "sha256": "928ae7e20211f3b6f3915a72f06a0cfd29ab9d24279dd6346b6b1a7146397d36"
+  },
+  {
+    "key": "qtconnectivity",
+    "version": "6.11.2",
+    "url": "https://download.qt.io/official_releases/qt/6.11/6.11.2/submodules/qtconnectivity-everywhere-src-6.11.2.tar.xz",
+    "filename": "qtconnectivity-everywhere-src-6.11.2.tar.xz",
+    "sha256": "85b01a57bd059583ab520a857990dfdf4021447507ff5b9498f036b7295e6037"
+  },
+  {
+    "key": "discover",
+    "url": "https://download.kde.org/stable/plasma/6.7.4/discover-6.7.4.tar.xz",
+    "filename": "discover-6.7.4.tar.xz",
+    "md5": "35282b0e26bbe89b7da2f136ebd43fe1",
+    "group": "plasma",
+    "sha256": "f8b809c9aaa25c1d636b0bdf144d87a3ee659d5d80f26961d3116a627fef859d"
+  },
+  {
+    "key": "flatpak-kcm",
+    "url": "https://download.kde.org/stable/plasma/6.7.4/flatpak-kcm-6.7.4.tar.xz",
+    "filename": "flatpak-kcm-6.7.4.tar.xz",
+    "md5": "368e89588052aad475f25468996d432d",
+    "group": "plasma",
+    "sha256": "1133b40e4d7fad2349a84b5e0f12acaaa22a0940fa4fc1500e2c79482535e219"
+  },
+  {
+    "key": "libfakekey",
+    "version": "0.3+git20170516",
+    "url": "https://deb.debian.org/debian/pool/main/libf/libfakekey/libfakekey_0.3+git20170516.orig.tar.xz",
+    "filename": "libfakekey-0.3.tar.gz",
+    "sha256": "ddbd308dc7f20390b2a6cb88bd077a62061a40533e209a14a94bdb36b32a0446"
+  }
+]

@@ -1,6 +1,8 @@
 [Unit]
 Description=Nimbrel on-device inference engine
+ConditionPathExists=!/etc/nimbrel/disabled
 After=local-fs.target
+StopWhenUnneeded=yes
 [Service]
 User=nimbrel
 Group=nimbrel

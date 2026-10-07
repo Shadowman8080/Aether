@@ -1,0 +1,19 @@
+[Unit]
+Description=Check signed Aether update metadata
+ConditionPathExists=/etc/aether-updates/repository.json
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+ExecStart=/usr/bin/aether-update check
+UMask=0077
+NoNewPrivileges=yes
+PrivateTmp=yes
+ProtectHome=yes
+ProtectSystem=strict
+ReadWritePaths=/var/lib /run/aether-maintenance
+ReadWritePaths=-/run/aether-origin/var/lib/aether-updates
+RuntimeDirectory=aether-maintenance
+RuntimeDirectoryMode=0700
+RuntimeDirectoryPreserve=yes

@@ -11,7 +11,7 @@ for name in paths:
  if source.is_dir():shutil.copytree(source,dest,dirs_exist_ok=True,ignore=shutil.ignore_patterns('__pycache__'))
  else:shutil.copy2(source,dest)
 control=p/'DEBIAN';control.mkdir(exist_ok=True)
-(control/'control').write_text('Package: aether-experience\nVersion: 0.3.2~dev20261006-1\nArchitecture: amd64\nMaintainer: Aether Linux developers\nDepends: python, qtbase, glibc, gcc, grub, flatpak, fwupd, kdeconnect, plasma-discover\nDescription: Aether settings, on-demand AI and update/recovery integration\n')
+(control/'control').write_text('Package: aether-experience\nVersion: 0.3.2~dev20261006-1\nArchitecture: amd64\nMaintainer: Aether Linux developers\nDepends: python, qtbase, glibc, gcc, grub, rsync, nimbrel-engine, flatpak, fwupd, kdeconnect, plasma-discover\nDescription: Aether settings, on-demand AI and update/recovery integration\n')
 (control/'conffiles').write_text(''.join('/'+name+'\n' for name in paths if name.startswith('etc/')))
 (control/'postinst').write_text('''#!/bin/sh
 set -eu

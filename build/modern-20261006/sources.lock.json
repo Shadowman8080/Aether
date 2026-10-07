@@ -98,5 +98,12 @@
     "url": "https://deb.debian.org/debian/pool/main/libf/libfakekey/libfakekey_0.3+git20170516.orig.tar.xz",
     "filename": "libfakekey-0.3.tar.gz",
     "sha256": "ddbd308dc7f20390b2a6cb88bd077a62061a40533e209a14a94bdb36b32a0446"
+  },
+  {
+    "key": "rsync",
+    "version": "3.5.1",
+    "url": "https://download.samba.org/pub/rsync/rsync-3.5.1.tar.gz",
+    "filename": "rsync-3.5.1.tar.gz",
+    "sha256": "c55f9c9dc10fb8bec397b399a0fdded53cc9a2d8e30891bb0d63724d25c37bef"
   }
 ]

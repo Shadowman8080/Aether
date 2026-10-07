@@ -30,6 +30,7 @@ def build(key,kind,opts):
  run(['ldconfig']);marker.write_text(d['sha256'])
  print('BUILT',key,flush=True)
 recipes=[
+ ('rsync','auto',['--with-included-popt','--disable-xxhash','--disable-lz4','--disable-zstd','--disable-md2man']),
  ('libseccomp','auto',[]),
  ('bubblewrap','meson',['-Dman=disabled','-Dtests=false','-Dselinux=disabled']),
  ('xdg-dbus-proxy','meson',['-Dman=disabled','-Dtests=false']),

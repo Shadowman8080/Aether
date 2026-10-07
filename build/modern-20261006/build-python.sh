@@ -7,4 +7,4 @@ mount -t proc proc "$root/proc"; mount -t sysfs sysfs "$root/sys"
 mount -t tmpfs tmpfs "$root/run"
 mount --bind /opt/aether/build/modern-20261006 "$root/modern"
 cp /etc/resolv.conf "$root/etc/resolv.conf"
-chroot "$root" /usr/bin/env PATH=/opt/rust/bin:/usr/bin:/usr/sbin CARGO_BUILD_JOBS="$(nproc)" MAKEFLAGS="-j$(nproc)" CARGO_HOME=/modern/cargo /usr/bin/python3 -m pip install --no-binary=:all: --target /modern/python --report /modern/python-build-report.json tuf==7.0.1 'securesystemslib[crypto]==1.4.0' cryptography==50.0.1 urllib3==2.8.0
+chroot "$root" /usr/bin/env PATH=/opt/rust/bin:/usr/bin:/usr/sbin CARGO_BUILD_JOBS="$(nproc)" MAKEFLAGS="-j$(nproc)" CARGO_HOME=/modern/cargo /usr/bin/python3 -m pip install --no-binary=:all: --target /modern/python --report /modern/python-build-report.json tuf==7.0.1 'securesystemslib[crypto]==1.4.0' cryptography==50.0.1 urllib3==2.8.0 cffi==2.1.1 pycparser==3.0

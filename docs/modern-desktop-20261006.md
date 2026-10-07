@@ -37,8 +37,9 @@ Aether OS updates. This build does not add Ubuntu or Arch binary repositories.
 
 ## Validation so far
 
-The native builds completed using all 16 build-VM CPUs. Thirteen upstream
+The native builds completed using all 16 build-VM CPUs. Fourteen upstream
 components were packaged individually and installed/configured successfully.
+The pinned local inference engine was rebuilt and packaged separately too.
 The Aether integration package also installed and rebuilt the initramfs.
 
 Inside Aether's filesystem, 24 signature/TUF regressions and 25 feature tests
@@ -47,7 +48,14 @@ reached the desktop and passed the unprivileged Flatpak sandbox check; it caught
 a launcher line-ending defect that has since been corrected. That first ISO is
 not a release candidate for publication.
 
-Rebuilt-image BIOS/UEFI checks, trial-boot recovery and interrupted-installation
+An intermediate rebuilt ISO passed BIOS and UEFI boot/login checks. Deeper tests
+then found a missing `rsync` dependency for system checkpoints and BMI2 enabled
+in the older AI engine build. Both have been corrected; final-image recovery and
+inference tests are running again. Firmware and KDE Connect services start in
+the disposable guest. Failed/interrupted-install tests exercise real package
+scripts while substituting the separately tested verified-download boundary.
+
+Final rebuilt-image BIOS/UEFI checks, trial-boot recovery and interrupted-installation
 testing are still required before these changes replace a user's disk. Native
 phone pairing, physical firmware flashing and assistive hardware have not been
 tested. Some older base libraries lack complete package ownership records; core
@@ -58,7 +66,7 @@ x86 and ARM prototypes are preserved; these changes do not claim completed ports
 
 ## Build interruption
 
-The Ubuntu build VM powered off during the rebuilt-image work. The newer images
-have not passed their final checks and are not published. Source and completed
-validation work are preserved. Resume from the candidate workspace, inspect any
-partial artifacts, and repeat the affected image and recovery checks before release.
+The Ubuntu build VM powered off during the rebuilt-image work and has since
+been restarted. Builds resumed with the source and completed checks preserved.
+The older 0.3.1 upload was interrupted and that draft remains unpublished. A new
+0.3.2 draft is being prepared; it will remain unpublished until final checks pass.

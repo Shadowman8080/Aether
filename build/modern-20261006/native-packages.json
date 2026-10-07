@@ -1,9 +1,23 @@
 [
   {
+    "name": "rsync",
+    "version": "3.5.1-1aether1",
+    "archive": "rsync_3.5.1-1aether1_amd64.deb",
+    "sha256": "a3e6c10a07dd9716dcf4fae8f89b0f6b5830c897f6dc7ebe4ed3770d0693a704",
+    "depends": [
+      "acl",
+      "glibc",
+      "libidn2",
+      "libunistring",
+      "openssl"
+    ],
+    "unowned_shared_libraries": []
+  },
+  {
     "name": "libseccomp",
     "version": "2.6.1-1aether1",
     "archive": "libseccomp_2.6.1-1aether1_amd64.deb",
-    "sha256": "0964918c08cd7b7cccd195d67218ae7d5cb24b0bc4a184e0b2bc1ceef28f94b9",
+    "sha256": "51db2bae20fbcfcd69244c2d44357c4f760d11ee7ec7cc5c6a99474d1e8c2656",
     "depends": [
       "glibc"
     ],
@@ -13,7 +27,7 @@
     "name": "bubblewrap",
     "version": "0.13.0-1aether1",
     "archive": "bubblewrap_0.13.0-1aether1_amd64.deb",
-    "sha256": "98e04296337ba230f0d36902c7f69fe63da6da7827940aea20fcd206ce0ebb60",
+    "sha256": "2630b8eb84ef6a17f63d8f89fa882b64e84b1ddd0421349d78b46410bc9f52b8",
     "depends": [
       "glibc",
       "libcap"
@@ -24,7 +38,7 @@
     "name": "xdg-dbus-proxy",
     "version": "0.1.9-1aether1",
     "archive": "xdg-dbus-proxy_0.1.9-1aether1_amd64.deb",
-    "sha256": "c3bef0015151ecfb476589675e5c9e5e1f25ef75385e3148acee4fbcf131dcc2",
+    "sha256": "d8252d94aeda8aebabbe16af5555e862a879af65bf46042557ca08a8cdc701e5",
     "depends": [
       "glib2",
       "glibc",
@@ -40,7 +54,7 @@
     "name": "ostree",
     "version": "2026.4-1aether1",
     "archive": "ostree_2026.4-1aether1_amd64.deb",
-    "sha256": "d78834988bda3783eb79c370e3c8fc249c994a1ea996fdc2c0f44bf31825672d",
+    "sha256": "d974a2723dfe3985f399d79d18486e2f649bc4b61516e9d29d149e6827dae5df",
     "depends": [
       "acl",
       "avahi",
@@ -78,7 +92,7 @@
     "name": "flatpak",
     "version": "1.18.4-1aether1",
     "archive": "flatpak_1.18.4-1aether1_amd64.deb",
-    "sha256": "ee7829386ce8f7726cc6e228380732eb8481779f3a8464acaa8ac4df0d841292",
+    "sha256": "94b1c624149c2abb3f5d6b40fad4f456e0eeb259ff6c6a926d9149106ad041ac",
     "depends": [
       "acl",
       "appstream",
@@ -131,7 +145,7 @@
     "name": "libxmlb",
     "version": "0.3.29-1aether1",
     "archive": "libxmlb_0.3.29-1aether1_amd64.deb",
-    "sha256": "1b5c820c72a6448e76a0f90dce61a34eed8f4d3e2891c7558f9a87a82d20a1e2",
+    "sha256": "13941064e91f83eadac81d2a62bc70bfcdc32d8faf95ccbd92f6dd83bd1dc90b",
     "depends": [
       "glib2",
       "glibc",
@@ -149,7 +163,7 @@
     "name": "libjcat",
     "version": "0.2.6-1aether1",
     "archive": "libjcat_0.2.6-1aether1_amd64.deb",
-    "sha256": "4c30c155f40511a910f4d3246885c5b50fdfcf570552179b787e93516c6799e7",
+    "sha256": "b860ca34a46c0d12029d8cac2d78b9c1a95357b0c359932b17f3f170e9f40a76",
     "depends": [
       "glib2",
       "glibc",
@@ -177,7 +191,7 @@
     "name": "fwupd",
     "version": "2.1.8-1aether1",
     "archive": "fwupd_2.1.8-1aether1_amd64.deb",
-    "sha256": "7b84a50856b22bbd7614cc6c152ffa6ea02d52fb0485fd56813510fb02e6cd3b",
+    "sha256": "27bbd2e31668056b974a0c1c9856109b02bd5238545d74adcfc72cc2be1f9a21",
     "depends": [
       "curl",
       "glib2",
@@ -214,7 +228,7 @@
     "name": "qt6-connectivity",
     "version": "6.11.2-1aether1",
     "archive": "qt6-connectivity_6.11.2-1aether1_amd64.deb",
-    "sha256": "06644a7a2c25c2f112c289de68aac4d6ff3f2688b115ca9ba91e6ec817e109bf",
+    "sha256": "35b19e32ea9bc12ca527c981777a89f9daf457415a7bce5084da2fcc8697de14",
     "depends": [
       "bluez",
       "brotli",
@@ -240,7 +254,7 @@
     "name": "libfakekey",
     "version": "0.3+git20170516-1aether1",
     "archive": "libfakekey_0.3+git20170516-1aether1_amd64.deb",
-    "sha256": "c2cdbd501e2e9dd0da0fd6d618c00f28ecd2025bd0265b16601e753cb31e8b3b",
+    "sha256": "79a5a1bd6e373dc96190977138ae8a45c863c9a97a542708613bcabd6beb1cb5",
     "depends": [
       "glibc"
     ],
@@ -258,7 +272,7 @@
     "name": "kdeconnect",
     "version": "26.08.1-1aether1",
     "archive": "kdeconnect_26.08.1-1aether1_amd64.deb",
-    "sha256": "5aae78c08d0a44b080aa588e2de952c8738f9c632d987d3447ff351bfc9cf115",
+    "sha256": "9e9dfaedb86c79f62f525fb55fba4e3da5670c6b67eb10f02a10ea9d95ec41da",
     "depends": [
       "acl",
       "attr",
@@ -366,7 +380,7 @@
     "name": "plasma-discover",
     "version": "6.7.4-1aether1",
     "archive": "plasma-discover_6.7.4-1aether1_amd64.deb",
-    "sha256": "d54cfd020d44a95e99efc681dd715cda89546185a0ec6f5cb3af37085697fba1",
+    "sha256": "a040f427dc2aca5d44ffdb3f011ff18265de337d7055ab560ab8b2f3847b5481",
     "depends": [
       "acl",
       "appstream",
@@ -484,7 +498,7 @@
     "name": "flatpak-kcm",
     "version": "6.7.4-1aether1",
     "archive": "flatpak-kcm_6.7.4-1aether1_amd64.deb",
-    "sha256": "16705cf53ce694b507a112c7121813fff0a0d143e94b988fddca7a0206dc4418",
+    "sha256": "d288e12e6f8ad1d6618aff3a47d9e09fc2c3276e99db4a1b4bfb2b234f7b1800",
     "depends": [
       "acl",
       "avahi",

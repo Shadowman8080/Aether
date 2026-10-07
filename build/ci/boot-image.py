@@ -37,7 +37,7 @@ try:
  check('Flatpak sandbox','bwrap --ro-bind / / --unshare-user --unshare-pid --proc /proc /usr/bin/true')
  check('native tools','flatpak --version && rsync --version && test -x /usr/bin/kdeconnect-app && test -x /usr/bin/fwupdmgr && test -x /usr/bin/orca && test -x /usr/bin/aether-settings')
  if options.candidate_security:
-  check('systemd security integrations',"systemd --version > /tmp/systemd-features; for feature in APPARMOR SECCOMP FIDO2 TPM2 LIBCRYPTSETUP LIBCRYPTSETUP_PLUGINS; do grep -q \"+$feature\" /tmp/systemd-features || exit 1; done")
+  check('systemd security integrations',"/usr/lib/systemd/systemd --version > /tmp/systemd-features && (failed=0; for feature in APPARMOR SECCOMP FIDO2 TPM2 LIBCRYPTSETUP LIBCRYPTSETUP_PLUGINS; do grep -q \"+$feature\" /tmp/systemd-features || failed=1; done; test $failed = 0)")
   check('diagnostic export',"aether-diagnostics --output /tmp/aether-diagnostics-ci.json && test \"$(stat -c %a /tmp/aether-diagnostics-ci.json)\" = 600 && python3 -c 'import json; d=json.load(open(\"/tmp/aether-diagnostics-ci.json\")); assert d[\"schema\"]==1 and \"services\" in d'")
   check('firewall and dispatcher','systemctl is-active --quiet aether-firewall && test -x /etc/NetworkManager/dispatcher.d/90-aether-network-profile && test -L /etc/NetworkManager/dispatcher.d/pre-up.d/90-aether-network-profile && test -L /etc/NetworkManager/dispatcher.d/pre-down.d/90-aether-network-profile')
  check('local AI socket activation',"printf '%s' '{\"action\":\"status\"}' | nimbrel-client && systemctl is-active --quiet nimbrel-local && for i in $(seq 1 30); do systemctl is-active --quiet nimbrel-engine && break; sleep 2; done; systemctl is-active --quiet nimbrel-engine",240)

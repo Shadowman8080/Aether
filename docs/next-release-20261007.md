@@ -77,4 +77,14 @@ assets must match their source revision and verification checksums.
   template, which triggered first-boot presets and enabled Nimbrel directly.
   Added an explicit desktop service allowlist with optional services disabled
   by default, plus a real `systemctl --root` regression covering AI and console
-  instance enablement. The corrected image is being rebuilt and retested.
+  instance enablement. The corrected image passed BIOS and UEFI integration tests.
+- Candidate ISO SHA-256: `0b9025f0195b5f5dd05eb912d1bfd7f1632b8e727dbc1b94d05090068ba6eaed`.
+  [Recorded checks](verification/20261007/) cover graphical-login service startup,
+  idle/on-demand AI, a real UEFI-guest AI answer, firewall/dispatcher activation,
+  diagnostic export, sandboxing and no failed services. A separate native-CPU
+  inference test passed in 104.47 seconds. This is not a performance guarantee.
+- All 210 newly built ELF executables/libraries resolve dependencies in their
+  documented loader context. The initial test harness incorrectly assumed
+  systemd was on PATH; the final run uses Aether's actual installed path.
+- This remains an internal candidate. No new VMDK or public release has been
+  published, and the remaining acceptance criteria above are still outstanding.

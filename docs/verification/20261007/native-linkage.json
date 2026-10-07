@@ -1,0 +1,10 @@
+{
+  "checked_elf_files": 210,
+  "private_loader_contexts": [
+    {
+      "path": "/usr/lib/systemd/libsystemd-core-261.so",
+      "private_library_directory": "/usr/lib/systemd"
+    }
+  ],
+  "failures": []
+}

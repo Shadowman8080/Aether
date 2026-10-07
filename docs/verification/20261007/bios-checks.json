@@ -1,0 +1,46 @@
+[
+  {
+    "check": "desktop and demand socket",
+    "exit_code": 0
+  },
+  {
+    "check": "AI remains idle before use",
+    "exit_code": 0
+  },
+  {
+    "check": "unconfigured trust is explicit",
+    "exit_code": 0
+  },
+  {
+    "check": "automatic check timer",
+    "exit_code": 0
+  },
+  {
+    "check": "Flatpak sandbox",
+    "exit_code": 0
+  },
+  {
+    "check": "native tools",
+    "exit_code": 0
+  },
+  {
+    "check": "systemd security integrations",
+    "exit_code": 0
+  },
+  {
+    "check": "diagnostic export",
+    "exit_code": 0
+  },
+  {
+    "check": "firewall and dispatcher",
+    "exit_code": 0
+  },
+  {
+    "check": "local AI socket activation",
+    "exit_code": 0
+  },
+  {
+    "check": "no failed units",
+    "exit_code": 0
+  }
+]

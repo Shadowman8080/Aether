@@ -28,6 +28,23 @@ class Center:public QMainWindow {
  void note(QVBoxLayout*v,QString text){auto l=new QLabel(text);l->setWordWrap(true);l->setTextFormat(Qt::PlainText);v->insertWidget(v->count()-1,l);}
  void button(QVBoxLayout*v,QString title,QString tip,QString icon,std::function<void()> fn){auto b=new QPushButton(QIcon::fromTheme(icon),title);b->setToolTip(tip);b->setAccessibleName(title);b->setMinimumHeight(40);v->insertWidget(v->count()-1,b);connect(b,&QPushButton::clicked,this,fn);}
  void settings(QVBoxLayout*v,QString name,QString module,QString icon){button(v,name,"Open "+name,icon,[=]{launch("systemsettings",{module});});}
+ void chooseCheckpoint() {
+  QFile file("/var/lib/aether-recovery-status.json");if(!file.open(QIODevice::ReadOnly)){QMessageBox::information(this,"No checkpoints","Create a system checkpoint first.");return;}
+  const auto records=QJsonDocument::fromJson(file.readAll()).object().value("checkpoints").toArray();
+  QDialog dialog(this);dialog.setWindowTitle("Try a recovery checkpoint");auto layout=new QVBoxLayout(&dialog);auto choices=new QComboBox;choices->setAccessibleName("Recovery checkpoint");layout->addWidget(choices);
+  QRegularExpression valid("^[0-9]{8}T[0-9]{6}-[0-9a-f]{8}$");
+  for(const auto &value:records){auto record=value.toObject();auto id=record.value("id").toString();auto state=record.value("state").toString();if(valid.match(id).hasMatch()&&(state=="ready"||state=="pending"||state=="healthy"))choices->addItem(record.value("created").toString()+" ("+state+")",id);}
+  if(!choices->count()){QMessageBox::information(this,"No ready checkpoints","No complete checkpoint is available.");return;}
+  auto note=new QLabel("Select one trial boot. Your home files remain shared. No restart occurs automatically.");note->setWordWrap(true);layout->addWidget(note);
+  auto buttons=new QDialogButtonBox(QDialogButtonBox::Ok|QDialogButtonBox::Cancel);layout->addWidget(buttons);connect(buttons,&QDialogButtonBox::accepted,&dialog,&QDialog::accept);connect(buttons,&QDialogButtonBox::rejected,&dialog,&QDialog::reject);
+  if(dialog.exec()==QDialog::Accepted)task("pkexec",{"/usr/libexec/aether-system-admin","recovery-boot",choices->currentData().toString()});
+ }
+ void exportDiagnostics() {
+  auto path=QFileDialog::getSaveFileName(this,"Save basic diagnostic summary",QDir::homePath()+"/aether-diagnostics-"+QDateTime::currentDateTimeUtc().toString("yyyyMMdd-HHmmss")+".json","JSON (*.json)");
+  if(path.isEmpty())return;
+  if(QFileInfo::exists(path)){QMessageBox::warning(this,"Choose a new file","Diagnostics never overwrite an existing file. Choose a new filename.");return;}
+  if(QMessageBox::question(this,"Export diagnostic summary?","Include system version, disk capacity and selected service states? Logs, users, network addresses, credentials and personal files are excluded. Review the file before sharing.")==QMessageBox::Yes)task("aether-diagnostics",{"--output",path});
+ }
  void networkProfile(bool trusted) {
   QProcess query;query.start("nmcli",{"--terse","--escape","no","--fields","UUID,NAME","connection","show","--active"});
   if(!query.waitForFinished(5000)||query.exitCode()!=0){query.kill();QMessageBox::warning(this,"Network unavailable","Could not read active connections. No trust setting was changed.");return;}
@@ -61,7 +78,9 @@ public:
   settings(v,"Application permissions","kcm_app-permissions","security-high");
   v=page("Recovery","Recover the system separately from restoring personal files.","document-revert");
   button(v,"Recovery status","Show available system checkpoints","dialog-information",[=]{task("aether-recovery",{"status"});});
-  button(v,"Create system checkpoint","Save a recoverable system copy; requires free disk space","document-save",[=]{launch("konsole",{"-e","sudo","aether-recovery","create"});});
+  button(v,"Create system checkpoint","Save a recoverable system copy; requires free disk space","document-save",[=]{if(QMessageBox::question(this,"Create checkpoint?","Save a complete system copy on this disk? It needs free space and does not replace an independent backup. User homes remain shared.")==QMessageBox::Yes)admin("recovery-create");});
+  button(v,"Try a recovery checkpoint","Choose a checkpoint for one trial boot; no automatic restart","document-revert",[=]{chooseCheckpoint();});
+  button(v,"Export basic diagnostics","Save a reviewable summary without logs or personal files","document-save",[=]{exportDiagnostics();});
   button(v,"Open recovery tools","Review checkpoints and offline recovery instructions","tools-wizard",[=]{launch("konsole",{"-e","aether-recovery","help"});});
   note(v,"Use the Aether live ISO for offline repair. Checkpoints on this disk do not protect against disk failure. Keep independent backups.");
   v=page("Backups","Encrypted backups to a destination you choose. Keep the recovery passphrase safe.","document-save");

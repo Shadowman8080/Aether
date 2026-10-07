@@ -33,6 +33,13 @@ jobs:
         run: python src/updates/test_inventory.py
       - name: Verify network trust boundaries
         run: python src/security/test_network_profiles.py
+      - name: Verify diagnostic privacy boundaries
+        run: python src/controlcenter/test_diagnostics.py
+      - name: Verify live Home to Public firewall transition
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y --no-install-recommends nftables iproute2
+          sudo python3 build/next-20261007/test-network-live.py src/security/aether-firewall
       - name: Verify generated sound assets
         run: python src/sounds/test_sounds.py
       - name: Preserve non-secret verification receipts

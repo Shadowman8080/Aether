@@ -12,6 +12,11 @@ def main():
   if str(uuid.UUID(identity))!=identity:raise ValueError('Invalid connection identity')
   run('/usr/bin/aether-firewall','trust-connection' if sys.argv[1]=='network-home' else 'untrust-connection',identity)
   return
+ if len(sys.argv)==3 and sys.argv[1]=='recovery-boot':
+  sys.path.insert(0,'/usr/lib/aether-updates');import slots
+  with slots.lock():slots.activate(sys.argv[2])
+  print('Checkpoint selected for one trial boot. Restart when ready; no automatic restart occurs.')
+  return
  if len(sys.argv)!=2:raise ValueError('One operation is required')
  action=sys.argv[1]
  if action=='ai-disable':
@@ -28,6 +33,11 @@ def main():
   run('fwupdmgr','refresh');run('fwupdmgr','get-updates')
  elif action in ('phone-enable','phone-disable'):
   run('aether-firewall',action)
+ elif action=='recovery-create':
+  sys.path.insert(0,'/usr/lib/aether-updates');import slots
+  with slots.lock():
+   root,manifest=slots.create();slots.register(root,manifest)
+  print('Checkpoint created. User homes remain shared; keep independent backups.')
  elif action=='bless':
   sys.path.insert(0,'/usr/lib/aether-updates');from slots import lock,bless
   with lock():bless()

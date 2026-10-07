@@ -46,7 +46,17 @@ Source CI is not an image-boot test and does not certify real hardware. Each
 item needs an explicit result before it can be marked complete. New release
 assets must match their source revision and verification checksums.
 
-- FIDO2, CBOR and TPM2 libraries built natively; systemd security integration is compiling.
+- FIDO2, CBOR and TPM2 libraries built natively. Rebuilt systemd reports AppArmor,
+  seccomp, FIDO2, TPM2 and cryptsetup/plugin support enabled; candidate boot testing remains pending.
 - Added Home/Public connection policy source and eight passing firewall rule tests.
   GUI, dispatcher and live transition validation remain pending.
-- Added a digest-checked BIOS/UEFI image workflow; its first hosted run is pending.
+- Added a digest-checked BIOS/UEFI image workflow. Both hosted boot tests passed
+  for the existing 0.3.2 ISO: [boot evidence](https://github.com/Shadowman8080/Aether/actions/runs/37592223484).
+- Compiled the updated Settings interface with graphical checkpoint selection
+  and diagnostic export. Inspected its offscreen recovery-page capture; full desktop interaction testing remains pending.
+- Six diagnostic tests pass, including private output permissions, refusal to
+  overwrite files or follow output symlinks, and exclusion of extra service fields.
+- Live disposable-network tests pass for Home access, Public rejection of new
+  connections, termination of Home-dependent inbound traffic on trust removal,
+  and preservation of explicitly configured global ports. The build host's
+  networking and firewall were not changed.

@@ -62,7 +62,7 @@ table inet aether_filter {
         type filter hook input priority filter; policy drop;
         iifname "lo" accept
         ct state invalid counter drop
-        ct state established,related accept
+        ct direction reply ct state established,related accept
         ip protocol icmp accept
         meta l4proto ipv6-icmp accept
         udp sport 67 udp dport 68 accept
@@ -92,7 +92,7 @@ def main():
         subprocess.run([NFT, 'list', 'table', 'inet', 'aether_filter'], check=True)
         return
     if not args or args[0] not in ('apply', 'apply-public', 'check', 'allow-tcp', 'allow-udp', 'remove-tcp', 'remove-udp','phone-enable','phone-disable','trust-connection','untrust-connection','allow-home-tcp','allow-home-udp','remove-home-tcp','remove-home-udp'):
-        raise SystemExit('Usage: aether-firewall apply|check|status|allow-tcp PORT|allow-udp PORT|remove-tcp PORT|remove-udp PORT')
+        raise SystemExit('Usage: aether-firewall apply|apply-public|check|status|phone-enable|phone-disable|trust-connection UUID|untrust-connection UUID|allow[-home]-tcp PORT|allow[-home]-udp PORT|remove[-home]-tcp PORT|remove[-home]-udp PORT')
     lockdir = Path('/run/aether-firewall')
     lockdir.mkdir(mode=0o700, exist_ok=True)
     if lockdir.is_symlink() or lockdir.stat().st_uid != 0 or lockdir.stat().st_mode & 0o077:

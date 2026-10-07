@@ -36,8 +36,10 @@ until new source is compiled, integrated, tested and packaged.
 
 - Added a GitHub Actions workflow for existing TUF/signature, privacy/preferences
   and sound regressions. It uses SHA-pinned actions, read-only repository access,
-  no deployment secrets and no persistent checkout credentials. First CI run pending.
-- Ubuntu is currently unreachable; compilation and new image testing await the build VM.
+  no deployment secrets and no persistent checkout credentials. [First CI run passed](https://github.com/Shadowman8080/Aether/actions/runs/37590220231).
+- Ubuntu is connected again with 16 CPUs. Verified temporary personal images were retired from the build host; Windows backups and published downloads are preserved.
+- Added a read-only critical-runtime ownership inventory and six passing path-boundary tests. Full image audit is running.
+- Found systemd built without TPM2, FIDO2, cryptsetup, seccomp and AppArmor integration; these are prerequisites for several requested protections.
 - No production signing keys, enrollment or public update-feed activation performed.
 
 Source CI is not an image-boot test and does not certify real hardware. Each

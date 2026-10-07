@@ -42,8 +42,10 @@ jobs:
       - name: Verify live Home to Public firewall transition
         run: |
           sudo apt-get update -qq
-          sudo apt-get install -y --no-install-recommends nftables iproute2
+          sudo apt-get install -y --no-install-recommends nftables iproute2 restic
           sudo python3 build/next-20261007/test-network-live.py src/security/aether-firewall
+      - name: Verify backup restore and corruption detection
+        run: python build/next-20261007/test-backup-roundtrip.py --restic /usr/bin/restic --output test-results/backups
       - name: Verify generated sound assets
         run: python src/sounds/test_sounds.py
       - name: Preserve non-secret verification receipts
@@ -51,6 +53,6 @@ jobs:
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         with:
           name: source-verification
-          path: test-results/updates/
+          path: test-results/
           if-no-files-found: ignore
           retention-days: 14

@@ -9,6 +9,7 @@ parser.add_argument('--image',type=Path,required=True)
 parser.add_argument('--firmware',choices=['bios','uefi'],required=True)
 parser.add_argument('--output',type=Path,required=True)
 parser.add_argument('--candidate-security',action='store_true',help='Require the next candidate security integrations')
+parser.add_argument('--usb-protection',action='store_true',help='Require installed, default-off USB protection')
 options=parser.parse_args();image=options.image.resolve(strict=True);firmware=options.firmware
 if image.suffix not in ('.iso','.vmdk') or ',' in str(image):raise ValueError('Use an ISO or VMDK path without commas')
 kind='iso' if image.suffix=='.iso' else 'disk';run=options.output.resolve();run.mkdir(parents=True,exist_ok=False)
@@ -36,6 +37,9 @@ try:
  check('automatic check timer', 'systemctl is-active --quiet aether-update-check.timer')
  check('Flatpak sandbox','bwrap --ro-bind / / --unshare-user --unshare-pid --proc /proc /usr/bin/true')
  check('native tools','flatpak --version && rsync --version && test -x /usr/bin/kdeconnect-app && test -x /usr/bin/fwupdmgr && test -x /usr/bin/orca && test -x /usr/bin/aether-settings')
+ if options.usb_protection:
+  check('USB protection installed but opt-in','test -x /usr/bin/aether-usbguard && usbguard --version && ! systemctl is-active --quiet usbguard.service && ! systemctl is-enabled --quiet usbguard.service')
+  check('USB interrupted-trial recovery configured','systemctl is-enabled --quiet aether-usbguard-recover.service && test -f /usr/lib/systemd/system/usbguard.service.d/10-aether-recovery.conf')
  if options.candidate_security:
   check('systemd security integrations',"/usr/lib/systemd/systemd --version > /tmp/systemd-features && (failed=0; for feature in APPARMOR SECCOMP FIDO2 TPM2 LIBCRYPTSETUP LIBCRYPTSETUP_PLUGINS; do grep -q \"+$feature\" /tmp/systemd-features || failed=1; done; test $failed = 0)")
   check('diagnostic export',"aether-diagnostics --output /tmp/aether-diagnostics-ci.json && test \"$(stat -c %a /tmp/aether-diagnostics-ci.json)\" = 600 && python3 -c 'import json; d=json.load(open(\"/tmp/aether-diagnostics-ci.json\")); assert d[\"schema\"]==1 and \"services\" in d'")

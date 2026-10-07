@@ -98,3 +98,13 @@ assets must match their source revision and verification checksums.
   The first run exposed systemd's default timer tolerance; setting one-second
   timer accuracy fixed the rollback deadline. Physical USB hardware and
   interrupted-trial reboot behavior still require integration testing.
+- Installed the tested USB packages into the separate candidate root, leaving
+  USBGuard disabled. All 315 staged ELF files passed dependency resolution;
+  the Settings page compiled and its offscreen layout was inspected.
+  [Hosted source checks passed](https://github.com/Shadowman8080/Aether/actions/runs/37600668388)
+  with the USB regression suite included.
+- The candidate's restic 0.19.1 passed a disposable encrypted-repository test:
+  restore contents, private-file permissions and symlinks, then reject deliberately
+  corrupted encrypted data. [Backup engine evidence](verification/20261007/backup-roundtrip.json)
+  does not imply an independently protected destination has been configured.
+  Added the same round-trip test to hosted CI with Ubuntu's packaged restic.

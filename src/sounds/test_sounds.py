@@ -50,6 +50,22 @@ class SoundTests(unittest.TestCase):
     def test_repeatable_recipe(self):
         self.assertEqual(generate.synth(generate.BANK[0]), generate.synth(generate.BANK[0]))
 
+    def test_system_theme_fallback_and_user_precedence(self):
+        import shutil
+        with tempfile.TemporaryDirectory() as temp:
+            base = Path(temp)
+            system = base/'system/sounds/AetherGlass'
+            shutil.copytree(self.root, system)
+            with patch.dict(os.environ, {'XDG_DATA_HOME': str(base/'user'),
+                                         'XDG_STATE_HOME': str(base/'state'),
+                                         'XDG_DATA_DIRS': str(base/'system')}):
+                self.assertEqual(manage.installed_theme(), system)
+                with patch.object(manage, 'kde_read', return_value='ocean'), patch.object(manage, 'kde_write'):
+                    manage.activate()
+                user = base/'user/sounds/AetherGlass'
+                shutil.copytree(self.root, user)
+                self.assertEqual(manage.installed_theme(), user)
+
     def test_tampering_is_rejected(self):
         import shutil
         with tempfile.TemporaryDirectory() as temp:

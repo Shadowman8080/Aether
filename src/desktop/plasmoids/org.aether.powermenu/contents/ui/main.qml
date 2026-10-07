@@ -4,6 +4,7 @@ pragma ComponentBehavior: Bound
 import QtQuick
 import QtQuick.Layouts
 import QtQuick.Controls as Controls
+import org.kde.kirigami as Kirigami
 import org.kde.plasma.plasmoid
 import org.kde.plasma.components as PlasmaComponents
 import org.kde.plasma.extras as PlasmaExtras
@@ -25,7 +26,16 @@ PlasmoidItem {
         text: i18n("Power")
         display: Controls.AbstractButton.IconOnly
         Accessible.name: i18n("Power menu")
-        onPressed: menu.openRelative()
+        onPressed: {
+            if (Kirigami.Units.longDuration > 0) clickMotion.restart()
+            menu.openRelative()
+        }
+        SequentialAnimation {
+            id: clickMotion
+            NumberAnimation { target: button; property: "scale"; to: 0.86; duration: Kirigami.Units.shortDuration; easing.type: Easing.OutCubic }
+            NumberAnimation { target: button; property: "scale"; to: 1; duration: Kirigami.Units.longDuration; easing.type: Easing.OutCubic }
+            onStopped: button.scale = 1
+        }
 
         PlasmaExtras.Menu {
             id: menu

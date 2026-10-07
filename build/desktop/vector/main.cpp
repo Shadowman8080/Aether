@@ -31,6 +31,7 @@
 #include <KService>
 #include <KIO/ApplicationLauncherJob>
 #include <algorithm>
+#include "icon-motion.h"
 
 struct Application {
     KService::Ptr service;
@@ -222,6 +223,9 @@ public:
         fileDetails->sortByColumn(0, Qt::AscendingOrder);
         fileDetails->setEditTriggers(QAbstractItemView::NoEditTriggers);
         fileDetails->setAccessibleName(tr("File details"));
+        for (QAbstractItemView *view : {static_cast<QAbstractItemView *>(sidebar),
+             static_cast<QAbstractItemView *>(appList), static_cast<QAbstractItemView *>(fileIcons),
+             static_cast<QAbstractItemView *>(fileDetails)}) view->setItemDelegate(new IconMotion(view));
         pages->addWidget(fileDetails);
         auto openFile = [this](const QModelIndex &index) {
             const auto path = files->filePath(proxy->mapToSource(index));

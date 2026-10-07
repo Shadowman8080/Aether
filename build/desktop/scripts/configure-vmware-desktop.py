@@ -49,12 +49,13 @@ write('/usr/libexec/aether-guest-display-setup', '''#!/bin/sh
 set -eu
 config=/etc/lightdm/lightdm.conf.d/60-aether-vmware-session.conf
 session=''' + shlex.quote(x11) + '''
-if [ "$(systemd-detect-virt --vm 2>/dev/null || true)" = vmware ]; then
+hypervisor=$(systemd-detect-virt --vm 2>/dev/null || true)
+if [ "$hypervisor" = vmware ] || [ "$hypervisor" = oracle ]; then
     printf '%s\\n' '[Seat:*]' "user-session=$session" > "$config.tmp"
     chmod 644 "$config.tmp"
     mv -f "$config.tmp" "$config"
     # LightDM reads Session= from ~/.dmrc, which overrides the seat default.
-    # open-vm-tools clipboard and drag-and-drop need X11, so keep VMware users
+    # Both bundled desktop integration clients need X11, so keep VM users
     # on the X11 session even if they previously saved a Wayland choice.
     for dmrc in /home/*/.dmrc; do
         [ -f "$dmrc" ] || continue

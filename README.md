@@ -1,6 +1,8 @@
 # Aether Linux
 
-**A Linux distribution built from source. Work in progress — 0.3, not release-ready.**
+**A Linux distribution built from source. Work in progress — not release-ready.**
+
+[Download the unified 0.3.1 development snapshot](https://github.com/Shadowman8080/Aether/releases/tag/0.3.1-dev.20261006) · [What was verified](docs/release-20261006.md)
 
 Aether is a from-scratch desktop Linux built by compiling every package in its
 base system from pinned upstream sources. No binary distribution is downloaded
@@ -73,9 +75,17 @@ noises, and your volume and mute preferences stay yours.
 [Listen to the preview](media/audio/aether-glass-preview.wav) ·
 [Build and install](src/sounds/README.md) · [Deployment status](docs/sounds.md)
 
-**Development preview:** the sound pack and automated checks are ready.
-Installation and playback in the running Aether VM are still awaiting access;
-the published OS images have not been updated with this theme.
+**Development update:** Aether Glass is included in the unified 20261006.1
+image build. Applications choose which sound events they emit; guest audio
+playback still needs confirmation.
+
+Vector also gives application, file and sidebar icons a brief click animation.
+The power button has matching feedback; disabling KDE animations disables this
+motion. [Animation details](docs/icon-motion.md).
+
+The unified x86_64 image replaces the separate desktop, security, Vector and
+local-AI variants. Historical x86 and ARM console prototypes remain archived;
+they are not current desktop builds. See [release verification](docs/release-20261006.md).
 
 ## What is actually in the box
 

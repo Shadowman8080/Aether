@@ -58,6 +58,16 @@ def validate(root):
     return manifest
 
 
+def installed_theme():
+    data, _ = locations()
+    roots = [data] + [Path(p) for p in os.environ.get("XDG_DATA_DIRS", "/usr/local/share:/usr/share").split(os.pathsep) if p]
+    for root in roots:
+        theme = root / "sounds" / THEME
+        if root.is_absolute() and (theme / "manifest.json").is_file():
+            return theme
+    raise RuntimeError("Aether Glass is not installed")
+
+
 def kde_read(key, default):
     tool = shutil.which("kreadconfig6")
     if not tool:
@@ -97,7 +107,7 @@ def save_state(path, value):
 
 def activate():
     data, state = locations()
-    validate(data / "sounds" / THEME)
+    validate(installed_theme())
     previous = state / "previous-theme.json"
     if not previous.exists():
         save_state(previous, {"Theme": kde_read("Theme", "ocean")})
@@ -169,10 +179,14 @@ def main():
         previous = json.loads((state / "previous-theme.json").read_text(encoding="utf-8"))
         kde_write("Theme", previous["Theme"])
     elif args.status:
+        try:
+            installed = installed_theme().is_dir()
+        except RuntimeError:
+            installed = False
         print(json.dumps({"theme": kde_read("Theme", "ocean"), "enabled": kde_read("Enable", "true"),
-                          "installed": (data / "sounds" / THEME / "manifest.json").exists()}))
+                          "installed": installed}))
     elif args.preview:
-        theme = data / "sounds" / THEME
+        theme = installed_theme()
         manifest = validate(theme)
         sound = next((x for x in manifest["sounds"] if x["event"] == args.preview), None)
         if sound is None:

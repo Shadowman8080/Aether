@@ -108,3 +108,13 @@ assets must match their source revision and verification checksums.
   corrupted encrypted data. [Backup engine evidence](verification/20261007/backup-roundtrip.json)
   does not imply an independently protected destination has been configured.
   Added the same round-trip test to hosted CI with Ubuntu's packaged restic.
+- The first hosted backup test could not deliberately alter restic's read-only
+  test pack as an unprivileged user. The fixture now changes only that disposable
+  file's permissions before corruption. [The corrected source run passed](https://github.com/Shadowman8080/Aether/actions/runs/37601479072).
+- Rebuilt the integrated USB candidate ISO using 16 build CPUs. SHA-256:
+  `1a505811a06d7b2c1d077637b74743e98651498a9c6c1ff2ca002ff3db1d6fd9`.
+  [BIOS checks](verification/20261007/usb-iso-bios.json) and
+  [UEFI checks](verification/20261007/usb-iso-uefi.json) pass, including opt-in USB
+  defaults, interrupted-trial recovery configuration, graphical-login services,
+  firewall, diagnostic export and no failed units. UEFI also returned a real local
+  AI answer. This remains a development candidate, not a completed twelve-item release.

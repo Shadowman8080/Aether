@@ -25,10 +25,18 @@ The established Aether build root is `/opt/aether/build/apt-root`.
    initramfs during installation. Its paths are fixed to this candidate workspace.
 7. `build-iso.sh`, `build-disk.sh` and `test-boot.py` build and check disposable
    images. They never select a user's VMware disk automatically.
-8. `test-desktop.py` exercises local inference, idle unload, first run and session
-   notifications. `test-recovery.py` exercises trial/fallback/health commit;
-   `--faults` substitutes only the verified-download boundary and tests real
-   failing package scripts and an interrupted install in a disposable guest.
+8. `test-native-ai.sh` tests a real answer using the Aether engine and client in
+   an isolated native test root. `test-desktop.py` checks engine startup, idle
+   unload, first run and session notifications in an emulated desktop; full
+   inference under emulation can exceed the test timeout.
+9. `prepare-recovery-native.sh` creates a checkpoint on a disposable disk using
+   Aether's recovery code. `test-recovery.py --prepared` boots that
+   checkpoint and checks trial, fallback and health commit. The native copy
+   avoids making filesystem-copy performance under emulation the test limit.
+10. `test-faults-native.sh` exercises real failing package scripts and an
+    interrupted install in a disposable Aether root. It substitutes only the
+    verified-download boundary, whose signatures have separate regression tests.
+    It verifies that the original system and boot defaults remain unchanged.
 
 These are recorded development recipes, not yet a one-command clean bootstrap.
 Keep all native source archives and Python source archives alongside these

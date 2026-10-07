@@ -62,8 +62,9 @@ supplies and cannot be spoofed.
   refused, not merely undocumented.
 - Context window is 8192 tokens and the client truncates at 12000 characters.
 - Chats are stored locally under the Nimbrel state directory (`0700`).
-- Performance is CPU-bound: roughly 6.6 tok/s on 6 vCPUs with a generic
-  x86-64 target (no AVX/AVX2/FMA).
+- Performance is CPU-bound and varies substantially with the machine and load.
+  The current baseline x86-64 engine disables BMI2, SSE4.2, AVX/AVX2 and FMA.
+  Earlier performance measurements do not certify this rebuilt engine.
 
 ## `setup-remote-gateway.sh` is not what the image uses
 

@@ -44,6 +44,9 @@ with tempfile.TemporaryDirectory(prefix='aether-initramfs-') as directory:
     binary('/usr/sbin/cryptsetup')
     binary('/usr/sbin/blkid')
     binary('/usr/sbin/modprobe')
+    # Checkpoint boot validates the root owner before selecting a system copy.
+    # The minimal BusyBox build does not provide the stat applet.
+    binary('/usr/bin/stat')
     module_root = Path('/lib/modules') / release
     dependency_output = subprocess.check_output(
         ['modprobe', '--set-version', release, '--show-depends', 'dm_crypt'], text=True)
@@ -68,6 +71,9 @@ with tempfile.TemporaryDirectory(prefix='aether-initramfs-') as directory:
     (root / 'bin/sh').symlink_to('busybox')
     shutil.copy2('/usr/lib/aether-initramfs/encrypted-init', root / 'init')
     (root / 'init').chmod(0o755)
+    owner = subprocess.check_output(['chroot', directory, '/usr/bin/stat', '-c', '%u', '/init'], text=True).strip()
+    if owner != '0':
+        raise RuntimeError('Initramfs ownership validation is unavailable or incorrect.')
     if Path('/usr/sbin/plymouthd').exists():
         subprocess.run(['/usr/bin/python3', '/usr/lib/aether-initramfs/plymouth-assets.py', directory, release], check=True)
     subprocess.run(['chroot', directory, '/bin/busybox', 'true'], check=True)

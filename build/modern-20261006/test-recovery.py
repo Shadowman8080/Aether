@@ -3,9 +3,13 @@
 import json,re,subprocess,time,sys
 from pathlib import Path
 import pexpect
-b=Path('/opt/aether/build/modern-20261006');run=b/('recovery-test-'+time.strftime('%Y%m%dT%H%M%S'));run.mkdir()
+b=Path('/opt/aether/build/modern-20261006')
+prepared='--prepared' in sys.argv
+run=Path((b/'native-recovery-latest').read_text().strip()) if prepared else b/('recovery-test-'+time.strftime('%Y%m%dT%H%M%S'))
+assert run.parent==b
+run.mkdir(exist_ok=prepared)
 disk=run/'test.qcow2';base=b/'aether-0.3.2-dev-20261006-x86_64.vmdk'
-subprocess.run(['qemu-img','create','-f','qcow2','-F','vmdk','-b',str(base),str(disk)],check=True)
+if not prepared:subprocess.run(['qemu-img','create','-f','qcow2','-F','vmdk','-b',str(base),str(disk)],check=True)
 results=[];p=None;log=None;boot_number=0
 def boot():
  global p,log,boot_number
@@ -27,8 +31,22 @@ def shutdown():
  global p,log
  p.sendline('systemctl poweroff');p.expect(pexpect.EOF,180);p.close();p=None;log.close();log=None
 try:
+ if prepared:
+  identifier=(run/'slot-id').read_text().strip();assert re.fullmatch(r'[0-9]{8}T[0-9]{6}-[0-9a-f]{8}',identifier)
+  path='/var/lib/aether/slots/'+identifier+'/root'
+  boot()
+  check('trial root and shared home',f"test \"$(cat /etc/aether-slot-id)\" = {identifier} && test \"$(cat /etc/aether-checkpoint-proof)\" = before && test \"$(cat /home/aether/aether-checkpoint-proof)\" = shared && mountpoint -q /run/aether-origin && systemctl is-active --quiet lightdm")
+  shutdown();boot()
+  check('uncommitted trial falls back',"! grep -q 'aether.slot=' /proc/cmdline && test \"$(cat /etc/aether-checkpoint-proof)\" = after")
+  check('restore health commit',f'ln -s ../aether-system-health.service {path}/etc/systemd/system/graphical.target.wants/aether-system-health.service')
+  p.sendline('aether-recovery boot '+identifier);p.expect('Type BOOT to select one trial boot:',90);p.sendline('BOOT');p.expect('AE# ')
+  shutdown();boot()
+  check('health commits successful trial',f"systemctl start aether-system-health.service && test \"$(cat /etc/aether-slot-id)\" = {identifier} && grub-editenv /run/aether-origin/boot/grub/grubenv list | grep -qx saved_entry=aether-slot-{identifier}",240)
+  shutdown();(run/'PASS').write_text('Native Aether checkpoint creation on disposable ext4 image; emulated trial boot, shared home, fallback and health commit passed.\n')
+  print('RECOVERY_PASS',run,flush=True);sys.exit(0)
  boot()
  if '--faults' in sys.argv:
+  p.sendline("printf 'modern-20261006\\n' > /run/aether-disposable-test");p.expect('AE# ',30)
   fixture=Path(__file__).with_name('failed-update-fixture.py').read_text()
   p.sendline("cat > /tmp/failed-update-fixture.py <<'AETHER_FIXTURE_EOF'")
   for line in fixture.splitlines():p.sendline(line)

@@ -35,7 +35,7 @@ uses hidden passphrase prompts and explains offline key custody.
 Application updates from an explicitly enabled Flatpak source are separate from
 Aether OS updates. This build does not add Ubuntu or Arch binary repositories.
 
-## Validation so far
+## Validation
 
 The native builds completed using all 16 build-VM CPUs. Fourteen upstream
 components were packaged individually and installed/configured successfully.
@@ -43,30 +43,42 @@ The pinned local inference engine was rebuilt and packaged separately too.
 The Aether integration package also installed and rebuilt the initramfs.
 
 Inside Aether's filesystem, 24 signature/TUF regressions and 25 feature tests
-pass. New systemd units pass offline verification. The first ISO boot test
-reached the desktop and passed the unprivileged Flatpak sandbox check; it caught
-a launcher line-ending defect that has since been corrected. That first ISO is
-not a release candidate for publication.
+pass. New systemd units pass offline verification. Validation caught and fixed
+launcher line endings, a missing `rsync` recovery dependency, a missing `stat`
+utility in the recovery initramfs, and optional BMI2 instructions in the older
+AI engine. Native packages now preserve their configuration files during upgrades.
 
-An intermediate rebuilt ISO passed BIOS and UEFI boot/login checks. Deeper tests
-then found a missing `rsync` dependency for system checkpoints and BMI2 enabled
-in the older AI engine build. Both have been corrected; final-image recovery and
-inference tests are running again. Firmware and KDE Connect services start in
-the disposable guest. Failed/interrupted-install tests exercise real package
-scripts while substituting the separately tested verified-download boundary.
+A real local AI response passed in an isolated native Aether test root. Emulated
+guest checks passed engine startup and idle unloading. First-run and desktop
+notification checks passed, with the actual desktop captured below.
 
-Final rebuilt-image BIOS/UEFI checks, trial-boot recovery and interrupted-installation
-testing are still required before these changes replace a user's disk. Native
-phone pairing, physical firmware flashing and assistive hardware have not been
+![Aether first-run settings](../media/screenshots/24-modern-first-run.png)
+
+Recovery checks passed checkpoint entry, shared home access, fallback after an
+unconfirmed trial, and making a healthy trial the default. The checkpoint copy
+runs natively; the recovery checks boot the actual disk under emulation.
+The final ISO and clean VMDK both passed BIOS and UEFI boot, login, desktop,
+Flatpak sandbox, update timer and AI startup checks, with zero failed system
+units. Failed and interrupted package-install tests also passed: the original
+system, package database and boot selection remained unchanged. These fault
+tests substitute the download-verification boundary; the signature tests cover
+that boundary separately.
+
+Physical phone pairing, firmware flashing and assistive hardware have not been
 tested. Some older base libraries lack complete package ownership records; core
 OS updates must remain gated until that inventory is reconciled.
 
 The current desktop target remains x86_64 (also called x64). Historical 32-bit
 x86 and ARM prototypes are preserved; these changes do not claim completed ports.
 
-## Build interruption
+## Downloads
 
-The Ubuntu build VM powered off during the rebuilt-image work and has since
-been restarted. Builds resumed with the source and completed checks preserved.
-The older 0.3.1 upload was interrupted and that draft remains unpublished. A new
-0.3.2 draft is being prepared; it will remain unpublished until final checks pass.
+The [0.3.2 development release](https://github.com/Shadowman8080/Aether/releases/tag/0.3.2-dev.20261006)
+contains the unified ISO, clean VMware disk bundle, source, native packages,
+additional upstream sources, checksums and the detailed verification record.
+The earlier 0.3.1 draft was interrupted and remains unpublished.
+
+These are manual development downloads. Their SHA-256 checksums detect corruption;
+they are not a signed public OS update feed. The VMware bundle targets virtual
+hardware 22; native VirtualBox interaction and physical hardware testing remain
+separate work.

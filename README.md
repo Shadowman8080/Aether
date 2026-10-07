@@ -2,12 +2,12 @@
 
 **A Linux distribution built from source. Work in progress — not release-ready.**
 
-[Development downloads](https://github.com/Shadowman8080/Aether/releases) · [October 6 progress](docs/modern-desktop-20261006.md) · [Image verification](docs/release-20261006.md)
+[Development downloads](https://github.com/Shadowman8080/Aether/releases) · [October 6 progress](docs/modern-desktop-20261006.md) · [Image verification](docs/modern-desktop-20261006.md#validation)
 
-**In development now:** Aether Settings, a Flatpak app store, on-demand Nimbrel,
-privacy controls, phone connection and signed-update preparation. These additions
-are in source and a candidate filesystem; rebuilt-image and recovery validation
-must finish before a new download is published. Aether remains a work in progress.
+**New in the October 6 snapshot:** Aether Settings, a Flatpak app store,
+on-demand Nimbrel, privacy controls, phone connection and recovery. Public OS
+update trust remains unconfigured while release keys and the base package
+inventory are prepared. Aether is still a work in progress.
 
 Aether is a from-scratch desktop Linux built by compiling every package in its
 base system from pinned upstream sources. No binary distribution is downloaded
@@ -45,7 +45,8 @@ the machine you are watching.
   `PrivateTmp`, `PrivateDevices`, `ProtectSystem=strict`, `ProtectHome`,
   `ProtectKernelTunables`, `ProtectControlGroups`, `UMask=0077`,
   `MemoryMax`/`TasksMax` caps, and a `0700` runtime directory for the engine
-- ~6.6 tokens/sec on 6 vCPUs, generic x86-64, **no AVX/AVX2/FMA, no CUDA**
+- Baseline x86-64 CPU build, **no BMI2/AVX/AVX2/FMA requirement, no CUDA**;
+  response time depends on hardware and load
 
 Being blunt about the model: **0.8B is small.** It is good enough for
 definitions, summaries and light drafting, and it will confidently get things

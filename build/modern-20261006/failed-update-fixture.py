@@ -11,6 +11,7 @@ from unittest.mock import patch
 sys.path[:0]=['/usr/lib/aether-updates','/usr/lib/aether-updates/vendor']
 import runtime,slots
 assert os.geteuid()==0
+assert Path('/run/aether-disposable-test').read_text()=='modern-20261006\n','Disposable test marker required'
 assert not Path('/etc/aether-slot-id').exists(),'Use a clean disposable guest'
 temp=Path('/tmp/update-fault-fixture');temp.mkdir()
 boot=Path('/boot/grub/grub.cfg');before=boot.read_bytes()

@@ -48,6 +48,8 @@ for name,(p,version) in payloads.items():
  text=f'Package: {name}\nVersion: {version}\nArchitecture: amd64\nMaintainer: Aether Linux developers\nDescription: Native source-built {name} for Aether\n'
  if depends:text+='Depends: '+', '.join(sorted(depends))+'\n'
  (control/'control').write_text(text)
+ configs=sorted('/'+f.relative_to(p).as_posix() for f in (p/'etc').rglob('*') if f.is_file() and not f.is_symlink()) if (p/'etc').exists() else []
+ if configs:(control/'conffiles').write_text('\n'.join(configs)+'\n')
  output=b/'packages'/(name+'_'+version+'_amd64.deb');run(['dpkg-deb','--build','--root-owner-group',str(p),str(output)])
  records.append({'name':name,'version':version,'archive':output.name,'sha256':hashlib.file_digest(output.open('rb'),'sha256').hexdigest(),'depends':sorted(depends),'unowned_shared_libraries':sorted(unowned)})
 (b/'native-packages.json').write_text(json.dumps(records,indent=2)+'\n')

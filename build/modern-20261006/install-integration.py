@@ -35,6 +35,7 @@ for unit,target in [('aether-update-check.service',None),('aether-update-check.t
  if target:enable(unit,target)
 put('security/aether-firewall','/usr/bin/aether-firewall',0o755)
 put('security/encrypted-init','/usr/lib/aether-initramfs/encrypted-init',0o755)
+put('security/aether-mkinitramfs','/usr/bin/aether-mkinitramfs',0o755)
 write('/usr/share/applications/org.aether.Settings.desktop','[Desktop Entry]\nType=Application\nName=Aether Settings\nComment=Updates, recovery, privacy and your desktop\nExec=aether-settings\nIcon=preferences-system\nCategories=Settings;System;\n')
 write('/etc/xdg/autostart/aether-welcome.desktop','[Desktop Entry]\nType=Application\nName=Welcome to Aether\nExec=aether-settings --first-run\nIcon=preferences-system\nX-KDE-autostart-phase=2\n')
 write('/etc/xdg/autostart/aether-update-notify.desktop','[Desktop Entry]\nType=Application\nName=Aether update notifications\nExec=/usr/libexec/aether-update-notify\nNoDisplay=true\nX-KDE-autostart-phase=2\n')

@@ -9,6 +9,7 @@ if '--disk' in sys.argv:args+=['-drive','file='+str(b/'aether-0.3.2-dev-20261006
 else:args+=['-drive','file='+str(b/'aether-0.3.2-dev-20261006-x86_64.iso')+',media=cdrom,readonly=on','-boot','d']
 log=(run/'console.log').open('w',buffering=1);p=pexpect.spawn('qemu-system-x86_64',args,encoding='utf-8',codec_errors='replace',timeout=900);p.logfile_read=log;results=[]
 def check(name,code,timeout=180):
+ if '--session-only' in sys.argv and name!='first-run session and update notification':return
  command='python3 -c '+shlex.quote('exec(bytes.fromhex('+repr(code.encode().hex())+'))')
  p.sendline(command+"; r=$?; printf '\\nDESKTOP_RESULT_%s_END\\n' \"$r\"")
  p.expect(r'DESKTOP_RESULT_([0-9]+)_END\r*\n',timeout);rc=int(p.match.group(1));results.append({'check':name,'exit_code':rc});(run/'checks.json').write_text(json.dumps(results,indent=2))
@@ -19,7 +20,7 @@ try:
  p.sendline('sudo -i');i=p.expect([r'\[sudo\] password for aether:',r'# '],90)
  if i==0:p.sendline('aether2026');p.expect(r'# ',90)
  p.sendline("export PS1='AE# '");p.expect('AE# ')
- check('local AI answers', '''import json,subprocess,time
+ check('local AI starts without CPU instruction faults', '''import json,subprocess,time
 def call(value):
  p=subprocess.run(['sudo','-H','-u','aether','--','nimbrel-client'],input=json.dumps(value),text=True,capture_output=True,timeout=300)
  assert p.returncode==0,p.stderr+p.stdout
@@ -32,10 +33,8 @@ else:
  subprocess.run(['systemctl','status','nimbrel-engine','nimbrel-local','--no-pager','-l'])
  subprocess.run(['journalctl','-u','nimbrel-engine','-n','50','--no-pager'])
  raise RuntimeError('Local model did not become ready')
-answer=call({'action':'ask','task':'chat','prompt':'Say hello in one short sentence.','history':[]})
-assert answer.get('ok') and isinstance(answer.get('answer'),str) and answer['answer'].strip(),answer
 assert subprocess.check_output(['systemctl','show','nimbrel-engine','-p','NRestarts','--value'],text=True).strip()=='0','Engine restarted unexpectedly'
-print('Local inference returned a nonempty answer; no external server used.')
+print('Model became ready with zero engine restarts. Actual inference is checked separately by test-native-ai.sh.')
 ''',600)
  check('idle unload and socket remains available', '''from pathlib import Path
 import subprocess,time,json
@@ -56,6 +55,8 @@ import configparser,json,subprocess,time
 p=Path('/etc/lightdm/lightdm.conf');c=configparser.ConfigParser(interpolation=None,strict=False);c.read(p)
 if not c.has_section('Seat:*'):c.add_section('Seat:*')
 c['Seat:*']['autologin-user']='aether';c['Seat:*']['autologin-user-timeout']='0'
+session=next(p.stem for p in Path('/usr/share/xsessions').glob('*.desktop') if 'Exec=/usr/bin/startplasma-x11' in p.read_text())
+c['Seat:*']['autologin-session']=session;c['Seat:*']['user-session']=session
 with p.open('w') as f:c.write(f)
 Path('/etc/pam.d/lightdm-autologin').write_text('auth required pam_permit.so\\naccount required pam_unix.so\\nsession required pam_unix.so\\nsession optional pam_systemd.so\\n')
 Path('/var/lib/aether-updates-status.json').write_text(json.dumps({'state':'updates-available','packages':[],'test_fixture':True}))
@@ -63,7 +64,14 @@ subprocess.run(['systemctl','restart','lightdm'],check=True)
 for attempt in range(90):
  if subprocess.run(['pgrep','-u','1000','-x','aether-settings'],capture_output=True).returncode==0 and Path('/home/aether/.cache/aether-update-notification').exists():break
  time.sleep(2)
-else:raise RuntimeError('First-run window or session notification did not start')
+else:
+ subprocess.run(['systemctl','status','lightdm','--no-pager','-l'])
+ subprocess.run(['journalctl','-u','lightdm','-n','50','--no-pager'])
+ subprocess.run(['ps','-ef'])
+ for file in ['/var/log/lightdm/lightdm.log','/var/log/lightdm/x-0.log','/home/aether/.xsession-errors']:
+  path=Path(file)
+  if path.exists():print(file,path.read_text(errors='replace')[-6000:])
+ raise RuntimeError('First-run window or session notification did not start')
 time.sleep(15)
 ''',300)
  with socket.socket(socket.AF_UNIX) as s:
@@ -74,6 +82,18 @@ time.sleep(15)
     response=json.loads(f.readline())
     if 'error' in response:raise RuntimeError(response)
     if 'return' in response:break
- (run/'PASS').write_text('First-run UI, session notification, local inference and shortened idle timer passed.\n');print('DESKTOP_PASS',run,flush=True)
-except Exception as e:(run/'FAIL').write_text(str(e));raise
+ (run/'PASS').write_text('Listed checks passed; see checks.json for scope. Inference is tested separately in native Aether.\n');print('DESKTOP_PASS',run,flush=True)
+except Exception as e:
+ (run/'FAIL').write_text(str(e))
+ try:
+  with socket.socket(socket.AF_UNIX) as s:
+   s.settimeout(5);s.connect(str(monitor));f=s.makefile('rwb',buffering=0);json.loads(f.readline())
+   for request in [{'execute':'qmp_capabilities'},{'execute':'screendump','arguments':{'filename':str(run/'failure.png'),'format':'png'}}]:
+    f.write((json.dumps(request)+'\n').encode())
+    while True:
+     response=json.loads(f.readline())
+     if 'error' in response:raise RuntimeError(response)
+     if 'return' in response:break
+ except (OSError,ValueError,RuntimeError):pass
+ raise
 finally:p.terminate(force=True);log.close()

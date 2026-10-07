@@ -5,13 +5,13 @@ from pathlib import Path
 b=Path('/opt/aether/build/modern-20261006');root=b/'root';p=b/'packages/aether-experience';p.mkdir(parents=True,exist_ok=True)
 paths=['usr/bin/aether-settings','usr/bin/aether-update','usr/bin/aether-recovery','usr/bin/aether-signing-setup','usr/bin/aether-preferences','usr/bin/aether-firewall','usr/bin/nimbrel','usr/bin/nimbrel-client','usr/bin/nimbrel-library','usr/libexec/aether-system-admin','usr/lib/aether-updates','usr/lib/aether-initramfs/encrypted-init','usr/share/doc/aether-updates','usr/share/applications/org.aether.Settings.desktop','usr/share/applications/org.aether.Nimbrel.desktop','usr/share/icons/hicolor/scalable/apps/org.aether.Nimbrel.svg','usr/plugins/kf6/krunner/libkrunner_nimbrel.so','etc/xdg/autostart/aether-welcome.desktop','opt/nimbrel/local_server.py']
 paths+=['etc/systemd/system/'+u for u in ('nimbrel-local.service','nimbrel-local.socket','nimbrel-engine.service','aether-update-check.service','aether-update-check.timer','aether-system-health.service')]
-paths+=['usr/libexec/aether-update-notify','etc/xdg/autostart/aether-update-notify.desktop']
+paths+=['usr/libexec/aether-update-notify','etc/xdg/autostart/aether-update-notify.desktop','usr/bin/aether-mkinitramfs']
 for name in paths:
  source=root/name;dest=p/name;dest.parent.mkdir(parents=True,exist_ok=True)
  if source.is_dir():shutil.copytree(source,dest,dirs_exist_ok=True,ignore=shutil.ignore_patterns('__pycache__'))
  else:shutil.copy2(source,dest)
 control=p/'DEBIAN';control.mkdir(exist_ok=True)
-(control/'control').write_text('Package: aether-experience\nVersion: 0.3.2~dev20261006-1\nArchitecture: amd64\nMaintainer: Aether Linux developers\nDepends: python, qtbase, glibc, gcc, grub, rsync, nimbrel-engine, flatpak, fwupd, kdeconnect, plasma-discover\nDescription: Aether settings, on-demand AI and update/recovery integration\n')
+(control/'control').write_text('Package: aether-experience\nVersion: 0.3.2~dev20261006-1\nArchitecture: amd64\nMaintainer: Aether Linux developers\nDepends: coreutils, python, qtbase, glibc, gcc, grub, rsync, nimbrel-engine, flatpak, fwupd, kdeconnect, plasma-discover\nDescription: Aether settings, on-demand AI and update/recovery integration\n')
 (control/'conffiles').write_text(''.join('/'+name+'\n' for name in paths if name.startswith('etc/')))
 (control/'postinst').write_text('''#!/bin/sh
 set -eu

@@ -8,6 +8,7 @@ parser=argparse.ArgumentParser(description=__doc__)
 parser.add_argument('--image',type=Path,required=True)
 parser.add_argument('--firmware',choices=['bios','uefi'],required=True)
 parser.add_argument('--output',type=Path,required=True)
+parser.add_argument('--candidate-security',action='store_true',help='Require the next candidate security integrations')
 options=parser.parse_args();image=options.image.resolve(strict=True);firmware=options.firmware
 if image.suffix not in ('.iso','.vmdk') or ',' in str(image):raise ValueError('Use an ISO or VMDK path without commas')
 kind='iso' if image.suffix=='.iso' else 'disk';run=options.output.resolve();run.mkdir(parents=True,exist_ok=False)
@@ -34,6 +35,10 @@ try:
  check('automatic check timer', 'systemctl is-active --quiet aether-update-check.timer')
  check('Flatpak sandbox','bwrap --ro-bind / / --unshare-user --unshare-pid --proc /proc /usr/bin/true')
  check('native tools','flatpak --version && rsync --version && test -x /usr/bin/kdeconnect-app && test -x /usr/bin/fwupdmgr && test -x /usr/bin/orca && test -x /usr/bin/aether-settings')
+ if options.candidate_security:
+  check('systemd security integrations',"systemd --version > /tmp/systemd-features; for feature in APPARMOR SECCOMP FIDO2 TPM2 LIBCRYPTSETUP LIBCRYPTSETUP_PLUGINS; do grep -q \"+$feature\" /tmp/systemd-features || exit 1; done")
+  check('diagnostic export',"aether-diagnostics --output /tmp/aether-diagnostics-ci.json && test \"$(stat -c %a /tmp/aether-diagnostics-ci.json)\" = 600 && python3 -c 'import json; d=json.load(open(\"/tmp/aether-diagnostics-ci.json\")); assert d[\"schema\"]==1 and \"services\" in d'")
+  check('firewall and dispatcher','systemctl is-active --quiet aether-firewall && test -x /etc/NetworkManager/dispatcher.d/90-aether-network-profile && test -L /etc/NetworkManager/dispatcher.d/pre-up.d/90-aether-network-profile && test -L /etc/NetworkManager/dispatcher.d/pre-down.d/90-aether-network-profile')
  check('local AI socket activation',"printf '%s' '{\"action\":\"status\"}' | nimbrel-client && systemctl is-active --quiet nimbrel-local && for i in $(seq 1 30); do systemctl is-active --quiet nimbrel-engine && break; sleep 2; done; systemctl is-active --quiet nimbrel-engine",240)
  check('no failed units',"test \"$(systemctl --failed --no-legend --plain | wc -l)\" = 0")
  (run/'PASS').write_text('Boot/login and listed integration checks passed. Physical phone/firmware not tested.\n')

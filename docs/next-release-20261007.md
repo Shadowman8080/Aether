@@ -60,3 +60,15 @@ assets must match their source revision and verification checksums.
   connections, termination of Home-dependent inbound traffic on trust removal,
   and preservation of explicitly configured global ports. The build host's
   networking and firewall were not changed.
+- [Expanded hosted source checks passed](https://github.com/Shadowman8080/Aether/actions/runs/37593208566),
+  including diagnostic privacy and live firewall transition tests.
+- Rebuilt systemd and its native security dependencies now install into a
+  separate candidate root. The initial overlay/package attempt failed: the
+  hardware database belonged to `hwdata`, and overlay rollback hit stale inode
+  handles. The corrected build preserves `hwdata` ownership and uses a standalone
+  candidate filesystem. The current VM disk and published images were not changed.
+- A disposable-key Secure Boot fixture passed under OVMF: the signed Aether
+  kernel and native systemd EFI stub booted with Secure Boot, integrity lockdown
+  and module-signature enforcement enabled. A modified UKI failed both signature
+  verification and firmware boot. This probe uses a minimal test initramfs;
+  it does not certify the desktop, production key custody or hardware enrollment.

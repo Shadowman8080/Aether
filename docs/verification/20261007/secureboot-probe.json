@@ -1,0 +1,11 @@
+{
+  "signed_kernel_and_stub_boot": true,
+  "secureboot_enabled": true,
+  "lockdown_integrity": true,
+  "module_signature_enforcement": true,
+  "tampered_signature_rejected": true,
+  "tampered_firmware_boot_rejected": true,
+  "production_enrollment": false,
+  "desktop_test": false,
+  "signed_sha256": "3007e9837d7c307f2aa82b17c3c1a74e74b67519a97ad9e527dc43674fefaf31"
+}

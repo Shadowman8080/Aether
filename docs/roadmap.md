@@ -1,5 +1,8 @@
 # Roadmap
 
+> Historical 0.3 baseline. See the [0.3.2 development record](modern-desktop-20261006.md)
+> for newer features and test results, or return to the [documentation hub](README.md).
+
 Aether 0.3 is a development snapshot. This is what would have to happen before
 it could honestly be called a release, roughly in dependency order.
 

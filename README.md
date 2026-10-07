@@ -2,7 +2,7 @@
 
 **A Linux distribution built from source. Work in progress — not release-ready.**
 
-[Development downloads](https://github.com/Shadowman8080/Aether/releases) · [October 6 progress](docs/modern-desktop-20261006.md) · [Image verification](docs/modern-desktop-20261006.md#validation)
+[Documentation](docs/README.md) · [Development downloads](https://github.com/Shadowman8080/Aether/releases) · [October 6 progress](docs/modern-desktop-20261006.md) · [Image verification](docs/modern-desktop-20261006.md#validation)
 
 **New in the October 6 snapshot:** Aether Settings, a Flatpak app store,
 on-demand Nimbrel, privacy controls, phone connection and recovery. Public OS
@@ -279,19 +279,30 @@ The full per-area breakdown lives in [`docs/verification.md`](docs/verification.
 Stated plainly, because a project that hides this is not worth trusting:
 
 - ❌ No **production update repository**. The TUF/signing tooling is built and
-  tested; nothing is deployed. There is no automatic update timer.
+  tested, and an automatic checker is installed. Public release trust remains unconfigured.
 - ❌ No **ARM64**, i686 or Raspberry Pi desktop image
 - ❌ No **Secure Boot**, no signed UKI, no verified boot chain
 - ❌ No **TPM** enrollment or attestation
-- ❌ No **Flatpak** or sandboxed application distribution
 - ❌ **Most desktop apps are still unconfined** by AppArmor
 - ❌ Installer is **whole-disk only** — it does not convert an existing install
 - ❌ `/boot` is **not encrypted**; hibernation is disabled
 - ❌ Backup credentials are root-readable local files, so root compromise
   exposes them
-- ❌ No firmware/microcode update coverage, no maintained browser
+- Firmware controls are included through fwupd, but physical flashing and
+  microcode coverage are not verified; a maintained browser remains outstanding.
 - ❌ SSH is **not installed** by this build
 - ❌ No accessibility, FIDO, biometric or multi-user lock-boundary testing
+
+## Documentation
+
+Start at the **[Aether documentation hub](docs/README.md)** for setup, features,
+security, updates and developer guides.
+
+- [Getting started](docs/getting-started.md)
+- [Current features and verification](docs/modern-desktop-20261006.md)
+- [VMware and VirtualBox](docs/guest-integration-status.md)
+- [Building Aether](docs/build.md)
+- [Update and recovery documentation](src/updates/README.md)
 
 ## Repository layout
 

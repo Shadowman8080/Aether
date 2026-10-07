@@ -77,25 +77,24 @@ profiles or outbound allowlists yet.
 
 ## Update path
 
-Signing and repository tooling exists and is tested, but **nothing is deployed**.
-The intended shape:
+The 0.3.2 build installs an automatic check timer and an updater that verifies
+TUF metadata and package signatures. Installation requires approval, prepares a
+separate ext4 system copy with shared home directories, and uses a trial boot
+with fallback and health confirmation. It never restarts automatically.
 
-```
-package_signing.py   GnuPG detached signatures, pinned full fingerprint
-repository.py        TUF metadata via upstream python-tuf
-release.py           verifies signatures + SHA-256 + .PKGINFO, signs catalog
-client.py            verifies pinned root + freshness, downloads, installs nothing
-```
+**Public release trust remains unconfigured.** No production signing keys are
+shipped. Older base package ownership records also need reconciliation before
+core OS updates. Flatpak application sources are configured separately.
 
-Policy on record: **check automatically, ask before installing, never
-auto-restart.** No timer is enabled yet. The private R2 bucket is development
-storage only and its token has expired; it is not a production repository.
+See [update implementation](../src/updates/README.md),
+[operator key setup](../src/updates/LOCAL-KEY-SETUP.md) and the
+[current verification record](modern-desktop-20261006.md).
 
 ## Build organisation
 
 The build is driven by Python "recipe" scripts that append to an Arch-style
 package set. Groups follow the feature areas in
-[`../src/desktop/README.md`](../src/desktop/README.md):
+[`../build/desktop/README.md`](../build/desktop/README.md):
 
 | Group | Covers |
 |---|---|
@@ -114,8 +113,8 @@ These are architectural gaps, not just missing features:
 - **No verified boot chain.** Secure Boot is disabled and module signatures are
   not enforced, so the kernel's integrity story stops at the bootloader.
 - **`/boot` is unencrypted.** LUKS2 covers the root filesystem only.
-- **No deployed repository.** The update path is complete as tooling and empty
-  as infrastructure.
+- **No deployed repository.** The installed update and recovery tooling is tested,
+  but production trust and repository infrastructure remain unconfigured.
 - **Thin AppArmor coverage.** Most desktop applications run unconfined.
 - **Session isolation is weaker on VMware.** Clipboard support causes X11 to be
   selected, which increases isolation risk between applications sharing a

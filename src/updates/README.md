@@ -3,8 +3,9 @@
 Status: the verifier and installed updater are prepared in the development build.
 Public OS updates remain disabled pending operator-provisioned release trust.
 No production release keys have been created. See [local key setup](LOCAL-KEY-SETUP.md).
-The new recovery/install path still needs boot and interruption validation before
-deployment to a user's disk; source availability is not a completed release.
+The 0.3.2 recovery path passed trial/fallback/health boot checks and failed or
+interrupted installation tests. See the [development record](../../docs/modern-desktop-20261006.md)
+for test scope and remaining limitations, including base package ownership work.
 
 ## What exists
 

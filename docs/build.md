@@ -77,8 +77,10 @@ Both carry a `SHA256SUMS` file. The released VMDK is `writable
 monolithicSparse` and is validated with `qemu-img compare` against the detached
 raw image.
 
-To ship a VMDK to others, do **not** use GitHub Releases: the per-file limit is
-2 GiB and the disk image is roughly 6.9 GB. ISOs are fine.
+The 0.3.2 release distributes its VMDK and VMX in a compressed `-vm.tar.xz`
+bundle on GitHub Releases. Extract it before opening the VMX. The uncompressed
+disk is much larger than the download. See the [current build recipes](../build/modern-20261006/README.md)
+for native package creation, image production and recovery tests.
 
 ## Build verification
 

@@ -1,0 +1,16 @@
+[
+  {
+    "name": "pyelftools",
+    "version": "0.33",
+    "archive": "pyelftools-0.33.tar.gz",
+    "url": "https://files.pythonhosted.org/packages/a3/11/767522582afab1b884d277de0e6e011640cb9d7292a38694b4b1a1df1ae8/pyelftools-0.33.tar.gz",
+    "sha256": "660d82dcbeb8e83d1702bd97f223f761625da06111c0cc988eac6b8ab0c1b61f"
+  },
+  {
+    "name": "pefile",
+    "version": "2024.8.26",
+    "archive": "pefile-2024.8.26.tar.gz",
+    "url": "https://files.pythonhosted.org/packages/03/4f/2750f7f6f025a1507cd3b7218691671eecfd0bbebebe8b39aa0fe1d360b8/pefile-2024.8.26.tar.gz",
+    "sha256": "3ff6c5d8b43e8c37bb6e6dd5085658d658a7a0bdcd20b6a07b1fcfc1c4e9d632"
+  }
+]

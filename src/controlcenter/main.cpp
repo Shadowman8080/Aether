@@ -28,6 +28,18 @@ class Center:public QMainWindow {
  void note(QVBoxLayout*v,QString text){auto l=new QLabel(text);l->setWordWrap(true);l->setTextFormat(Qt::PlainText);v->insertWidget(v->count()-1,l);}
  void button(QVBoxLayout*v,QString title,QString tip,QString icon,std::function<void()> fn){auto b=new QPushButton(QIcon::fromTheme(icon),title);b->setToolTip(tip);b->setAccessibleName(title);b->setMinimumHeight(40);v->insertWidget(v->count()-1,b);connect(b,&QPushButton::clicked,this,fn);}
  void settings(QVBoxLayout*v,QString name,QString module,QString icon){button(v,name,"Open "+name,icon,[=]{launch("systemsettings",{module});});}
+ void networkProfile(bool trusted) {
+  QProcess query;query.start("nmcli",{"--terse","--escape","no","--fields","UUID,NAME","connection","show","--active"});
+  if(!query.waitForFinished(5000)||query.exitCode()!=0){query.kill();QMessageBox::warning(this,"Network unavailable","Could not read active connections. No trust setting was changed.");return;}
+  QDialog dialog(this);dialog.setWindowTitle(trusted?"Choose a home network":"Choose a public network");auto layout=new QVBoxLayout(&dialog);
+  auto explanation=new QLabel(trusted?"Choose a connection you trust. Home-scoped firewall exceptions apply only while this saved connection is active.":"Remove home trust from this connection. Global exceptions you opened separately are preserved.");explanation->setWordWrap(true);layout->addWidget(explanation);
+  auto choices=new QComboBox;choices->setAccessibleName("Active network connection");layout->addWidget(choices);
+  QRegularExpression identity("^[0-9a-f]{8}(-[0-9a-f]{4}){3}-[0-9a-f]{12}$");
+  for(const auto &line:QString::fromUtf8(query.readAllStandardOutput()).split('\n')){auto uuid=line.left(36);if(line.size()>37&&line[36]==':'&&identity.match(uuid).hasMatch())choices->addItem(line.mid(37),uuid);}
+  if(!choices->count()){QMessageBox::information(this,"No active connections","Connect to a network first. No trust setting was changed.");return;}
+  auto buttons=new QDialogButtonBox(QDialogButtonBox::Ok|QDialogButtonBox::Cancel);layout->addWidget(buttons);connect(buttons,&QDialogButtonBox::accepted,&dialog,&QDialog::accept);connect(buttons,&QDialogButtonBox::rejected,&dialog,&QDialog::reject);
+  if(dialog.exec()==QDialog::Accepted)task("pkexec",{"/usr/libexec/aether-system-admin",trusted?"network-home":"network-public",choices->currentData().toString()});
+ }
  void admin(QString action){task("pkexec",{"/usr/libexec/aether-system-admin",action});}
 public:
  bool capture(const QString &directory){if(!QDir().mkpath(directory))return false;for(int i=0;i<nav->count();++i){nav->setCurrentRow(i);QApplication::processEvents();if(!grab().save(directory+QString("/settings-%1.png").arg(i,2,10,QChar('0'))))return false;}return true;}
@@ -72,9 +84,14 @@ public:
   settings(v,"Accessibility settings","kcm_access","preferences-desktop-accessibility");settings(v,"Text and fonts","kcm_fonts","preferences-desktop-font");settings(v,"Colors and contrast","kcm_colors","preferences-desktop-color");
   button(v,"Start screen reader","Start Orca for this desktop session","audio-volume-high",[=]{launch("orca");});
   note(v,"All Aether Settings controls support keyboard focus and accessible names. Physical assistive-device testing remains important.");
+  v=page("Network privacy","Public by default. Explicitly trust a saved connection before enabling home-scoped sharing.","network-wireless");
+  button(v,"Mark a connection as Home","Choose a trusted active network for home-scoped firewall exceptions","network-connect",[=]{networkProfile(true);});
+  button(v,"Mark a connection as Public","Remove home trust from an active connection","security-high",[=]{networkProfile(false);});
+  settings(v,"Network connections","kcm_networkmanagement","network-wireless");
+  note(v,"A private IP address alone does not establish trust. Phone sharing requires a Home connection and separate approval. Previously opened global ports are unchanged.");
   v=page("Phone connection","Pair devices you trust. Features become available after you approve pairing.","smartphone");
   button(v,"Open KDE Connect","Pair your phone and choose sharing plugins","kdeconnect",[=]{launch("kdeconnect-app");});
-  button(v,"Allow phone connections on private LANs","Open KDE Connect ports only to private and link-local source addresses","network-connect",[=]{if(QMessageBox::question(this,"Allow phone connections?","Allow TCP and UDP ports 1714–1764 from private and link-local addresses? This applies to private-address networks until disabled, including shared Wi-Fi. Enable only when you trust the network.")==QMessageBox::Yes)admin("phone-enable");});
+  button(v,"Allow phone connections on Home networks","Open KDE Connect ports only on trusted connections, from private and link-local addresses","network-connect",[=]{if(QMessageBox::question(this,"Allow phone connections?","Allow KDE Connect on connections marked Home in Network privacy? Public connections remain closed. Approve only devices you trust.")==QMessageBox::Yes)admin("phone-enable");});
   button(v,"Disable phone network access","Remove Aether's phone firewall exception","network-disconnect",[=]{admin("phone-disable");});
   note(v,"Install KDE Connect on your phone. Devices must be able to reach each other; VM NAT may prevent discovery. Approve pairing on both devices. Firewall access is not opened silently.");
   v=page("Hardware","Inspect devices, manage connectivity, and review available firmware updates.","computer");

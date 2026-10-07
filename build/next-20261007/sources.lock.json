@@ -1,0 +1,73 @@
+[
+  {
+    "key": "tpm2-tss",
+    "version": "4.2.0",
+    "url": "https://github.com/tpm2-software/tpm2-tss/releases/download/4.2.0/tpm2-tss-4.2.0.tar.gz",
+    "archive": "tpm2-tss-4.2.0.tar.gz",
+    "sha256": "b53f0c5c8c4ce17f05701a410ca9688f725ca380c9bc4640eacd0eadb1fea124",
+    "verification": "GitHub upstream release asset digest over HTTPS; detached signature not yet verified"
+  },
+  {
+    "key": "usbguard",
+    "version": "usbguard-1.1.4",
+    "url": "https://github.com/USBGuard/usbguard/releases/download/usbguard-1.1.4/usbguard-1.1.4.tar.gz",
+    "archive": "usbguard-1.1.4.tar.gz",
+    "sha256": "7d76b75e779e3c9e6c2fc10e7389dfa34056864c9f0c6eaca722687b7e75893c",
+    "verification": "GitHub upstream release asset digest over HTTPS; detached signature not yet verified"
+  },
+  {
+    "key": "libfido2",
+    "version": "1.17.0",
+    "url": "https://developers.yubico.com/libfido2/Releases/libfido2-1.17.0.tar.gz",
+    "archive": "libfido2-1.17.0.tar.gz",
+    "sha256": "c1012c8871d71b65872fd5ff1a9d6b0838a55683a03e85ba97479ce57129c736",
+    "verification": "Upstream HTTPS digest pinned; detached signature not yet verified"
+  },
+  {
+    "key": "libcbor",
+    "version": "0.14.0",
+    "url": "https://github.com/PJK/libcbor/archive/refs/tags/v0.14.0.tar.gz",
+    "archive": "libcbor-0.14.0.tar.gz",
+    "sha256": "a8c1516e741562cf95aa4479c64916c3d4d2623e24fdc35e414e2320e7300aae",
+    "verification": "Upstream tag archive HTTPS digest pinned"
+  },
+  {
+    "key": "apparmor",
+    "url": "https://gitlab.com/apparmor/apparmor/-/archive/v4.1.8/apparmor-v4.1.8.tar.gz",
+    "filename": "apparmor-v4.1.8.tar.gz",
+    "sha256": "00f0434405f72b2a624587a92e56fd5e350af91077603b372706469f7c5e9757",
+    "verification": "official upstream HTTPS; digest recorded at fetch; signing-key verification pending",
+    "archive": "apparmor-v4.1.8.tar.gz"
+  },
+  {
+    "key": "cryptsetup",
+    "url": "https://www.kernel.org/pub/linux/utils/cryptsetup/v2.8/cryptsetup-2.8.7.tar.xz",
+    "filename": "cryptsetup-2.8.7.tar.xz",
+    "sha256": "e776f0d381e86ca61042c457069491fe8e0ac286780c7c3b1e4f9921abc961da",
+    "verification": "official upstream HTTPS; digest recorded at fetch; signing-key verification pending",
+    "archive": "cryptsetup-2.8.7.tar.xz"
+  },
+  {
+    "key": "devmapper",
+    "filename": "LVM2.2.03.42.tgz",
+    "url": "https://sourceware.org/ftp/lvm2/LVM2.2.03.42.tgz",
+    "sha256": "352703ef5b72ebb22d4f250284a29b89fe64d4049c6bf64c693f9af486c8081e",
+    "verification": "official HTTPS; BLFS release MD5 cross-check; pinned SHA256",
+    "archive": "LVM2.2.03.42.tgz"
+  },
+  {
+    "key": "autoconf-archive",
+    "url": "https://ftp.gnu.org/gnu/autoconf-archive/autoconf-archive-2024.10.16.tar.xz",
+    "filename": "autoconf-archive-2024.10.16.tar.xz",
+    "sha256": "7bcd5d001916f3a50ed7436f4f700e3d2b1bade3ed803219c592d62502a57363",
+    "verification": "official GNU HTTPS; pinned SHA256",
+    "archive": "autoconf-archive-2024.10.16.tar.xz"
+  },
+  {
+    "key": "systemd",
+    "version": "261.2",
+    "archive": "systemd-261.2.tar.gz",
+    "sha256": "ed1059ff964f5df35b6056434cc17cc83f86dc913f10489948a0b19b6081c5ec",
+    "verification": "Existing LFS source archive retained with original build inputs; hash pinned for this rebuild"
+  }
+]

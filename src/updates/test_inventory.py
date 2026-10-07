@@ -21,6 +21,10 @@ class InventoryTests(unittest.TestCase):
         self.assertEqual(result['files']['/usr/lib/example.so']['packages'], ['example'])
         self.assertEqual(result['synthetic_packages'], ['example'])
         self.assertFalse(result['production_updates_authorized'])
+    def test_owning_symlink_does_not_claim_target(self):
+        (self.root/'usr/lib/alias.so').symlink_to('example.so')
+        (self.root/'var/lib/dpkg/info/example.list').write_text('/usr/lib/alias.so\n')
+        self.assertIn('/usr/lib/example.so', audit(self.root)['unowned'])
     def test_missing_ownership_is_reported(self):
         self.assertEqual(audit(self.root)['unowned'], ['/usr/lib/example.so'])
     def test_symlink_loop_rejected(self):

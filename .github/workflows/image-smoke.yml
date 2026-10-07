@@ -1,0 +1,57 @@
+name: Aether image boot checks
+on:
+  workflow_dispatch:
+    inputs:
+      release_tag:
+        description: 'Aether release tag containing one x86_64 ISO'
+        required: true
+        default: '0.3.2-dev.20261006'
+      expected_sha256:
+        description: 'Reviewed ISO SHA-256 (not a release signature)'
+        required: true
+        default: 'a22925b29553522b7fcd40ce7fa24b86ee4ebbb18eebc5bc413d7f16fbdd27ad'
+permissions:
+  contents: read
+jobs:
+  boot:
+    strategy:
+      fail-fast: false
+      matrix:
+        firmware: [bios, uefi]
+    runs-on: ubuntu-24.04
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false
+      - name: Install host-only emulation dependencies
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install --no-install-recommends -y qemu-system-x86 ovmf python3-pexpect
+      - name: Fetch the reviewed candidate
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RELEASE_TAG: ${{ inputs.release_tag }}
+          EXPECTED_SHA256: ${{ inputs.expected_sha256 }}
+        run: |
+          set -euo pipefail
+          [[ "$RELEASE_TAG" =~ ^[A-Za-z0-9._-]+$ ]]
+          [[ "$EXPECTED_SHA256" =~ ^[a-f0-9]{64}$ ]]
+          gh api "repos/$GITHUB_REPOSITORY/releases/tags/$RELEASE_TAG" > release.json
+          python3 build/ci/select-iso.py release.json > asset-name.txt
+          asset=$(cat asset-name.txt)
+          gh release download "$RELEASE_TAG" --repo "$GITHUB_REPOSITORY" --pattern "$asset" --dir downloaded
+          mv "downloaded/$asset" candidate.iso
+          printf '%s  candidate.iso\n' "$EXPECTED_SHA256" | sha256sum --check --strict
+      - name: Boot and verify the desktop
+        env:
+          FIRMWARE: ${{ matrix.firmware }}
+        run: /usr/bin/python3 build/ci/boot-image.py --image candidate.iso --firmware "$FIRMWARE" --output boot-results
+      - name: Preserve boot evidence
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: boot-${{ matrix.firmware }}
+          path: boot-results/
+          if-no-files-found: ignore
+          retention-days: 30

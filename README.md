@@ -346,11 +346,14 @@ Aether is early and the build system is opinionated. Read
 [`CONTRIBUTING.md`](CONTRIBUTING.md) first — it explains what will and will not
 be accepted, and the security rules are not optional.
 
-## Status badges are absent on purpose
+## Automated checks
 
-There is no CI badge, because there is no CI yet, and a green badge on a
-project this young would be a lie. Build verification is documented manually in
-[`docs/verification.md`](docs/verification.md).
+[Source regression CI](https://github.com/Shadowman8080/Aether/actions/workflows/regressions.yml)
+runs package-signature, metadata, privacy and other focused regression tests.
+A separate manually dispatched image workflow checks BIOS and UEFI boot against
+a reviewed ISO digest. These checks do not certify physical hardware or replace
+installer, recovery and guest-integration testing for each release.
+
 
 ---
 

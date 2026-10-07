@@ -1,0 +1,11 @@
+#!/bin/sh
+# NetworkManager dispatcher: re-evaluate scoped firewall rules on network changes.
+# The firewall reload owns only Aether's table. No credentials are read or logged.
+case "$2" in
+  pre-up|pre-down|vpn-pre-up|vpn-pre-down)
+    exec /usr/bin/aether-firewall apply-public
+    ;;
+  up|down|vpn-up|vpn-down|dhcp4-change|dhcp6-change|reapply|connectivity-change)
+    exec /usr/bin/aether-firewall apply
+    ;;
+esac

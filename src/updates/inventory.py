@@ -56,7 +56,9 @@ def audit(root):
         for logical in manifest.read_text().splitlines():
             if not logical.startswith('/') or '..' in PurePosixPath(logical).parts:
                 errors.append({'manifest': manifest.name, 'reason': 'invalid package path'}); continue
-            try: real = inside(root, logical)
+            try:
+                entry = PurePosixPath(logical)
+                real = inside(root, str(entry.parent)) / entry.name
             except ValueError as e:
                 errors.append({'manifest': manifest.name, 'reason': str(e)}); continue
             owners.setdefault(str(real.relative_to(root)), set()).add(owner)

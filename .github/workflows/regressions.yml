@@ -31,6 +31,8 @@ jobs:
         run: python src/controlcenter/test_features.py
       - name: Verify offline inventory boundaries
         run: python src/updates/test_inventory.py
+      - name: Verify network trust boundaries
+        run: python src/security/test_network_profiles.py
       - name: Verify generated sound assets
         run: python src/sounds/test_sounds.py
       - name: Preserve non-secret verification receipts

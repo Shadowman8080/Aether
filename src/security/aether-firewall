@@ -7,28 +7,53 @@ from pathlib import Path
 import subprocess
 import sys
 import tempfile
+import re
+import uuid
 
 CONFIG = Path('/etc/aether-security/firewall.json')
 NFT = '/usr/sbin/nft' if Path('/usr/sbin/nft').exists() else '/usr/bin/nft'
 
 def validate(c):
-    if set(c) not in ({'tcp', 'udp'},{'tcp','udp','phone_private_lan'}):
+    if not {'tcp','udp'} <= set(c) or set(c) - {'tcp','udp','phone_private_lan','trusted_connections','home_tcp','home_udp'}:
         raise ValueError('Unexpected firewall configuration fields')
     if not isinstance(c.get('phone_private_lan',False),bool):raise ValueError('Phone access must be a boolean')
-    for ports in (c['tcp'],c['udp']):
+    trusted=c.get('trusted_connections',[])
+    if not isinstance(trusted,list) or any(not isinstance(v,str) or not valid_uuid(v) for v in trusted):raise ValueError('Trusted connections must be canonical UUIDs')
+    for ports in (c['tcp'],c['udp'],c.get('home_tcp',[]),c.get('home_udp',[])):
         if not isinstance(ports, list) or any(type(p) is not int or not 1 <= p <= 65535 for p in ports):
             raise ValueError('Ports must be integers from 1 to 65535')
 
-def rules(c):
+def valid_uuid(value):
+    try:return str(uuid.UUID(value))==value
+    except (ValueError,AttributeError):return False
+
+
+def active_connections():
+    result=subprocess.run(['nmcli','--terse','--escape','no','--fields','UUID,DEVICE','connection','show','--active'],capture_output=True,text=True,timeout=10,check=True)
+    active={}
+    for line in result.stdout.splitlines():
+        identity,separator,device=line.partition(':')
+        if separator and valid_uuid(identity) and re.fullmatch(r'[A-Za-z0-9_.-]{1,15}',device):active[identity]=device
+    return active
+
+
+def rules(c, active=None):
     validate(c)
     ports = ''
     for protocol in ('tcp', 'udp'):
         if c[protocol]:
             ports += '        ' + protocol + ' dport { ' + ', '.join(map(str, sorted(set(c[protocol])))) + ' } counter accept\n'
-    if c.get('phone_private_lan',False):
+    if active is None:
+        try:active=active_connections() if c.get('trusted_connections') else {}
+        except (OSError,subprocess.SubprocessError):active={}
+    interfaces=sorted({device for identity,device in active.items() if identity in c.get('trusted_connections',[]) and re.fullmatch(r'[A-Za-z0-9_.-]{1,15}',device)})
+    for device in interfaces:
         for protocol in ('tcp','udp'):
-            ports += '        ip saddr { 10.0.0.0/8, 172.16.0.0/12, 192.168.0.0/16 } '+protocol+' dport 1714-1764 counter accept\n'
-            ports += '        ip6 saddr { fc00::/7, fe80::/10 } '+protocol+' dport 1714-1764 counter accept\n'
+            home=c.get('home_'+protocol,[])
+            if home:ports += '        iifname "'+device+'" '+protocol+' dport { '+', '.join(map(str,sorted(set(home))))+' } counter accept\n'
+            if c.get('phone_private_lan',False):
+                ports += '        iifname "'+device+'" ip saddr { 10.0.0.0/8, 172.16.0.0/12, 192.168.0.0/16 } '+protocol+' dport 1714-1764 counter accept\n'
+                ports += '        iifname "'+device+'" ip6 saddr { fc00::/7, fe80::/10 } '+protocol+' dport 1714-1764 counter accept\n'
     return '''# Aether owns this table only. Reload replaces its chains atomically.
 add table inet aether_filter
 flush table inet aether_filter
@@ -54,8 +79,8 @@ table inet aether_filter {
 }
 '''
 
-def apply(c):
-    text = rules(c)
+def apply(c, active=None):
+    text = rules(c, active)
     subprocess.run([NFT, '--check', '-f', '-'], input=text, text=True, check=True)
     subprocess.run([NFT, '-f', '-'], input=text, text=True, check=True)
 
@@ -66,7 +91,7 @@ def main():
     if args == ['status']:
         subprocess.run([NFT, 'list', 'table', 'inet', 'aether_filter'], check=True)
         return
-    if not args or args[0] not in ('apply', 'check', 'allow-tcp', 'allow-udp', 'remove-tcp', 'remove-udp','phone-enable','phone-disable'):
+    if not args or args[0] not in ('apply', 'apply-public', 'check', 'allow-tcp', 'allow-udp', 'remove-tcp', 'remove-udp','phone-enable','phone-disable','trust-connection','untrust-connection','allow-home-tcp','allow-home-udp','remove-home-tcp','remove-home-udp'):
         raise SystemExit('Usage: aether-firewall apply|check|status|allow-tcp PORT|allow-udp PORT|remove-tcp PORT|remove-udp PORT')
     lockdir = Path('/run/aether-firewall')
     lockdir.mkdir(mode=0o700, exist_ok=True)
@@ -79,15 +104,25 @@ def main():
         if args == ['check']:
             subprocess.run([NFT, '--check', '-f', '-'], input=rules(config), text=True, check=True)
             return
+        if args == ['apply-public']:
+            apply(config, {})
+            return
         if args == ['apply']:
             apply(config)
             return
         previous = json.loads(json.dumps(config))
         if args in (['phone-enable'],['phone-disable']):
             config['phone_private_lan']=args[0]=='phone-enable'
+        elif args[0] in ('trust-connection','untrust-connection'):
+            if len(args)!=2 or not valid_uuid(args[1]):raise SystemExit('Provide one canonical connection UUID.')
+            if args[0]=='trust-connection' and args[1] not in active_connections():raise SystemExit('Select an active connection before trusting it.')
+            trusted=set(config.get('trusted_connections',[]))
+            if args[0]=='trust-connection':trusted.add(args[1])
+            else:trusted.discard(args[1])
+            config['trusted_connections']=sorted(trusted)
         else:
             if len(args) != 2 or not args[1].isdigit() or not 1 <= int(args[1]) <= 65535:raise SystemExit('Provide one valid port number.')
-            operation, protocol = args[0].split('-');port=int(args[1])
+            operation, protocol = args[0].split('-',1);protocol=protocol.replace('-','_');port=int(args[1]);config.setdefault(protocol,[])
             if operation == 'allow':config[protocol] = sorted(set(config[protocol]) | {port})
             else:config[protocol] = [p for p in config[protocol] if p != port]
         # Save only after validation and a successful atomic kernel transaction.
@@ -103,7 +138,7 @@ def main():
         except Exception:
             apply(previous)
             raise
-        print('Firewall updated. Phone access, when enabled, permits private and link-local source addresses. Other explicitly opened ports apply on every network.')
+        print('Firewall updated. Home-scoped ports and phone access require an explicitly trusted active connection. Legacy allow-tcp/allow-udp ports still apply on every network.')
 
 if __name__ == '__main__':
     main()

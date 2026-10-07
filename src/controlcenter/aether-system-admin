@@ -6,6 +6,12 @@ from pathlib import Path
 def run(*args):subprocess.run(args,check=True)
 def main():
  if os.geteuid()!=0:raise PermissionError('Administrator authorization is required')
+ if len(sys.argv)==3 and sys.argv[1] in ('network-home','network-public'):
+  import uuid
+  identity=sys.argv[2]
+  if str(uuid.UUID(identity))!=identity:raise ValueError('Invalid connection identity')
+  run('/usr/bin/aether-firewall','trust-connection' if sys.argv[1]=='network-home' else 'untrust-connection',identity)
+  return
  if len(sys.argv)!=2:raise ValueError('One operation is required')
  action=sys.argv[1]
  if action=='ai-disable':

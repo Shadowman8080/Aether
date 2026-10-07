@@ -38,10 +38,15 @@ until new source is compiled, integrated, tested and packaged.
   and sound regressions. It uses SHA-pinned actions, read-only repository access,
   no deployment secrets and no persistent checkout credentials. [First CI run passed](https://github.com/Shadowman8080/Aether/actions/runs/37590220231).
 - Ubuntu is connected again with 16 CPUs. Verified temporary personal images were retired from the build host; Windows backups and published downloads are preserved.
-- Added a read-only critical-runtime ownership inventory and six passing path-boundary tests. Full image audit is running.
+- Added a read-only critical-runtime ownership inventory and seven passing path-boundary tests. The audit reports 435 package records, 1,216 critical runtime files without ownership and ten ownership conflicts; generated boot files are among the unowned entries.
 - Found systemd built without TPM2, FIDO2, cryptsetup, seccomp and AppArmor integration; these are prerequisites for several requested protections.
 - No production signing keys, enrollment or public update-feed activation performed.
 
 Source CI is not an image-boot test and does not certify real hardware. Each
 item needs an explicit result before it can be marked complete. New release
 assets must match their source revision and verification checksums.
+
+- FIDO2, CBOR and TPM2 libraries built natively; systemd security integration is compiling.
+- Added Home/Public connection policy source and eight passing firewall rule tests.
+  GUI, dispatcher and live transition validation remain pending.
+- Added a digest-checked BIOS/UEFI image workflow; its first hosted run is pending.

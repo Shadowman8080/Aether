@@ -64,6 +64,19 @@ inline calculation. **Vector** is Aether's own applications-and-files browser.
   <img src="media/screenshots/20-installer-complete.png" width="420" alt="Aether installer completion">
 </p>
 
+## Aether Glass — a softer sound for your desktop
+
+Forty-two original chimes and effects for notifications, devices, power and
+more. Generated from source. No borrowed system sounds, no constant click
+noises, and your volume and mute preferences stay yours.
+
+[Listen to the preview](media/audio/aether-glass-preview.wav) ·
+[Build and install](src/sounds/README.md) · [Deployment status](docs/sounds.md)
+
+**Development preview:** the sound pack and automated checks are ready.
+Installation and playback in the running Aether VM are still awaiting access;
+the published OS images have not been updated with this theme.
+
 ## What is actually in the box
 
 | | |

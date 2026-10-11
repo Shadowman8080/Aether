@@ -1,0 +1,250 @@
+#!/bin/sh
+# aether-directory - join, inspect and leave an Active Directory domain.
+#
+# The Aether Server installer writes this tool's configuration at install time
+# when you choose a directory join. This command is how a machine is actually
+# joined (via adcli), stayed joined, and later left.
+#
+# Usage:
+#   sudo aether-directory join DOMAIN --user NAME [--computer-name NAME] [--password-stdin]
+#   sudo aether-directory leave
+#   aether-directory status
+#
+# Nothing here contacts the network except "join", which contacts the domain.
+# Local accounts are never touched.
+
+set -u
+
+PATH=/usr/sbin:/usr/bin:/sbin:/bin
+export PATH
+
+# AETHER_DIRECTORY_ROOT points every managed path elsewhere so the file
+# handling can be tested offline; host actions are skipped when it is set.
+R=${AETHER_DIRECTORY_ROOT:-}
+STATE=$R/etc/aether/directory.conf
+SSSD_CONF=$R/etc/sssd/sssd.conf
+KRB5_CONF=$R/etc/krb5.conf
+NSSWITCH=$R/etc/nsswitch.conf
+MARKER=$R/etc/aether/domain-login
+
+have_systemd() {
+    [ -z "$R" ] || return 1
+    command -v systemctl >/dev/null 2>&1 || return 1
+    [ -d /run/systemd/system ]
+}
+
+have_sssd() {
+    [ -x "$R/usr/sbin/sssd" ] || [ -x "$R/usr/bin/sssd" ] || command -v sssd >/dev/null 2>&1
+}
+
+find_tool() {
+    for candidate in "$@"; do
+        [ -x "$R$candidate" ] && { printf '%s' "$R$candidate"; return 0; }
+        case ":$PATH:" in
+        *":$candidate:"*) printf '%s' "$candidate"; return 0 ;;
+        esac
+    done
+    return 1
+}
+
+die() { printf '%s\n' "$*" >&2; exit 1; }
+
+need_root() {
+    [ -n "$R" ] && return 0
+    [ "$(id -u)" = 0 ] || die "$1 requires root: use sudo aether-directory $2"
+}
+
+state_get() {
+    [ -f "$STATE" ] || { printf ''; return; }
+    sed -n "s/^[[:space:]]*$1=//p" "$STATE" 2>/dev/null | tail -n 1
+}
+
+state_set() {
+    [ -d "$R/etc/aether" ] || install -d -m 755 "$R/etc/aether"
+    [ -f "$STATE" ] || { : > "$STATE"; chmod 644 "$STATE"; }
+    tmp=$(mktemp "$STATE.XXXXXX") || die 'cannot write directory state'
+    grep -v "^[[:space:]]*$1=" "$STATE" > "$tmp" 2>/dev/null || true
+    printf '%s=%s\n' "$1" "$2" >> "$tmp"
+    cat "$tmp" > "$STATE"
+    rm -f "$tmp"
+}
+
+valid_domain() { printf '%s' "$1" | grep -Eq '^[A-Za-z0-9]([A-Za-z0-9.-]*[A-Za-z0-9])?$'; }
+valid_hostname() { printf '%s' "$1" | grep -Eq '^[A-Za-z0-9]([A-Za-z0-9-]*[A-Za-z0-9])?$'; }
+
+# sss is inserted directly after the first source ("files") so existing local
+# accounts keep resolving first. Appending would be wrong: hosts lines often
+# end in [NOTFOUND=return] which short-circuits later sources.
+nsswitch_set_sss() {
+    [ -f "$NSSWITCH" ] || return 0
+    tmp=$(mktemp) || die 'cannot read nsswitch.conf'
+    awk -v want="$1" '
+        function rebuild(insert_after,   i, kept, out) {
+            kept = 0
+            for (i = 1; i <= nt; i++) {
+                if (tok[i] == "sss" || tok[i] == "") continue
+                ktok[++kept] = tok[i]
+            }
+            if (kept == 0) return insert_after ? "sss" : ""
+            out = ""
+            for (i = 1; i <= kept; i++) {
+                if (i == insert_after) out = out " sss"
+                out = out (i > 1 ? " " : "") ktok[i]
+            }
+            if (insert_after > kept) out = out " sss"
+            return out
+        }
+        /^(passwd|group|shadow|hosts):/ {
+            if (split($0, field, /:/) < 2) { print; next }
+            nt = split(field[2], tok, /[ \t]+/)
+            print field[1] ": " rebuild(want == "on" ? 2 : 0)
+            next
+        }
+        { print }
+    ' "$NSSWITCH" > "$tmp" || { rm -f "$tmp"; die 'cannot rewrite nsswitch.conf'; }
+    cat "$tmp" > "$NSSWITCH"
+    rm -f "$tmp"
+}
+
+write_domain_config() {
+    domain=$1
+    realm=$(printf '%s' "$domain" | tr 'a-z' 'A-Z')
+    lower=$(printf '%s' "$domain" | tr 'A-Z' 'a-z')
+    printf '[libdefaults]\n  dns_lookup_realm = false\n  dns_lookup_kdc = true\n  default_realm = %s\n\n[realms]\n  %s = {\n    default_domain = %s\n  }\n\n[domain_realm]\n  .%s = %s\n  %s = %s\n' \
+        "$realm" "$realm" "$lower" "$lower" "$realm" "$lower" "$realm" > "$KRB5_CONF" \
+        || die 'cannot write krb5.conf'
+    chmod 644 "$KRB5_CONF"
+    install -d -m 755 "$R/etc/sssd"
+    tmp=$(mktemp) || die 'cannot write sssd.conf'
+    {
+        printf '%s\n' '# Managed by aether-directory. Removed by "aether-directory leave".'
+        printf '%s\n' '[sssd]'
+        printf '%s\n' 'config_file_version = 2'
+        printf '%s\n' 'services = nss, pam'
+        printf '%s\n' "domains = $realm"
+        printf 'default_domain_suffix = %s\n' "$lower"
+        printf '\n%s\n' "[domain/$realm]"
+        printf 'ad_domain = %s\n' "$lower"
+        printf '%s\n' 'id_provider = ad'
+        printf '%s\n' 'auth_provider = ad'
+        printf '%s\n' 'access_provider = ad'
+        printf '%s\n' 'cache_credentials = true'
+    } > "$tmp"
+    chmod 600 "$tmp"
+    [ -n "$R" ] || chown root:sssd "$tmp" 2>/dev/null || true
+    mv -f "$tmp" "$SSSD_CONF"
+}
+
+status_report() {
+    if ! have_sssd; then
+        printf '  sssd:           not installed\n'
+        printf '  NOTE: build the sssd dependency chain to enable domain sign-in.\n'
+        return 1
+    fi
+    printf '  sssd:           installed\n'
+    domain=$(state_get AD_DOMAIN)
+    joined=$(state_get AD_JOINED)
+    if [ -n "$domain" ]; then printf '  domain:         %s\n' "$domain"; fi
+    if [ -n "$joined" ]; then printf '  joined:         %s\n' "$joined"; fi
+    if [ -f "$SSSD_CONF" ]; then
+        printf '  sssd.conf:      %s\n' "$SSSD_CONF"
+    else
+        printf '  sssd.conf:      absent (not configured)\n'
+    fi
+    if find_tool /usr/bin/adcli /usr/local/bin/adcli >/dev/null 2>&1; then
+        printf '  adcli:          installed\n'
+    else
+        printf '  adcli:          not installed — this machine cannot join from here\n'
+    fi
+    if have_systemd; then
+        if systemctl -q is-active sssd.service 2>/dev/null; then
+            printf '  sssd.service:   active\n'
+        elif systemctl -q is-enabled sssd.service 2>/dev/null; then
+            printf '  sssd.service:   enabled (not active)\n'
+        else
+            printf '  sssd.service:   inactive\n'
+        fi
+    fi
+    return 0
+}
+
+case ${1:-status} in
+status)
+    status_report
+    exit 0
+    ;;
+esac
+
+action=${1:-status}
+shift || true
+
+case $action in
+status)
+    status_report
+    exit 0
+    ;;
+leave)
+    need_root 'leaving a domain' 'leave'
+    rm -f "$SSSD_CONF" "$MARKER"
+    nsswitch_set_sss off
+    state_set AD_DOMAIN ''
+    state_set AD_JOINED ''
+    if have_systemd; then
+        systemctl disable --now sssd.service 2>/dev/null || true
+    fi
+    printf 'Removed the sssd domain configuration. Local accounts are unaffected.\n'
+    exit 0
+    ;;
+join)
+    need_root 'joining a domain' 'join DOMAIN --user NAME'
+    domain=${1:-}
+    shift || true
+    [ -n "$domain" ] || die 'usage: aether-directory join DOMAIN --user NAME [--computer-name NAME] [--password-stdin]'
+    valid_domain "$domain" || die "invalid domain: $domain"
+    have_sssd || die 'sssd is not installed; build the sssd dependency chain first'
+    adcli=$(find_tool /usr/bin/adcli /usr/local/bin/adcli) || die 'adcli is not installed and it is what performs the join; install it or join this machine another way'
+    realm=$(printf '%s' "$domain" | tr 'a-z' 'A-Z')
+    join_user=${AETHER_DIRECTORY_USER:-}
+    computer=
+    while [ "$#" -gt 0 ]; do
+        case $1 in
+        --user) join_user=${2:-}; shift 2 || die '--user needs a value';;
+        --computer-name) computer=${2:-}; shift 2 || die '--computer-name needs a value';;
+        --password-stdin) AETHER_DIRECTORY_PASSWORD=$(cat); shift;;
+        *) die "unknown option: $1";;
+        esac
+    done
+    [ -n "$join_user" ] || die 'a domain join needs --user NAME (an account allowed to join)'
+    if [ -n "$computer" ]; then valid_hostname "$computer" || die "invalid computer name: $computer"; fi
+    write_domain_config "$domain"
+    printf 'Joining %s as %s. The domain account password is read from stdin.\n' "$realm" "$join_user"
+    set -- domain join --user "$join_user"
+    [ -z "$computer" ] || set -- "$@" --computer-name "$computer"
+    password=${AETHER_DIRECTORY_PASSWORD:-}
+    if [ -n "$password" ]; then
+        printf '%s' "$password" | "$adcli" "$@" "$realm" || {
+            rm -f "$SSSD_CONF"
+            die 'the domain join failed; the sssd configuration was removed'
+        }
+    else
+        "$adcli" "$@" "$realm" || {
+            rm -f "$SSSD_CONF"
+            die 'the domain join failed; the sssd configuration was removed'
+        }
+    fi
+    unset AETHER_DIRECTORY_PASSWORD
+    nsswitch_set_sss on
+    touch "$MARKER"; chmod 644 "$MARKER"
+    state_set AD_DOMAIN "$realm"
+    state_set AD_JOINED 1
+    if have_systemd; then
+        systemctl enable sssd.service 2>/dev/null || true
+        systemctl restart sssd.service 2>/dev/null || true
+    fi
+    printf 'Joined %s. Sign in with user@%s or DOMAIN\\user.\n' "$realm" "$(printf '%s' "$domain" | tr 'A-Z' 'a-z')"
+    exit 0
+    ;;
+*)
+    die 'usage: aether-directory [status|join DOMAIN --user NAME|leave]'
+    ;;
+esac

@@ -51,6 +51,24 @@ it could honestly be called a release, roughly in dependency order.
 - Secure Boot on real hardware.
 - Hardware-accelerated inference, and a larger model than 0.8B.
 
+## Server edition
+
+The server edition is code-and-design complete for its first honest release,
+and none of that has been compiled or booted:
+
+- Source-build each role's software from the `build-server-packages.py` plan
+  with pinned sources, verifying every built service from a booted install —
+  this is what flips roles from *unavailable* to *available*.
+- Build the Qt installer and validate the graphical wizard on the live server
+  ISO (framebuffer/EGLFS and inside an X session).
+- Boot-test the installed system: SSH in, roles serving traffic, firewall
+  state matching the catalog, first-boot secret regeneration.
+- Build `adcli` and perform a real Active Directory join during installation;
+  until then, document the post-boot `aether-directory join` path and verify
+  it against a real domain controller.
+- Exercise `aether-directory leave` and status, and the pending-join motd flow.
+- An ARM64 server image, once the desktop ARM64 policy exists.
+
 ## Update behaviour
 
 The policy is already recorded and should not be renegotiated quietly:

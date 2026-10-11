@@ -75,6 +75,28 @@ Known rough edges: VPN and container routing need an explicit reviewed policy
 because forwarding is denied by default, and there are no interface trust
 profiles or outbound allowlists yet.
 
+## Server edition
+
+The server image (`src/server/`) is the desktop stack minus the session, booted
+to `multi-user.target` and administered over SSH. Its install-time layering is
+a second, deeper half of the security story: the server installer applies a
+data-driven role catalog and merges each chosen role's ports into the
+`/etc/aether-security/firewall.json` the base firewall reads, so the
+default-deny posture is preserved and only announced roles open ports.
+
+```
+src/server/roles/catalog.json   the single source of truth (schema-1, validated
+                                on every load)
+  ├─ installer/main.cpp         Qt wizard — checkbox role tree, AD join page
+  ├─ backend/aether-server-install   privileged (pkexec), steps 1–9
+  └─ backend/server_roles.py    apply roles / firewall merge / audit / AD writers
+```
+
+The directory-join path writes the same krb5/sssd/PAM/nsswitch configuration
+the desktop greeter work uses, then creates the machine account during install
+only when `adcli` is present. It is not, so joins happen after boot through
+`aether-directory`. See [`server.md`](server.md) for the full design.
+
 ## Update path
 
 The 0.3.2 build installs an automatic check timer and an updater that verifies
@@ -99,6 +121,7 @@ package set. Groups follow the feature areas in
 | Group | Covers |
 |---|---|
 | `desktop` | Qt, KDE Frameworks, Plasma, desktop applications, portals |
+| `server` | role catalog, server installer, install backend, server image |
 | `nimbrel` | native bindings, llama.cpp, engine packaging |
 | `security` | PAM helper, firewall tooling, cryptsetup, backups |
 | `updates` | python-tuf, GnuPG verification, release tooling |
@@ -121,3 +144,7 @@ These are architectural gaps, not just missing features:
   session.
 - **Single architecture.** Only x86_64 is built; there is no 32-bit or ARM64
   desktop image and no multi-arch test coverage.
+- **The server edition is design-tested, not built.** Its catalog and backend
+  are unit-tested off-line, but no server ISO, Qt installer build, role
+  software, adcli, or booted install exists yet. Every screenful of the server
+  story after that point is unvalidated.

@@ -1,0 +1,27 @@
+# Aether Server: Postfix main configuration (starting point).
+#
+# Internet-site mail needs a hostname that resolves publicly, correct MX, SPF,
+# DKIM and DMARC records, and a trusted TLS certificate. Many networks block
+# outbound port 25; set relayhost to a smarthost if direct delivery fails.
+#
+# Run "newaliases" and "postfix check" after editing, then reload.
+
+myhostname = mail.example.lan
+mydomain = example.lan
+myorigin = $mydomain
+
+# Listen on all addresses; restrict relaying to your own networks.
+inet_interfaces = all
+inet_protocols = ipv4
+mydestination = $myhostname, localhost.$mydomain, localhost, $mydomain
+mynetworks = 127.0.0.0/8, 10.0.0.0/8, 172.16.0.0/12, 192.168.0.0/16
+
+# No open relay: only authenticated users and mynetworks may send.
+smtpd_relay_restrictions = permit_mynetworks permit_sasl_authenticated defer_unauth_destination
+
+# Pass authenticated local mail to Dovecot for delivery, and let Dovecot do SASL.
+mailbox_transport = lmtp:unix:private/dovecot-lmtp
+smtpd_sasl_type = dovecot
+smtpd_sasl_path = private/auth
+smtpd_sasl_auth_enable = yes
+smtpd_tls_security_level = may

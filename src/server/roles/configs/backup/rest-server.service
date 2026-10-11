@@ -1,0 +1,30 @@
+[Unit]
+Description=Aether restic REST backup server
+Documentation=man:rest-server(1)
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=restic-rest
+Group=restic-rest
+# Store repositories under /srv/restic. --append-only prevents a compromised
+# client from deleting history; remove it if clients must prune.
+Environment=RESTIC_REST_SERVER_DATA=/srv/restic
+ExecStart=/usr/bin/rest-server --path /srv/restic --append-only --tls=false
+Restart=on-failure
+RestartSec=3
+
+# Sandboxing consistent with the rest of Aether.
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=true
+ReadWritePaths=/srv/restic
+ProtectKernelTunables=true
+ProtectControlGroups=true
+RestrictAddressFamilies=AF_INET AF_INET6
+UMask=0077
+
+[Install]
+WantedBy=multi-user.target

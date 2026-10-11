@@ -1,0 +1,605 @@
+#!/usr/bin/env python3
+"""Interactive whole-disk installer backend for the x86_64 Aether Server ISO.
+
+This is the privileged half of the graphical Aether Server installer. It is
+launched by the Qt front end through pkexec, receives one JSON configuration
+object on standard input, and reports progress as AETHER_PROGRESS lines on
+standard output (the front end renders those).
+
+It is also runnable from a plain console, where it prompts for the same
+information first and then follows the identical code path.
+
+The server edition adds three things over the desktop installer:
+
+  * an administrator account with sudo rather than a desktop login,
+  * network and hostname configuration performed at install time,
+  * a data-driven set of server roles plus an optional Active Directory join.
+
+As with the desktop installer: whole-disk only, the selected disk is erased,
+and nothing is changed until the exact confirmation string is supplied.
+"""
+from pathlib import Path
+import ctypes
+import ipaddress
+import json
+import os
+import re
+import shutil
+import subprocess
+import sys
+import tempfile
+import time
+import uuid
+from contextlib import contextmanager
+
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+import server_roles  # noqa: E402
+
+RELEASE = '6.18.54-aether4'
+KEYBOARDS = ('us', 'gb', 'de', 'fr', 'es', 'it', 'pt', 'br')
+KEYMAPS = {'us': 'us', 'gb': 'uk', 'de': 'de-latin1', 'fr': 'fr',
+           'es': 'es', 'it': 'it', 'pt': 'pt-latin1', 'br': 'br-abnt2'}
+RESERVED_USERS = ('root', 'nobody', 'lightdm', 'polkitd', 'sssd', 'gitea',
+                  'prometheus', 'grafana', 'jellyfin', 'populate')
+
+
+def progress(step, message):
+    print('AETHER_PROGRESS ' + json.dumps({'step': step, 'message': message}), flush=True)
+
+
+# --- validation ------------------------------------------------------------
+
+def _valid_hostname(name):
+    if not isinstance(name, str) or not 1 <= len(name) <= 63:
+        return False
+    if not re.fullmatch(r'[A-Za-z0-9]([A-Za-z0-9-]*[A-Za-z0-9])?', name):
+        return False
+    return not name.isdigit()
+
+
+def _valid_domain(domain):
+    return isinstance(domain, str) and bool(
+        re.fullmatch(r'[A-Za-z0-9]([A-Za-z0-9.-]*[A-Za-z0-9])?', domain))
+
+
+def _dns_list(value):
+    if not value:
+        return []
+    servers = [entry.strip() for entry in re.split(r'[,\s;]+', value) if entry.strip()]
+    for server in servers:
+        ipaddress.ip_address(server)
+    return servers
+
+
+def validate_preferences(config):
+    if not isinstance(config, dict) or not isinstance(config.get('encrypt', False), bool):
+        raise ValueError('Invalid installation preferences.')
+    for key in ('password', 'storage_password', 'recovery_password', 'ad_join_password'):
+        value = config.get(key, '')
+        if not isinstance(value, str) or any(ord(c) < 32 for c in value) or len(value) > 1024:
+            raise ValueError('Invalid password input.')
+    if len(config.get('password', '')) < 12:
+        raise ValueError('Choose an administrator password of at least twelve characters.')
+    quality = ctypes.CDLL('libpwquality.so.1')
+    quality.pwquality_default_settings.restype = ctypes.c_void_p
+    quality.pwquality_read_config.argtypes = [ctypes.c_void_p, ctypes.c_char_p, ctypes.POINTER(ctypes.c_void_p)]
+    quality.pwquality_check.argtypes = [ctypes.c_void_p, ctypes.c_char_p, ctypes.c_char_p, ctypes.c_char_p, ctypes.POINTER(ctypes.c_void_p)]
+    quality.pwquality_free_settings.argtypes = [ctypes.c_void_p]
+    settings = quality.pwquality_default_settings()
+    if not settings:
+        raise ValueError('Password validation could not be initialized.')
+    auxiliary = ctypes.c_void_p()
+    try:
+        if quality.pwquality_read_config(settings, None, ctypes.byref(auxiliary)) < 0:
+            raise ValueError('Password policy could not be loaded.')
+        if quality.pwquality_check(settings, config['password'].encode(), None,
+                                   str(config.get('username', '')).encode(),
+                                   ctypes.byref(auxiliary)) < 0:
+            raise ValueError('The administrator password does not meet Aether policy. Avoid '
+                             'dictionary passwords, the account name, and repeated characters.')
+    finally:
+        quality.pwquality_free_settings(settings)
+
+    if not _valid_hostname(config.get('hostname', '')):
+        raise ValueError('Choose a hostname of letters, digits and hyphens, up to 63 characters.')
+
+    if config.get('encrypt'):
+        if min(len(config.get('storage_password', '')), len(config.get('recovery_password', ''))) < 12:
+            raise ValueError('Storage and recovery passphrases must contain at least twelve characters.')
+        if config['storage_password'] == config['recovery_password']:
+            raise ValueError('Storage and recovery passphrases must be different.')
+
+    zone = config.get('timezone', 'UTC')
+    if not isinstance(zone, str) or not re.fullmatch(r'[A-Za-z0-9_+/-]+', zone) or '..' in zone.split('/'):
+        raise ValueError('Invalid time zone.')
+    zonefile = Path('/usr/share/zoneinfo') / zone
+    if not zonefile.is_file() or not zonefile.resolve().is_relative_to(Path('/usr/share/zoneinfo').resolve()):
+        raise ValueError('Time zone is not installed.')
+
+    if config.get('keyboard', 'us') not in KEYBOARDS:
+        raise ValueError('Unsupported keyboard layout.')
+    if config.get('language', 'en_US.UTF-8') != 'en_US.UTF-8':
+        raise ValueError('This preview currently provides the English installation interface.')
+
+    network = config.get('network', {})
+    if not isinstance(network, dict) or network.get('mode', 'dhcp') not in ('dhcp', 'static'):
+        raise ValueError('Network mode must be dhcp or static.')
+    if network.get('mode') == 'static':
+        try:
+            address = ipaddress.ip_interface(network.get('address', ''))
+        except ValueError as error:
+            raise ValueError('Enter a static address in CIDR form, such as 10.0.0.10/24.') from error
+        if address.version != 4:
+            raise ValueError('This preview configures IPv4 static addressing only.')
+        gateway = network.get('gateway', '')
+        try:
+            if gateway:
+                ipaddress.ip_address(gateway)
+        except ValueError as error:
+            raise ValueError('Enter a valid IPv4 gateway address.') from error
+        try:
+            _dns_list(network.get('dns', ''))
+        except ValueError as error:
+            raise ValueError('Enter DNS servers as IPv4 addresses separated by commas.') from error
+    interface = network.get('interface', '')
+    if interface and not re.fullmatch(r'[A-Za-z0-9_.:-]{1,32}', interface):
+        raise ValueError('Invalid network interface name.')
+
+    roles = config.get('roles', [])
+    if not isinstance(roles, list) or any(not isinstance(r, str) for r in roles):
+        raise ValueError('Server roles must be a list of role identifiers.')
+    catalog = server_roles.load_catalog()
+    unknown = [r for r in roles if server_roles.role_by_id(catalog, r) is None]
+    if unknown:
+        raise ValueError('Unknown server role: ' + ', '.join(sorted(unknown)))
+
+    directory = config.get('directory', {})
+    if not isinstance(directory, dict):
+        raise ValueError('Directory settings are malformed.')
+    if directory.get('join'):
+        if not _valid_domain(directory.get('domain', '')):
+            raise ValueError('Enter a valid Active Directory domain, such as example.lan.')
+        if not directory.get('join_user'):
+            raise ValueError('A domain join needs an account allowed to join the domain.')
+        computer = directory.get('computer_name', '')
+        if computer and not _valid_hostname(computer):
+            raise ValueError('The computer name must be a valid hostname.')
+
+
+# --- helpers ---------------------------------------------------------------
+
+@contextmanager
+def key_pipe(secret):
+    read_fd, write_fd = os.pipe()
+    try:
+        os.write(write_fd, secret.encode())
+        os.close(write_fd)
+        write_fd = None
+        yield read_fd
+    finally:
+        os.close(read_fd)
+        if write_fd is not None:
+            os.close(write_fd)
+
+
+@contextmanager
+def installation_directory():
+    directory = tempfile.mkdtemp(prefix='aether-server-', dir='/mnt')
+    try:
+        yield directory
+    finally:
+        if not os.path.ismount(directory):
+            try:
+                os.rmdir(directory)
+            except OSError:
+                pass
+
+
+def run(args, **kwargs):
+    return subprocess.run(args, check=True, **kwargs)
+
+
+def output(args):
+    return subprocess.check_output(args, text=True).strip()
+
+
+def write_text(path, contents, mode=0o644):
+    path = Path(path)
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(contents)
+    try:
+        path.chmod(mode)
+    except OSError:
+        pass
+
+
+def write_network(root, hostname, network, logger=print):
+    write_text(root / 'etc/hostname', hostname + '\n')
+    write_text(root / 'etc/hosts',
+               f'127.0.0.1\tlocalhost\n::1\t\tlocalhost\n127.0.1.1\t{hostname}\n')
+    if network.get('mode') != 'static':
+        logger('  Network: DHCP (the interface is configured automatically by NetworkManager).')
+        return
+    dns = ' '.join(_dns_list(network.get('dns', '')))
+    connection = [
+        '[connection]',
+        'id=Aether Server',
+        f'uuid={uuid.uuid4()}',
+        'type=ethernet',
+        'autoconnect=true',
+    ]
+    if network.get('interface'):
+        connection.append('interface-name=' + network['interface'])
+    connection += [
+        '',
+        '[ipv4]',
+        'method=manual',
+        'address1=' + network['address'],
+    ]
+    if network.get('gateway'):
+        connection.append('gateway=' + network['gateway'])
+    if dns:
+        connection.append('dns=' + dns)
+    connection += ['may-fail=false', '', '[ipv6]', 'method=auto', '']
+    write_text(root / 'etc/NetworkManager/system-connections/aether-server.nmconnection',
+               '\n'.join(connection), 0o600)
+    logger('  Network: static configuration written for NetworkManager.')
+
+
+def write_administrator(root, user, chroot):
+    write_text(root / 'etc/sudoers.d/10-aether-admin',
+               f'# Aether Server: the {user} account administers this machine.\n'
+               f'%wheel ALL=(ALL:ALL) ALL\n', 0o440)
+    chroot('/usr/sbin/usermod', '-aG', 'wheel', user)
+
+
+def enable_multiuser_target(root):
+    target = root / 'etc/systemd/system/default.target'
+    target.parent.mkdir(parents=True, exist_ok=True)
+    try:
+        if target.is_symlink() or target.exists():
+            target.unlink()
+        target.symlink_to('/usr/lib/systemd/system/multi-user.target')
+    except OSError:
+        pass
+
+
+def apply_directory(root, directory, chroot, logger=print):
+    """Write domain configuration and, when possible, perform the join."""
+    domain = directory['domain'].strip()
+    join_user = directory['join_user'].strip()
+    written = server_roles.write_directory_config(root, domain, join_user)
+    logger('  Directory: wrote ' + ', '.join(written))
+    realm = domain.upper()
+    adcli = None
+    for candidate in ('usr/bin/adcli', 'usr/local/bin/adcli'):
+        if (Path(root) / candidate).is_file():
+            adcli = '/' + candidate
+            break
+    if not adcli:
+        logger('  Directory: adcli is not built into this image, so the machine account was '
+               'not created during installation.')
+        logger('  Directory: the configuration is written; finish the join after boot with:')
+        logger(f'             sudo aether-directory join {realm} --user {join_user}')
+        return False
+    password = directory.get('join_password', '')
+    if not password:
+        logger('  Directory: no join password was supplied, so the join must be completed '
+               'after boot with aether-directory.')
+        return False
+    try:
+        chroot(adcli, 'domain', 'join', '--user', join_user, realm, input=password)
+    except subprocess.CalledProcessError as error:
+        logger('  Directory: the domain join failed (' + str(error) + '). The sssd configuration '
+               'is present; retry after boot with aether-directory.')
+        return False
+    write_text(root / 'etc/aether/directory.conf',
+               f'# Managed by the Aether Server installer.\nAD_DOMAIN={realm}\n'
+               f'AD_JOIN_USER={join_user}\nAD_JOINED=1\n')
+    logger('  Directory: joined ' + realm + '.')
+    return True
+
+
+# --- interactive fallback --------------------------------------------------
+
+def prompt_config():
+    print('Aether Server interactive setup. This runs the same code path as the')
+    print('graphical installer. The selected disk will be erased.')
+    run(['lsblk', '-d', '-o', 'NAME,SIZE,MODEL,TYPE,RO'])
+    config = {}
+    config['disk'] = input('Target disk, such as /dev/sdb (empty cancels): ').strip()
+    if not config['disk']:
+        return None
+    hostname = input('Hostname [aether-server]: ').strip() or 'aether-server'
+    config['hostname'] = hostname
+    config['timezone'] = input('Time zone (IANA name) [UTC]: ').strip() or 'UTC'
+    config['keyboard'] = input('Keyboard layout among us gb de fr es it pt br [us]: ').strip() or 'us'
+    config['language'] = 'en_US.UTF-8'
+    mode = input('Network configuration: dhcp or static [dhcp]: ').strip().lower() or 'dhcp'
+    network = {'mode': mode if mode in ('dhcp', 'static') else 'dhcp'}
+    if network['mode'] == 'static':
+        network['address'] = input('IPv4 address with prefix, such as 10.0.0.10/24: ').strip()
+        network['gateway'] = input('IPv4 gateway (optional): ').strip()
+        network['dns'] = input('DNS servers, comma separated (optional): ').strip()
+        network['interface'] = input('Interface name (optional): ').strip()
+    config['network'] = network
+    config['encrypt'] = input('Encrypt system storage with LUKS2? [Y/n]: ').strip().lower() != 'n'
+    if config['encrypt']:
+        import getpass
+        config['storage_password'] = getpass.getpass('Storage passphrase: ')
+        config['recovery_password'] = getpass.getpass('Recovery passphrase (different): ')
+    config['username'] = input('Administrator account name [aether]: ').strip() or 'aether'
+    import getpass
+    config['password'] = getpass.getpass('Administrator password: ')
+    catalog = server_roles.load_catalog()
+    print('Available server roles:')
+    for role in server_roles.ordered_roles(catalog):
+        mark = '*' if role.get('default') else ' '
+        print(f"  [{mark}] {role['id']:<14} {role['name']}")
+    print('Enter role ids separated by spaces, empty for the defaults:')
+    chosen = input('Roles: ').strip()
+    config['roles'] = chosen.split() if chosen else server_roles.default_selection(catalog)
+    join = input('Join an Active Directory domain? [y/N]: ').strip().lower() == 'y'
+    directory = {'join': join}
+    if join:
+        directory['domain'] = input('Domain, such as example.lan: ').strip()
+        directory['join_user'] = input('Domain account allowed to join: ').strip()
+        directory['computer_name'] = input('Computer name (optional): ').strip()
+        directory['join_password'] = getpass.getpass('Domain account password (empty to finish after boot): ')
+    config['directory'] = directory
+    config['confirmation'] = input('To erase this disk, type ERASE ' + config['disk'] + ': ')
+    return config
+
+
+# --- main installation -----------------------------------------------------
+
+def main(config=None):
+    if os.geteuid() != 0 or (config is None and not sys.stdin.isatty()):
+        raise SystemExit('Run sudo aether-server-install in an interactive terminal on the live ISO.')
+    if config is None:
+        config = prompt_config()
+        if config is None:
+            print('Cancelled; no disk changed.')
+            return
+    validate_preferences(config)
+    if os.uname().machine != 'x86_64':
+        raise SystemExit('This installer currently supports x86_64. ARM64 requires separate validation.')
+
+    live = Path('/run/initramfs/live/lower')
+    if not (live / 'etc/os-release').is_file() or 'ID=aether' not in (live / 'etc/os-release').read_text().splitlines():
+        raise SystemExit('Run from the Aether live ISO. Existing installed systems are not installation sources.')
+    required = ('sfdisk', 'mkfs.ext4', 'mkfs.fat', 'cryptsetup', 'grub-install', 'cpio', 'tar', 'blkid')
+    for tool in required:
+        if not shutil.which(tool):
+            raise SystemExit('Missing installer dependency: ' + tool)
+
+    catalog = server_roles.load_catalog()
+    selected = server_roles.normalize_selection(catalog, config.get('roles', []))
+
+    chosen = str(config.get('disk', '')).strip()
+    if not chosen:
+        raise ValueError('No installation disk selected.')
+    disk = Path(chosen)
+    if not chosen.startswith('/dev/') or disk.is_symlink() or not disk.is_block_device():
+        raise SystemExit('Choose a direct block-device path shown by the installer.')
+    details = json.loads(output(['lsblk', '-J', '-b', '-o', 'PATH,TYPE,SIZE,RO,MOUNTPOINTS', chosen]))['blockdevices'][0]
+
+    def mounted(node):
+        return any(node.get('mountpoints') or []) or any(mounted(n) for n in node.get('children', []))
+
+    if details['type'] != 'disk' or details['ro'] or mounted(details) or int(details['size']) < 16 * 1024**3:
+        raise SystemExit('Target must be an unmounted writable whole disk of at least 16 GiB.')
+
+    user = str(config.get('username', '')).strip()
+    if not re.fullmatch('[a-z][a-z0-9_-]{0,30}', user) or user in RESERVED_USERS:
+        raise SystemExit('Invalid or reserved administrator account name.')
+    if user != 'aether':
+        import pwd
+        import grp
+        for lookup, label in ((pwd.getpwnam, 'account'), (grp.getgrnam, 'group')):
+            try:
+                lookup(user)
+            except KeyError:
+                pass
+            else:
+                raise SystemExit(f'That name is already used by a system {label}. Choose another name.')
+
+    confirmation = config.get('confirmation', '')
+    if confirmation != 'ERASE ' + chosen:
+        raise ValueError('Disk erase confirmation did not match.')
+
+    current = json.loads(output(['lsblk', '-J', '-b', '-o', 'PATH,TYPE,SIZE,RO,MOUNTPOINTS', chosen]))['blockdevices'][0]
+    if current != details or mounted(current):
+        raise SystemExit('Disk state changed; refusing installation.')
+    if Path('/dev/mapper/aether-install-root').exists():
+        raise SystemExit('Installation mapper is already in use.')
+
+    encrypt = bool(config.get('encrypt'))
+    progress(1, 'Preparing the selected disk')
+    layout = 'label: gpt\n,2M,21686148-6449-6E6F-744E-656564454649\n,512M,U\n,1G,L\n,,L\n'
+    run(['sfdisk', '--wipe', 'always', chosen], input=layout, text=True)
+    run(['udevadm', 'settle'])
+    prefix = chosen + ('p' if chosen[-1].isdigit() else '')
+    efi, boot, data = prefix + '2', prefix + '3', prefix + '4'
+    for _ in range(20):
+        if Path(data).is_block_device():
+            break
+        time.sleep(1)
+    if not Path(data).is_block_device():
+        raise SystemExit('New partitions did not appear. Disk has been partitioned; installation stopped.')
+
+    mapper = '/dev/mapper/aether-install-root'
+    if Path(mapper).exists():
+        raise SystemExit('Installation mapper is already in use.')
+    mapped = False
+    mounts = []
+    role_report = {}
+    with installation_directory() as directory:
+        root = Path(directory)
+        try:
+            luks_uuid = None
+            if encrypt:
+                progress(2, 'Creating encrypted storage')
+                run(['cryptsetup', 'luksFormat', '--batch-mode', '--type', 'luks2',
+                     '--pbkdf', 'argon2id', '--key-file=-', data],
+                    input=config['storage_password'].encode())
+                run(['cryptsetup', 'open', '--key-file=-', data, 'aether-install-root'],
+                    input=config['storage_password'].encode())
+                mapped = True
+                luks_uuid = output(['cryptsetup', 'luksUUID', data])
+                with key_pipe(config['storage_password']) as fd:
+                    run(['cryptsetup', 'luksAddKey', '--key-file', '/proc/self/fd/' + str(fd), data, '-'],
+                        input=config['recovery_password'].encode(), pass_fds=(fd,))
+                filesystem = mapper
+            else:
+                filesystem = data
+
+            progress(3, 'Creating filesystems')
+            run(['mkfs.fat', '-F', '32', '-n', 'AETHER_EFI', efi])
+            run(['mkfs.ext4', '-F', '-L', 'AETHER_BOOT', boot])
+            run(['mkfs.ext4', '-F', '-L', 'AETHER_ROOT', filesystem])
+
+            def mount(device, destination, *options):
+                destination.mkdir(parents=True, exist_ok=True)
+                run(['mount', *options, device, str(destination)])
+                mounts.append(destination)
+
+            mount(filesystem, root)
+            mount(boot, root / 'boot')
+            mount(efi, root / 'boot/efi')
+
+            progress(4, 'Copying Aether Server')
+            producer = subprocess.Popen(
+                ['tar', '--xattrs', '--acls', '--numeric-owner', '--exclude=./swapfile',
+                 '--exclude=./boot', '-C', str(live), '-cpf', '-', '.'],
+                stdout=subprocess.PIPE)
+            try:
+                run(['tar', '--xattrs', '--acls', '--numeric-owner', '-C', str(root), '-xpf', '-'],
+                    stdin=producer.stdout)
+            finally:
+                producer.stdout.close()
+            if producer.wait() != 0:
+                raise RuntimeError('System copy failed')
+            for kernel in (live / 'boot').glob('*aether4*'):
+                if kernel.is_file():
+                    shutil.copy2(kernel, root / 'boot' / kernel.name)
+
+            for d in ('dev', 'proc', 'sys', 'run'):
+                mount('/' + d, root / d, '--rbind')
+                run(['mount', '--make-rslave', str(root / d)])
+
+            def chroot(*args, **kwargs):
+                return run(['chroot', directory, *args], **kwargs)
+
+            chroot('/usr/sbin/usermod', '-L', 'aether')
+            if user != 'aether':
+                chroot('/usr/sbin/usermod', '-l', user, '-d', '/home/' + user, '-m', 'aether')
+                chroot('/usr/sbin/groupmod', '-n', user, 'aether')
+
+            progress(5, 'Setting up the administrator account')
+            chroot('/usr/sbin/chpasswd', input=user + ':' + config['password'] + '\n', text=True)
+            chroot('/usr/sbin/usermod', '-L', 'root')
+            write_administrator(root, user, chroot)
+            write_text(root / 'etc/aether/default-user', user + '\n')
+            for file in ('etc/locale.conf', 'etc/vconsole.conf'):
+                existing = root / file
+                if existing.exists():
+                    existing.chmod(0o644)
+            (root / 'etc/localtime').unlink(missing_ok=True)
+            shutil.copyfile(root / 'usr/share/zoneinfo' / config.get('timezone', 'UTC'), root / 'etc/localtime')
+            write_text(root / 'etc/locale.conf', 'LANG=en_US.UTF-8\n')
+            keyboard = config.get('keyboard', 'us')
+            write_text(root / 'etc/vconsole.conf',
+                       'KEYMAP=' + KEYMAPS[keyboard] + '\nXKBLAYOUT=' + keyboard + '\n')
+
+            progress(6, 'Configuring the network and server roles')
+            write_network(root, config['hostname'], config.get('network', {}))
+            enable_multiuser_target(root)
+            role_report = server_roles.apply_roles(
+                catalog, selected, root,
+                template_dir=server_roles.template_root(catalog),
+                enable_services=True, open_firewall=True,
+                logger=print,
+            )
+            if role_report['unavailable']:
+                print('These roles are not built into this image and were left unconfigured: '
+                      + ', '.join(role_report['unavailable']))
+            if role_report['partial']:
+                print('These roles were configured incompletely (see the details above): '
+                      + ', '.join(role_report['partial']))
+
+            directory_cfg = config.get('directory', {})
+            if directory_cfg.get('join'):
+                progress(7, 'Joining the directory')
+                apply_directory(root, directory_cfg, chroot, logger=print)
+
+            root_uuid = output(['blkid', '-s', 'UUID', '-o', 'value', filesystem])
+            boot_uuid = output(['blkid', '-s', 'UUID', '-o', 'value', boot])
+            efi_uuid = output(['blkid', '-s', 'UUID', '-o', 'value', efi])
+            write_text(root / 'etc/fstab',
+                       f'UUID={root_uuid} / ext4 defaults 1 1\n'
+                       f'UUID={boot_uuid} /boot ext4 defaults,nodev,nosuid 0 2\n'
+                       f'UUID={efi_uuid} /boot/efi vfat umask=0077,nodev,nosuid,noexec 0 2\n')
+            (root / 'etc/crypttab').write_text(
+                f'aether-root UUID={luks_uuid} none luks\n' if encrypt else '')
+            (root / 'etc/machine-id').write_text('')
+            for file in ('var/lib/systemd/random-seed', 'var/lib/dbus/machine-id'):
+                (root / file).unlink(missing_ok=True)
+
+            progress(8, 'Installing the boot environment')
+            chroot('/usr/bin/aether-mkinitramfs', '/boot/initramfs-' + RELEASE + '.img')
+            chroot('/usr/sbin/grub-install', '--target=i386-pc', '--recheck', chosen)
+            chroot('/usr/sbin/grub-install', '--target=x86_64-efi',
+                   '--efi-directory=/boot/efi', '--removable', '--no-nvram')
+            commandline = f'root=UUID={root_uuid}' + (f' aether.luks={luks_uuid}' if encrypt else '')
+            write_text(root / 'boot/grub/grub.cfg', f'''set default=0
+set timeout_style=menu
+set timeout=5
+serial --unit=0 --speed=115200
+terminal_input console serial
+terminal_output console serial
+search --no-floppy --fs-uuid --set=root {boot_uuid}
+menuentry 'Aether Server' --hotkey=a {{
+ linux /vmlinuz-{RELEASE} {commandline} rw console=ttyS0,115200n8 console=tty0 systemd.unit=multi-user.target
+ initrd /initramfs-{RELEASE}.img
+}}
+menuentry 'Aether Server (recovery: verbose console)' --hotkey=r {{
+ linux /vmlinuz-{RELEASE} {commandline} rw single console=ttyS0,115200n8 console=tty0 systemd.show_status=yes
+ initrd /initramfs-{RELEASE}.img
+}}
+if [ "$grub_platform" = efi ]; then
+ menuentry 'UEFI firmware settings' --hotkey=f {{ fwsetup }}
+fi
+''')
+            chroot('/usr/bin/grub-script-check', '/boot/grub/grub.cfg')
+            run(['sync'])
+            progress(9, 'Installation complete')
+            print('Installation complete. Review the account and network configuration, then boot')
+            print('the installed system. Roles reported as unavailable were not configured.')
+        finally:
+            for path in reversed(mounts):
+                subprocess.run(['umount', '-R', str(path)], check=False)
+            if mapped:
+                subprocess.run(['cryptsetup', 'close', 'aether-install-root'], check=False)
+
+
+if __name__ == '__main__':
+    if sys.argv[1:] == ['--graphical']:
+        try:
+            raw = sys.stdin.buffer.read(65537)
+            if len(raw) > 65536:
+                raise ValueError('Installation request is too large.')
+            main(json.loads(raw))
+        except json.JSONDecodeError:
+            raise SystemExit('Invalid installation request.')
+        except (ValueError, RuntimeError, subprocess.CalledProcessError) as error:
+            # Never echo the request or subprocess input: both hold secrets.
+            raise SystemExit('Installation stopped: ' + str(error))
+    elif sys.argv[1:] == ['--validate']:
+        # Used by the automated checks: validate a catalog and exit.
+        server_roles.load_catalog()
+        print('Server role catalog is valid.')
+    elif sys.argv[1:]:
+        raise SystemExit('Usage: aether-server-install [--graphical|--validate]')
+    else:
+        main()

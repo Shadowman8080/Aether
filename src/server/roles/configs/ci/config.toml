@@ -1,0 +1,23 @@
+# Aether Server: GitLab Runner configuration (unregistered starting point).
+#
+# Register the runner with "gitlab-runner register". A shell executor gives a
+# job the full access of the account the runner uses, so prefer the Docker
+# executor where the container host role is present, and mark untrusted
+# projects non-privileged.
+
+concurrent = 4
+check_interval = 3
+log_level = "info"
+
+[session_server]
+  session_timeout = 1800
+
+# Populated by "gitlab-runner register":
+# [[runners]]
+#   name = "aether-server"
+#   url = "https://gitlab.example.lan/"
+#   token = "REPLACE_WITH_REGISTRATION_TOKEN"
+#   executor = "docker"
+#   [runners.docker]
+#     image = "alpine:latest"
+#     privileged = false

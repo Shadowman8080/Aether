@@ -1,0 +1,32 @@
+#!/bin/sh
+# aether-server-setup - launch the graphical Aether Server installer.
+#
+# The server ISO has no full desktop session, so the installer picks the
+# lightest available Qt platform that can present a window:
+#
+#   1. an existing Wayland or X11 session, if one is running;
+#   2. the framebuffer (linuxfb), which needs no compositor at all;
+#   3. EGLFS as a fallback for boards with a suitable GPU stack.
+#
+# Set AETHER_SERVER_QT_PLATFORM to override the choice, or AETHER_SERVER_TTY=1
+# to run the text installer instead.
+
+set -eu
+
+if [ "${AETHER_SERVER_TTY:-0}" = 1 ]; then
+    exec /usr/libexec/aether-server-install-backend
+fi
+
+if [ -n "${AETHER_SERVER_QT_PLATFORM:-}" ]; then
+    platform=$AETHER_SERVER_QT_PLATFORM
+elif [ -n "${WAYLAND_DISPLAY:-}" ]; then
+    platform=wayland
+elif [ -n "${DISPLAY:-}" ]; then
+    platform=xcb
+elif [ -e /dev/fb0 ]; then
+    platform=linuxfb
+else
+    platform=eglfs
+fi
+
+exec /usr/bin/aether-server-installer -platform "$platform" "$@"

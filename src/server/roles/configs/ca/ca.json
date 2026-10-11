@@ -1,0 +1,39 @@
+{
+  "root": "/var/lib/step-ca/certs/root_ca.crt",
+  "crt": "/var/lib/step-ca/certs/intermediate_ca.crt",
+  "key": "/var/lib/step-ca/secrets/intermediate_ca_key",
+
+  "address": "0.0.0.0:8443",
+  "dnsNames": [ "ca.lan", "localhost" ],
+
+  "logger": { "format": "text" },
+
+  "db": {
+    "type": "badgerv2",
+    "dataSource": "/var/lib/step-ca/db"
+  },
+
+  "authority": {
+    "provisioners": [
+      {
+        "type": "JWK",
+        "name": "admin@lan",
+        "encryptedKey": "/var/lib/step-ca/secrets/admin_ca_key"
+      },
+      {
+        "type": "ACME",
+        "name": "acme",
+        "claims": { "enableSSHCA": true }
+      }
+    ]
+  },
+
+  "tls": {
+    "cipherSuites": [
+      "TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256",
+      "TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384"
+    ],
+    "minVersion": 1.2,
+    "maxVersion": 1.3
+  }
+}

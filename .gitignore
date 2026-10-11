@@ -107,9 +107,11 @@ ENV/
 
 # Same reasoning for "lib/". Aether's initramfs helpers are real source that
 # ships in the image, and they live under a lib/ directory. Without this they
-# were silently dropped from the build tree. The pattern is fully anchored so it
-# only re-includes the one known path.
+# were silently dropped from the build tree. The server edition's systemd
+# units and assets live under lib/ as well. The patterns are fully anchored so
+# they only re-include known source paths, not setuptools output elsewhere.
 !/build/desktop/assets/usr/lib/
+!/src/server/assets/usr/lib/
 
 # Testing and type checking
 .pytest_cache/

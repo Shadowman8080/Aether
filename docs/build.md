@@ -26,6 +26,7 @@ package set. Recipes are grouped by feature area and mirror the `src/` layout:
 ```
 src/
 ├── desktop/     Plasma shell layout, power menu, greeter, installer, Vector
+├── server/      server role catalog, Qt installer, install backend, launchers
 ├── nimbrel/     native bindings, llama.cpp, engine packaging, units
 ├── security/    PAM helper, firewall tooling, cryptsetup, restic
 ├── updates/     python-tuf, GnuPG signing, release/client tooling
@@ -34,6 +35,11 @@ src/
 
 Typical recipe names in the working tree are `add-<area>-<thing>.py`,
 `build-<area>-<thing>.sh` and `fetch-<area>-<thing>.py`.
+
+The server edition is a second image target over the same base; its build
+scripts live in `build/server/scripts/` and its role software is planned by
+`build-server-packages.py`. See [`server.md`](server.md) for the design and
+[`../build/server/README.md`](../build/server/README.md) for the pipeline.
 
 **Use every available CPU.** The build scripts scale thread counts from
 `nproc`; do not override that downward on a build host.

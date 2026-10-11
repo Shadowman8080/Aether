@@ -1,0 +1,7 @@
+Aether Server 0.1 development snapshot
+
+  Run  aether-server-setup   for the graphical installer
+       aether-server-setup TTY=1   for the text installer
+       aether-directory status     to check Active Directory state
+
+Type 'aether-server' and press Enter to continue.

@@ -1,0 +1,14 @@
+[Unit]
+Description=Prepare Aether Server secrets on first boot
+ConditionPathExists=!/var/lib/aether/firstboot.done
+After=systemd-random-seed.service
+Before=sshd.service multi-user.target
+DefaultDependencies=no
+
+[Service]
+Type=oneshot
+ExecStart=/usr/libexec/aether-server-firstboot
+RemainAfterExit=yes
+
+[Install]
+WantedBy=multi-user.target

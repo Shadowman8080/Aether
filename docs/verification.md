@@ -62,6 +62,20 @@ graphics, VMXNET3 networking, HDA audio. Builds ran on 16 build CPUs.
 - Confirmed **no listening TCP port** is opened for AI; the path is Unix
   sockets only.
 
+**Aether Server (off-line checks only — nothing built or booted)**
+
+- `build/server/scripts/test-server-roles.py` runs **23 unit tests** and passes.
+  They validate the role catalog schema, confirm every role's config templates
+  exist, apply roles to a throwaway root and assert the copied configs, service
+  enablements, merged firewall ports and audit report, and check the
+  directory-join config writers (krb5, sssd, PAM, nsswitch).
+- The catalog is parsed and validated inside the chroot by
+  `install-server-assets.sh`; a malformed catalog stops the image build.
+- **Not verified:** the Qt server installer was never compiled, no role
+  software was ever source-built, no server ISO exists, `adcli` is absent so no
+  domain join ran, and no installed server has been booted. Every server claim
+  beyond the catalog/backend unit tests is unvalidated.
+
 ## Repairs that were needed
 
 These are recorded because they explain why naive instructions will not work:
@@ -92,6 +106,7 @@ These are recorded because they explain why naive instructions will not work:
 | **Accessibility workflows** | Not tested end to end. |
 | **Removable / encrypted media** | Not tested. |
 | **Multi-user lock boundaries** | Not tested. |
+| **Aether Server edition** | Catalog/backend unit tests only. No compile, ISO, role software, adcli or booted server. |
 
 ## BIOS unlock — the specific known-flaky test
 

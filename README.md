@@ -93,6 +93,24 @@ The unified x86_64 image replaces the separate desktop, security, Vector and
 local-AI variants. Historical x86 and ARM console prototypes remain archived;
 they are not current desktop builds. See [release verification](docs/release-20261006.md).
 
+## Aether Server
+
+Alongside the desktop, Aether is growing a **server edition** — a
+console-first image in the spirit of Ubuntu Server with an interactive
+**graphical** installer. It configures the network, creates an administrator
+with sudo, applies a data-driven **role catalog** (DHCP, NTP, DNS, RADIUS/TACACS+,
+syslog, files, databases, web, mail, proxies, virtualization, printing and
+more), and can join an Active Directory domain during installation.
+
+The catalog is data, not code: `src/server/roles/catalog.json` drives both the
+installer UI and the install backend, so a new server role is a catalog entry
+plus a config template. A role whose software is not built into the image is
+reported as unavailable rather than failing the install.
+
+Status, roles and design: [`docs/server.md`](docs/server.md). Like the rest of
+Aether 0.3, the server edition is work in progress — the catalog and backend
+are unit-tested, and nothing has been compiled or booted yet.
+
 ## What is actually in the box
 
 | | |
@@ -310,6 +328,7 @@ security, updates and developer guides.
 docs/           architecture, build, verification, roadmap
 media/          screenshots and videos (all recorded from a real Aether VM)
 src/desktop/    Vector, greeter, installer, Plasma shell + power menu
+src/server/     server edition: role catalog, installer, install backend
 src/nimbrel/    on-device AI client, gateway, engine wiring
 src/security/   firewall, AppArmor, PAM, backups, security tooling
 src/updates/    GnuPG signing + TUF repository and client

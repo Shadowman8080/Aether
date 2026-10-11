@@ -1,0 +1,449 @@
+{
+  "schema": 1,
+  "name": "Aether Server",
+  "catalog_version": "0.1",
+  "config_root": "configs",
+  "categories": [
+    { "id": "network", "name": "Network infrastructure", "summary": "Address, name, time and access services that a network depends on." },
+    { "id": "identity", "name": "Identity, access and security", "summary": "Who may connect, how they prove it, and the keys and directories behind that." },
+    { "id": "logging", "name": "Logging and monitoring", "summary": "Central visibility: events, metrics and dashboards." },
+    { "id": "storage", "name": "Storage and data", "summary": "Shared files, structured data and their backups." },
+    { "id": "web", "name": "Web and internet services", "summary": "Content, applications, mail and everything that faces the network." },
+    { "id": "compute", "name": "Compute and virtualization", "summary": "Hosting other operating systems and applications." },
+    { "id": "productivity", "name": "Business and collaboration", "summary": "Shared team services: printing, telephony, media and automation." }
+  ],
+  "roles": [
+    {
+      "id": "ssh",
+      "name": "OpenSSH server",
+      "category": "identity",
+      "summary": "Remote encrypted shell access, file transfer and tunnelling for administering the server.",
+      "packages": ["openssh-server"],
+      "binaries": ["/usr/sbin/sshd"],
+      "services": ["sshd.service"],
+      "configs": [
+        { "source": "ssh/50-aether.conf", "destination": "/etc/ssh/sshd_config.d/50-aether.conf", "mode": "0644" }
+      ],
+      "firewall": ["tcp/22"],
+      "default": true,
+      "recommended": true,
+      "notes": "The recommended way to administer Aether Server. The shipped drop-in forbids root login and pins a modern key exchange, but leaves password authentication on until you install a key."
+    },
+    {
+      "id": "dhcp",
+      "name": "DHCP server",
+      "category": "network",
+      "summary": "Dynamically assigns IP addresses, subnet masks, gateways and DNS servers to devices on a network.",
+      "packages": ["kea"],
+      "binaries": ["/usr/sbin/kea-dhcp4", "/usr/bin/kea-dhcp4"],
+      "services": ["kea-dhcp4-server.service"],
+      "configs": [
+        { "source": "dhcp/kea-dhcp4.conf", "destination": "/etc/kea/kea-dhcp4.conf", "mode": "0644" }
+      ],
+      "firewall": ["udp/67", "udp/68"],
+      "default": false,
+      "recommended": false,
+      "notes": "Needs a subnet, an address pool and a static server address before it can hand out leases. Edit /etc/kea/kea-dhcp4.conf and validate with kea-dhcp4 -t."
+    },
+    {
+      "id": "dns",
+      "name": "DNS server",
+      "category": "network",
+      "summary": "Resolves names to addresses for the network and caches answers to speed up lookups.",
+      "packages": ["bind9"],
+      "binaries": ["/usr/sbin/named"],
+      "services": ["named.service"],
+      "configs": [
+        { "source": "dns/named.conf.local", "destination": "/etc/bind/named.conf.local", "mode": "0644" }
+      ],
+      "firewall": ["tcp/53", "udp/53"],
+      "default": false,
+      "recommended": false,
+      "notes": "Recursion is loopback-only in the shipped template. Declare authoritative zones in named.conf.local, or forward to upstream resolvers."
+    },
+    {
+      "id": "ntp",
+      "name": "NTP server",
+      "category": "network",
+      "summary": "Synchronizes the internal clocks of all computers and devices on a network for precise, unified timekeeping.",
+      "packages": ["chrony"],
+      "binaries": ["/usr/sbin/chronyd"],
+      "services": ["chronyd.service"],
+      "configs": [
+        { "source": "ntp/chrony.conf", "destination": "/etc/chrony.conf", "mode": "0644" }
+      ],
+      "firewall": ["udp/123"],
+      "default": false,
+      "recommended": false,
+      "notes": "Serves time to the local subnet and steps the clock on boot. Point upstream sources at your regional pool or an internal reference."
+    },
+    {
+      "id": "aaa",
+      "name": "AAA server (RADIUS / TACACS+)",
+      "category": "network",
+      "summary": "Handles authentication, authorization and accounting (AAA) for users connecting to enterprise networks or VPNs.",
+      "packages": ["freeradius", "tacacs+"],
+      "binaries": ["/usr/sbin/freeradius", "/usr/sbin/radiusd", "/usr/sbin/tac_plus"],
+      "services": ["freeradius.service", "tac_plus.service"],
+      "configs": [
+        { "source": "aaa/clients.conf", "destination": "/etc/freeradius/3.0/clients.conf", "mode": "0640" }
+      ],
+      "firewall": ["udp/1812", "udp/1813", "tcp/49"],
+      "default": false,
+      "recommended": false,
+      "notes": "FreeRADIUS covers 802.1X and VPN authentication; tac_plus covers legacy network equipment. Both start with a local shared secret you must change."
+    },
+    {
+      "id": "reverse-proxy",
+      "name": "Reverse proxy / load balancer",
+      "category": "network",
+      "summary": "Terminates client connections and distributes them across backend servers, with health checks and TLS termination.",
+      "packages": ["haproxy"],
+      "binaries": ["/usr/sbin/haproxy"],
+      "services": ["haproxy.service"],
+      "configs": [
+        { "source": "reverse-proxy/haproxy.cfg", "destination": "/etc/haproxy/haproxy.cfg", "mode": "0644" }
+      ],
+      "firewall": ["tcp/80", "tcp/443"],
+      "default": false,
+      "recommended": false,
+      "notes": "The example backend is a single placeholder host on port 8080. Add servers and health checks under the backend section."
+    },
+    {
+      "id": "vpn",
+      "name": "VPN server (WireGuard)",
+      "category": "identity",
+      "summary": "Offers an encrypted tunnel into the private network for remote users and site-to-site links.",
+      "packages": ["wireguard-tools"],
+      "binaries": ["/usr/bin/wg"],
+      "services": ["wg-quick@wg0.service"],
+      "configs": [
+        { "source": "vpn/wg0.conf", "destination": "/etc/wireguard/wg0.conf", "mode": "0600" }
+      ],
+      "firewall": ["udp/51820"],
+      "default": false,
+      "recommended": false,
+      "notes": "The interface key and every peer key are placeholders. Generate them with wg genkey / wg pubkey and replace the private keys before enabling."
+    },
+    {
+      "id": "directory",
+      "name": "Directory server (OpenLDAP)",
+      "category": "identity",
+      "summary": "Central user, group and policy directory for Unix and application authentication over LDAP.",
+      "packages": ["slapd"],
+      "binaries": ["/usr/sbin/slapd"],
+      "services": ["slapd.service"],
+      "configs": [
+        { "source": "directory/slapd.conf", "destination": "/etc/openldap/slapd.conf", "mode": "0640" }
+      ],
+      "firewall": ["tcp/389", "tcp/636"],
+      "default": false,
+      "recommended": false,
+      "notes": "Define your base DN and root credentials before starting slapd. For Kerberos-backed identity that Windows clients can join, use the AD-compatible domain controller role instead."
+    },
+    {
+      "id": "ca",
+      "name": "Certificate authority",
+      "category": "identity",
+      "summary": "Issues and revokes X.509 certificates for the network so internal TLS does not depend on public CAs.",
+      "packages": ["step-ca"],
+      "binaries": ["/usr/bin/step", "/usr/bin/step-ca"],
+      "services": ["step-ca.service"],
+      "configs": [
+        { "source": "ca/ca.json", "destination": "/etc/step-ca/ca.json", "mode": "0644" }
+      ],
+      "firewall": ["tcp/8443"],
+      "default": false,
+      "recommended": false,
+      "notes": "Run the initialisation once and treat the CA password and root key as production secrets. The shipped configuration exposes an ACME and JWK provisioner endpoint."
+    },
+    {
+      "id": "ad-dc",
+      "name": "AD-compatible domain controller (Samba AD DC)",
+      "category": "identity",
+      "summary": "Raises a new Active Directory-compatible domain that Windows and Linux clients can join.",
+      "packages": ["samba"],
+      "binaries": ["/usr/sbin/samba"],
+      "services": ["samba-ad-dc.service"],
+      "configs": [
+        { "source": "ad-dc/smb.conf", "destination": "/etc/samba/smb.conf", "mode": "0644" }
+      ],
+      "firewall": ["tcp/53", "udp/53", "tcp/88", "tcp/389", "tcp/445", "tcp/464", "udp/464", "tcp/636", "tcp/3268"],
+      "default": false,
+      "recommended": false,
+      "notes": "Provision with samba-tool domain provision --use-rfc2307. Creating a new domain is irreversible and needs a static address and correct DNS. Do not enable this and the plain file server on the same machine without separating their roles."
+    },
+    {
+      "id": "syslog",
+      "name": "Central syslog server",
+      "category": "logging",
+      "summary": "Centrally collects, stores and logs event messages generated by routers, switches, firewalls and other endpoints.",
+      "packages": ["rsyslog"],
+      "binaries": ["/usr/sbin/rsyslogd"],
+      "services": ["rsyslog.service"],
+      "configs": [
+        { "source": "syslog/10-remote.conf", "destination": "/etc/rsyslog.d/10-remote.conf", "mode": "0644" }
+      ],
+      "firewall": ["tcp/514", "udp/514"],
+      "default": false,
+      "recommended": false,
+      "notes": "Receives RFC 5424 over TCP and UDP and files logs per remote host under /var/log/remote. UDP is fire-and-forget; prefer TCP for point-to-point links."
+    },
+    {
+      "id": "monitoring",
+      "name": "Monitoring and dashboards",
+      "category": "logging",
+      "summary": "Scrapes metrics from hosts and applications and presents them on alertable dashboards.",
+      "packages": ["prometheus", "grafana"],
+      "binaries": ["/usr/bin/prometheus", "/usr/sbin/grafana-server", "/usr/bin/grafana-server"],
+      "services": ["prometheus.service", "grafana-server.service", "node_exporter.service"],
+      "configs": [
+        { "source": "monitoring/prometheus.yml", "destination": "/etc/prometheus/prometheus.yml", "mode": "0644" }
+      ],
+      "firewall": ["tcp/9090", "tcp/3000"],
+      "default": false,
+      "recommended": false,
+      "notes": "Prometheus scrapes this host and any targets you add; Grafana is the dashboard. Change Grafana's default administrator password on first sign-in."
+    },
+    {
+      "id": "file",
+      "name": "File server (Samba)",
+      "category": "storage",
+      "summary": "Provides centralised storage, sharing and permission management for files within a local network to Windows and Linux clients.",
+      "packages": ["samba"],
+      "binaries": ["/usr/sbin/smbd"],
+      "services": ["smbd.service", "nmbd.service"],
+      "configs": [
+        { "source": "file/smb.conf", "destination": "/etc/samba/smb.conf", "mode": "0644" }
+      ],
+      "firewall": ["tcp/445", "tcp/139", "udp/137", "udp/138"],
+      "default": false,
+      "recommended": false,
+      "notes": "Shares a single /srv/aether share for an authenticated group by default. Set Samba passwords with smbpasswd -a and adjust the share path and access in smb.conf."
+    },
+    {
+      "id": "database",
+      "name": "Database server (PostgreSQL)",
+      "category": "storage",
+      "summary": "Hosts a relational database that processes complex queries and manages structured data for applications.",
+      "packages": ["postgresql"],
+      "binaries": ["/usr/bin/psql", "/usr/bin/postgres"],
+      "services": ["postgresql.service"],
+      "configs": [
+        { "source": "database/pg_hba.conf", "destination": "/etc/postgresql/pg_hba.conf", "mode": "0640" },
+        { "source": "database/99-aether.conf", "destination": "/etc/postgresql/conf.d/99-aether.conf", "mode": "0644" }
+      ],
+      "firewall": ["tcp/5432"],
+      "default": false,
+      "recommended": false,
+      "notes": "Listens on loopback by default. Open it to the network deliberately by changing listen_addresses and the host rule in pg_hba.conf, then reload the server."
+    },
+    {
+      "id": "ftp",
+      "name": "FTP server (vsftpd)",
+      "category": "storage",
+      "summary": "Allows file uploads and downloads between clients and the host using the File Transfer Protocol.",
+      "packages": ["vsftpd"],
+      "binaries": ["/usr/sbin/vsftpd"],
+      "services": ["vsftpd.service"],
+      "configs": [
+        { "source": "ftp/vsftpd.conf", "destination": "/etc/vsftpd.conf", "mode": "0644" }
+      ],
+      "firewall": ["tcp/21"],
+      "default": false,
+      "recommended": false,
+      "notes": "Plain FTP sends credentials in the clear. Where possible use the SFTP subsystem of the SSH server instead; TLS for FTP is available but off in this template."
+    },
+    {
+      "id": "backup",
+      "name": "Backup server (restic REST)",
+      "category": "storage",
+      "summary": "Receives encrypted, deduplicated backups from Aether and restic clients over an authenticated HTTP endpoint.",
+      "packages": ["rest-server"],
+      "binaries": ["/usr/bin/rest-server"],
+      "services": ["rest-server.service"],
+      "configs": [
+        { "source": "backup/rest-server.service", "destination": "/etc/systemd/system/rest-server.service", "mode": "0644" }
+      ],
+      "firewall": ["tcp/8000"],
+      "default": false,
+      "recommended": false,
+      "notes": "Aether's client backup tooling already speaks restic. Set the repository password on the client; the server only stores ciphertext and never sees your data."
+    },
+    {
+      "id": "web",
+      "name": "Web server (Nginx)",
+      "category": "web",
+      "summary": "Processes HTTP/HTTPS requests from browsers to deliver websites and static web content.",
+      "packages": ["nginx"],
+      "binaries": ["/usr/sbin/nginx"],
+      "services": ["nginx.service"],
+      "configs": [
+        { "source": "web/aether-server.conf", "destination": "/etc/nginx/conf.d/aether-server.conf", "mode": "0644" }
+      ],
+      "firewall": ["tcp/80", "tcp/443"],
+      "default": false,
+      "recommended": true,
+      "notes": "Serves /srv/www. Add a TLS server block and point the certificate path at the certificate-authority role or a public CA."
+    },
+    {
+      "id": "appserver",
+      "name": "Application server (PHP-FPM)",
+      "category": "web",
+      "summary": "Runs the business logic and frameworks behind a web frontend rather than serving files directly.",
+      "packages": ["php-fpm"],
+      "binaries": ["/usr/sbin/php-fpm", "/usr/sbin/php-fpm8"],
+      "services": ["php-fpm.service"],
+      "configs": [
+        { "source": "appserver/aether.conf", "destination": "/etc/php-fpm.d/aether.conf", "mode": "0644" }
+      ],
+      "firewall": [],
+      "default": false,
+      "recommended": false,
+      "notes": "The pool listens only on a local socket and never on the network. Pair it with the web server, which proxies matching requests to that socket."
+    },
+    {
+      "id": "mail",
+      "name": "Mail server (Postfix + Dovecot)",
+      "category": "web",
+      "summary": "Routes, delivers, sends and stores electronic mail using SMTP, IMAP and POP3.",
+      "packages": ["postfix", "dovecot"],
+      "binaries": ["/usr/sbin/postfix", "/usr/sbin/dovecot"],
+      "services": ["postfix.service", "dovecot.service"],
+      "configs": [
+        { "source": "mail/main.cf", "destination": "/etc/postfix/main.cf", "mode": "0644" },
+        { "source": "mail/dovecot.conf", "destination": "/etc/dovecot/dovecot.conf", "mode": "0644" }
+      ],
+      "firewall": ["tcp/25", "tcp/465", "tcp/587", "tcp/143", "tcp/993"],
+      "default": false,
+      "recommended": false,
+      "notes": "Deliverability needs correct MX, SPF, DKIM and DMARC records plus a trusted TLS certificate, and many networks block outbound port 25. Configure an outbound relay if direct delivery is blocked."
+    },
+    {
+      "id": "proxy",
+      "name": "Proxy server (Squid)",
+      "category": "web",
+      "summary": "Acts as an intermediary gateway between client devices and the internet for content filtering, caching and privacy.",
+      "packages": ["squid"],
+      "binaries": ["/usr/sbin/squid"],
+      "services": ["squid.service"],
+      "configs": [
+        { "source": "proxy/squid.conf", "destination": "/etc/squid/squid.conf", "mode": "0644" }
+      ],
+      "firewall": ["tcp/3128"],
+      "default": false,
+      "recommended": false,
+      "notes": "Only the local subnet may use the proxy in the shipped template. Add ACLs to allow other networks and to block or allow categories of content."
+    },
+    {
+      "id": "git",
+      "name": "Git server (Gitea)",
+      "category": "web",
+      "summary": "Hosts Git repositories with a web interface, issues, pull requests and an API for a team.",
+      "packages": ["gitea"],
+      "binaries": ["/usr/bin/gitea"],
+      "services": ["gitea.service"],
+      "configs": [
+        { "source": "git/app.ini", "destination": "/etc/gitea/app.ini", "mode": "0640" }
+      ],
+      "firewall": ["tcp/3000", "tcp/22"],
+      "default": false,
+      "recommended": false,
+      "notes": "Runs as the gitea account against /var/lib/gitea. Complete first-run setup in the browser and change the database credentials if you attach one."
+    },
+    {
+      "id": "hypervisor",
+      "name": "Virtualization host (libvirt / KVM)",
+      "category": "compute",
+      "summary": "Runs hypervisor software that splits a single physical machine into isolated virtual servers.",
+      "packages": ["libvirt", "qemu-system-x86"],
+      "binaries": ["/usr/sbin/libvirtd", "/usr/bin/qemu-system-x86_64", "/usr/bin/virsh"],
+      "services": ["libvirtd.service"],
+      "configs": [
+        { "source": "hypervisor/libvirtd.conf", "destination": "/etc/libvirt/libvirtd.conf", "mode": "0644" }
+      ],
+      "firewall": [],
+      "default": false,
+      "recommended": false,
+      "notes": "Needs hardware virtualisation (VT-x/AMD-V) enabled in firmware. Guest traffic is left to per-network libvirt rules rather than opened globally."
+    },
+    {
+      "id": "container",
+      "name": "Container host (Podman)",
+      "category": "compute",
+      "summary": "Runs OCI containers and pods as rootless or system services without a long-running daemon.",
+      "packages": ["podman"],
+      "binaries": ["/usr/bin/podman"],
+      "services": ["podman.socket"],
+      "configs": [
+        { "source": "container/containers.conf", "destination": "/etc/containers/containers.conf", "mode": "0644" }
+      ],
+      "firewall": [],
+      "default": false,
+      "recommended": false,
+      "notes": "Ships a minimal container configuration and enables the API socket. Container ports are published explicitly per container rather than opened host-wide."
+    },
+    {
+      "id": "print",
+      "name": "Print server (CUPS)",
+      "category": "productivity",
+      "summary": "Manages network print queues, routing print jobs from computers to physical office printers.",
+      "packages": ["cups"],
+      "binaries": ["/usr/sbin/cupsd"],
+      "services": ["cups.service"],
+      "configs": [
+        { "source": "print/cupsd.conf", "destination": "/etc/cups/cupsd.conf", "mode": "0644" }
+      ],
+      "firewall": ["tcp/631", "udp/631"],
+      "default": false,
+      "recommended": false,
+      "notes": "Shares printers with the local subnet and enables the web administration interface on loopback. Add printers with lpadmin or the web interface."
+    },
+    {
+      "id": "voip",
+      "name": "VoIP / PBX server (Asterisk)",
+      "category": "productivity",
+      "summary": "Provides IP telephony: registrations, call routing, voicemail and conferencing for desk and soft phones.",
+      "packages": ["asterisk"],
+      "binaries": ["/usr/sbin/asterisk"],
+      "services": ["asterisk.service"],
+      "configs": [
+        { "source": "voip/pjsip.conf", "destination": "/etc/asterisk/pjsip.conf", "mode": "0640" }
+      ],
+      "firewall": ["udp/5060", "tcp/5060"],
+      "default": false,
+      "recommended": false,
+      "notes": "Registers a single example endpoint. RTP media uses a UDP port range, which must be opened separately for calls to carry audio."
+    },
+    {
+      "id": "media",
+      "name": "Media streaming server (Jellyfin)",
+      "category": "productivity",
+      "summary": "Streams video, audio and photos to browsers, phones and televisions from the server's own storage.",
+      "packages": ["jellyfin"],
+      "binaries": ["/usr/bin/jellyfin"],
+      "services": ["jellyfin.service"],
+      "configs": [],
+      "firewall": ["tcp/8096"],
+      "default": false,
+      "recommended": false,
+      "notes": "Complete first-run setup in the browser, then point libraries at your media directories. Hardware transcoding needs extra firmware and a supported GPU."
+    },
+    {
+      "id": "ci",
+      "name": "CI/CD runner (GitLab Runner)",
+      "category": "productivity",
+      "summary": "Executes automated build, test and deployment jobs registered to a GitLab instance.",
+      "packages": ["gitlab-runner"],
+      "binaries": ["/usr/bin/gitlab-runner"],
+      "services": ["gitlab-runner.service"],
+      "configs": [
+        { "source": "ci/config.toml", "destination": "/etc/gitlab-runner/config.toml", "mode": "0644" }
+      ],
+      "firewall": [],
+      "default": false,
+      "recommended": false,
+      "notes": "Unregistered in this template. Register with gitlab-runner register and choose an executor deliberately; a shell executor gives jobs the runner account's full access."
+    }
+  ]
+}

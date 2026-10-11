@@ -1,0 +1,44 @@
+#!/bin/sh
+# aether-server-firstboot - one-time preparation of machine secrets.
+#
+# The installed system is a copy of the live image, so it carries the live
+# image's SSH host keys and no machine identity. This regenerates the host
+# keys, regenerates an empty machine-id if the backend missed it, and reminds
+# the administrator when a directory join is still pending.
+
+set -eu
+
+mkdir -p /var/lib/aether
+
+# SSH host keys: a shared key set would let any other install of this image
+# impersonate the server.
+if [ -x /usr/bin/ssh-keygen ] && [ ! -f /etc/ssh/ssh_host_ed25519_key ]; then
+    rm -f /etc/ssh/ssh_host_*_key /etc/ssh/ssh_host_*_key.pub
+    ssh-keygen -A
+    chmod 600 /etc/ssh/ssh_host_*_key
+fi
+
+# A fresh machine-id keeps journal and D-Bus identity unique to this install.
+if [ -e /etc/machine-id ] && [ ! -s /etc/machine-id ] && [ -x /usr/bin/systemd-machine-id-setup ]; then
+    rm -f /etc/machine-id
+    systemd-machine-id-setup || true
+fi
+
+# The installer writes the sssd configuration even when adcli was missing.
+# Remember that the machine-account join itself still needs to happen.
+if [ -f /etc/sssd/sssd.conf ] && [ -f /etc/aether/directory.conf ]; then
+    if grep -q '^AD_JOINED=0$' /etc/aether/directory.conf; then
+        domain=$(sed -n 's/^AD_DOMAIN=//p' /etc/aether/directory.conf | tail -n 1)
+        cat > /etc/motd.d/aether-pending-join <<'EOF'
+WARNING: an Active Directory domain was configured at installation, but the
+machine account was not created (adcli was unavailable). Finish the join with:
+
+    sudo aether-directory join DOMAIN --user <join-account>
+
+DOMAIN is set in /etc/aether/directory.conf. Remove this file when done:
+    rm /etc/motd.d/aether-pending-join
+EOF
+    fi
+fi
+
+touch /var/lib/aether/firstboot.done

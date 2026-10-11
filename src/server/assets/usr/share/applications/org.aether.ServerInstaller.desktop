@@ -1,0 +1,9 @@
+[Desktop Entry]
+Type=Application
+Name=Install Aether Server
+Comment=Set up an Aether server with a guided graphical installer
+Exec=aether-server-setup
+Icon=aether-logo
+Terminal=false
+Categories=System;
+StartupNotify=true

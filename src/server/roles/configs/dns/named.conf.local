@@ -1,0 +1,16 @@
+// Aether Server: local BIND zones and forwarding.
+//
+// This file is included by the stock /etc/bind/named.conf. Recursion and
+// cache are limited to loopback in the stock options; add "allow-query" and
+// "allow-transfer" ACLs before serving a wider network.
+//
+// Example authoritative zone (uncomment and create the matching zone file):
+//
+// zone "lan" {
+//     type primary;
+//     file "/var/cache/bind/db.lan";
+//     allow-update { none; };
+// };
+//
+// Until a zone is defined, the resolver only forwards. Point these at your
+// upstream or internal resolvers as required.

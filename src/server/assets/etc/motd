@@ -1,0 +1,14 @@
+Aether Server
+-------------
+This system is managed with systemd and administrated over SSH with sudo.
+Useful first checks:
+
+  systemctl --failed          failed units
+  journalctl -b -p err         boot errors
+  aether-security-status       security posture
+  aether-firewall status       open ports
+  aether-directory status      Active Directory status
+
+Roles selected at install are recorded in /etc/aether/server-roles.json.
+Replace every placeholder password and key shown in that file's notes before
+putting this machine on a network.

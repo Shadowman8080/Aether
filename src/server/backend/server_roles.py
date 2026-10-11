@@ -15,7 +15,6 @@ from __future__ import annotations
 import json
 import os
 import shutil
-import subprocess
 from pathlib import Path
 
 DEFAULT_CATALOG = Path('/usr/share/aether/server/roles.json')
@@ -233,15 +232,13 @@ def _copy_config(role: dict, config: dict, root: Path, template_dir: Path) -> tu
 
 
 def _enable_service(root: Path, service: str) -> tuple[bool, str]:
-    """Enable a unit in the target root, returning (ok, how)."""
-    systemctl = shutil.which('systemctl')
-    if systemctl:
-        result = subprocess.run(
-            [systemctl, '--root=' + str(root), 'enable', service],
-            capture_output=True, text=True,
-        )
-        if result.returncode == 0:
-            return True, 'systemctl'
+    """Enable a unit in the target root by creating its wants symlink.
+
+    The symlink is written *relative* to the unit so it resolves inside the
+    image root. Calling ``systemctl --root`` from here would either fail in an
+    offline chroot or leave a host-absolute link that does not resolve within
+    the image, so the enable is performed directly instead.
+    """
     unit = None
     for location in ('usr/lib/systemd/system', 'lib/systemd/system', 'etc/systemd/system'):
         candidate = root / location / service
@@ -253,10 +250,11 @@ def _enable_service(root: Path, service: str) -> tuple[bool, str]:
     wants = root / 'etc/systemd/system/multi-user.target.wants'
     wants.mkdir(parents=True, exist_ok=True)
     link = wants / service
+    target = os.path.relpath(unit, wants)
     try:
         if link.is_symlink() or link.exists():
             link.unlink()
-        link.symlink_to(unit)
+        link.symlink_to(target)
     except OSError as error:
         return False, f'symlink failed: {error}'
     return True, 'wants symlink'

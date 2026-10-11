@@ -20,7 +20,10 @@ root = Path(args.root)
 release = root / 'etc/os-release'
 if release.is_file():
     text = release.read_text()
-    if 'ID=aether' not in text or 'ID="aether"' not in text:
+    # Accept the identifier whether it is quoted or bare; refuse only when it is
+    # missing in both forms. (The earlier check used "or", which is true for any
+    # single-form os-release and rejected every real Aether root.)
+    if 'ID=aether' not in text and 'ID="aether"' not in text:
         raise SystemExit('Refusing to configure a non-Aether system')
 
 def write(relative, contents, mode=0o644):

@@ -48,6 +48,10 @@ chroot "$initrd" /bin/sh -n /shutdown
 
 install -m644 "$root/boot/vmlinuz-$release" "$stage/boot/vmlinuz"
 printf '0.1\n' >"$stage/live/aether-server-release"
+# The desktop live-init selects its medium by reading /live/aether-release and
+# expecting the Aether *base* version (not the kernel release). Without it the
+# server medium is rejected and the initrd drops to the recovery shell.
+printf '0.3\n' >"$stage/live/aether-release"
 
 mksquashfs "$root" "$stage/live/rootfs.squashfs" -noappend -comp xz \
     -processors "$(nproc)" -one-file-system -wildcards \

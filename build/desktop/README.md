@@ -13,6 +13,7 @@ REQUIREMENTS.txt preserves the extracted text of the supplied **Desktop shell an
 - AuraSearch patch on the pinned KDE KRunner frontend, preserving KDE attribution and all existing search/result accessibility behavior. Super+Space opens it; the aurasearch command delegates arguments without shell evaluation.
 - Local search defaults: no retained query/history, no web shortcuts or bookmark search, no shell runner. Basic filename indexing; content indexing is opt-in through settings.
 - VMware guest integration: x86/x86_64 desktop kernels build the in-kernel vmmouse driver (`CONFIG_MOUSE_PS2_VMMOUSE=y`) for seamless pointer control, and the image ships `aether-vmware-tools` to report and enable the open-vm-tools desktop integration. Copy/paste and drag-and-drop remain X11-only; the greeter preselects and pins the X11 session under VMware. See `../VMWARE-GUEST-INTEGRATION.md`.
+- Plug-and-play devices: the Aether Devices manager (Windows Device Manager equivalent), the `aether-device-notify` hotplug toaster, the `60-aether-pnp.rules` udev policy, the `aether-device-rescan` helper, `lspci`/`lsusb` via pinned `pciutils`/`usbutils` builds, and the `kernel-pnp.delta.config` driver classes (webcams, USB serial, SD/MMC, NTFS/exFAT, Thunderbolt, joysticks, RTC). See [`../../src/devices/README.md`](../../src/devices/README.md). Source-implemented; compiled images and hardware testing are still open.
 - Source-verified native dependency build recipes using all available build CPUs. The native x86_64 desktop has completed its first full disk runtime test; image release validation is tracked below.
 
 ## Current build verification
@@ -57,7 +58,7 @@ Each requirement area must be checked on the actual Aether image; upstream capab
 15. Settings: system settings and Aether light/dark defaults pending installation and validation.
 16. Software/updates: Aether's source/package workflow must be integrated deliberately; do not show a nonfunctional software center or claim rollback before implementation.
 17. Sessions/users: authenticated login/session start, user management and crash recovery pending.
-18. Peripherals: printing/scanning/udisks/guest integration pending; physical-device support requires hardware verification.
+18. Peripherals: plug-and-play device manager, udev/hwdb policy, driver auto-loading and `lspci`/`lsusb` implemented in source; printing/scanning/udisks automount and physical-device support still require build and hardware verification.
 19. Utilities: Konsole, editor, image/PDF/archive tools, calculator/system monitor/help/setup/backup pending.
 20. Cross-device/cloud: optional; local-first, explicit opt-in, credentials and removal handling required.
 21. Extensions/automation: optional; upstream extension mechanisms need safe recovery and compatibility policy.
@@ -75,6 +76,9 @@ Do not publish 0.3 artifacts until authentication/locking, working core apps, Au
 - scripts/build-desktop-foundation.py: CMake/Wayland/Mesa/Qt foundation, per-package logs and resumable stamps.
 - scripts/patch-aurasearch.py: fail-closed patch against the pinned Plasma workspace source.
 - scripts/install-assets.sh: install common assets into an offline Aether root.
+- scripts/build-aether-devices.py: build the Aether Devices manager + hotplug notifier and install the udev/modules-load/autostart policy (see `../../src/devices/README.md`).
+- scripts/build-desktop-pnp-utils.py: build `pciutils` (lspci) and pinned `usbutils` (lsusb).
+- configs/kernel-pnp.delta.config: plug-and-play driver classes merged into the desktop kernel build by `build-desktop-kernel.sh`.
 
 Native builds use nproc CPUs and the baseline x86-64 ISA, not -march=native. LLVM link concurrency is limited independently to avoid exhausting RAM while compilations use every CPU. A complete reproducible release still needs architecture-specific dependency/build manifests and image validation.
 

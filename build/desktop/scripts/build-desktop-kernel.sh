@@ -13,10 +13,23 @@ cp "$base/next/configs/guest-kernel.config" "$out/.config"
 for opt in BLK_DEV_LOOP INPUT_UINPUT OVERLAY_FS SQUASHFS SQUASHFS_XZ SQUASHFS_ZSTD MOUSE_PS2_VMMOUSE; do
  "$src/scripts/config" --file "$out/.config" --enable "$opt"
 done
+# Windows-style plug-and-play device classes (webcams, USB serial, SD cards,
+# NTFS/exFAT media, Thunderbolt, joysticks, RTC). See configs/kernel-pnp.delta.config.
+while IFS='=' read -r opt value; do
+ case "$opt" in
+  CONFIG_*) case "$value" in
+    y) "$src/scripts/config" --file "$out/.config" --enable "$opt";;
+    m) "$src/scripts/config" --file "$out/.config" --module "$opt";;
+   esac;;
+ esac
+done < "$base/desktop/configs/kernel-pnp.delta.config"
 "$src/scripts/config" --file "$out/.config" --set-str LOCALVERSION '-aether3'
 make -C "$src" O="$out" olddefconfig
 for opt in EFI EFIVAR_FS DRM_BOCHS DRM_VBOXVIDEO OVERLAY_FS SQUASHFS BLK_DEV_LOOP INPUT_UINPUT MOUSE_PS2_VMMOUSE; do
  grep -qx "CONFIG_$opt=y" "$out/.config"
+done
+for opt in MEDIA_SUPPORT USB_VIDEO USB_SERIAL MMC NTFS3 EXFAT THUNDERBOLT RTC_DRV_CMOS INPUT_JOYDEV; do
+ grep -Eq "^CONFIG_${opt}=[ym]$" "$out/.config" || { echo "PnP kernel option CONFIG_$opt did not take effect." >&2; exit 1; }
 done
 make -C "$src" O="$out" -j"$(nproc)" bzImage modules
 mkdir -p "$stage/boot"

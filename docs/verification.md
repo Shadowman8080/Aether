@@ -105,6 +105,7 @@ These are recorded because they explain why naive instructions will not work:
 | **HDR / VRR** | Not tested. |
 | **Accessibility workflows** | Not tested end to end. |
 | **Removable / encrypted media** | Not tested. |
+| **Plug-and-play devices** | udev device policy, the Aether Devices manager, hotplug notifications, `lspci`/`lsusb` and the extra kernel driver classes are implemented in source but **not compiled or boot-tested**; no physical-hardware claim. |
 | **Multi-user lock boundaries** | Not tested. |
 | **Aether Server edition** | Catalog/backend unit tests only. No compile, ISO, role software, adcli or booted server. |
 

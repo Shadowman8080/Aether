@@ -37,6 +37,13 @@ chroot "$initrd" /bin/sh -n /shutdown
 release=$(cat "$base/build/desktop-kernel-stage/kernel-release")
 install -m644 "$root/boot/vmlinuz-$release" "$stage/boot/vmlinuz"
 printf '0.3\n' >"$stage/live/aether-release"
+# Windows-style hardware database: merge hwdata + systemd's udev hwdb files
+# into the binary /usr/lib/udev/hwdb.bin so udev can name devices correctly
+# in the offline live image. A failure warns instead of aborting the image.
+if [ -x "$root/usr/bin/systemd-hwdb" ]; then
+	chroot "$root" /usr/bin/systemd-hwdb update \
+		|| echo 'WARNING: systemd-hwdb update failed inside the image root; device naming may be incomplete.' >&2
+fi
 mksquashfs "$root" "$stage/live/rootfs.squashfs" -noappend -comp xz -processors "$(nproc)" -one-file-system -wildcards -e 'dev/*' 'proc/*' 'sys/*' 'run/*' 'tmp/*' 'build/*' 'sources/*' 'recipes/*'
 cat >"$stage/boot/grub/grub.cfg" <<'EOF'
 set default=0

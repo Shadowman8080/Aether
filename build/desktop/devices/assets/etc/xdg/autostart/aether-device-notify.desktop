@@ -1,0 +1,9 @@
+[Desktop Entry]
+Type=Application
+Name=Aether Device Notifications
+Comment=Show a notification when hardware devices are plugged in or removed
+Exec=/usr/bin/aether-device-notify
+Icon=computer
+Terminal=false
+NoDisplay=true
+X-GNOME-Autostart-enabled=true

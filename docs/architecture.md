@@ -17,6 +17,7 @@ seams are still unfinished.
 │  First-party apps   AuraSearch   launcher / search / calc    │
 │                     Nimbrel      on-device AI assistant      │
 │                     Vector       applications & files       │
+│                     Aether Devices  plug-and-play manager   │
 │                     Aether Security Center, installer        │
 ├──────────────────────────────────────────────────────────────┤
 │  Integration        NetworkManager (DHCP/DNS)               │
@@ -138,6 +139,11 @@ These are architectural gaps, not just missing features:
 - **`/boot` is unencrypted.** LUKS2 covers the root filesystem only.
 - **No deployed repository.** The installed update and recovery tooling is tested,
   but production trust and repository infrastructure remain unconfigured.
+- **Device hardware is source-built, not hardware-tested.** The plug-and-play
+  layer (udev policy, the Aether Devices manager, hotplug notifications and the
+  extra kernel driver classes) is implemented but has not been compiled into an
+  image or booted on physical devices; there is still no hardware support
+  policy.
 - **Thin AppArmor coverage.** Most desktop applications run unconfined.
 - **Session isolation is weaker on VMware.** Clipboard support causes X11 to be
   selected, which increases isolation risk between applications sharing a

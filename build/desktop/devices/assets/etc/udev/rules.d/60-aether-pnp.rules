@@ -1,0 +1,20 @@
+# SPDX-License-Identifier: GPL-3.0-or-later
+# Aether plug-and-play policy.
+#
+# These rules give Aether its Windows-style plug-and-play behaviour:
+#   1. tag hotplugged devices so the Aether Devices manager and the
+#      aether-device-notify session helper can watch them;
+#   2. keep removable block media fully discoverable (all partitions);
+#   3. do not interfere with systemd's own 60-*.rules, which are what actually
+#      load kernel modules by modalias when a device appears.
+
+# Tag visible, physical hotplug events for the Aether layer.
+SUBSYSTEM=="usb|block|net|input|sound|video4linux|drm|tty|gpio|i2c|spi|hwmon|thermal|rtc|power_supply", ACTION=="add|remove|change", ENV{AETHER_PNP}="1", TAG+="aether-devices"
+
+# Removable media: create partition devices so file managers and the
+# installer see whole USB sticks rather than only the first partition.
+SUBSYSTEM=="block", ACTION=="add", KERNEL=="sd*|sr*|vd*|mmcblk*", OPTIONS+="all_partitions"
+
+# Game controllers and joysticks are ordinary input devices; keep the evdev
+# nodes predictable for the login seat (systemd's 71-seat rules do the rest).
+KERNEL=="js*", MODE="0664", GROUP="input", TAG+="uaccess"

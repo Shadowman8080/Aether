@@ -1,0 +1,11 @@
+[Desktop Entry]
+Type=Application
+Name=Aether Devices
+GenericName=Device Manager
+Comment=View, monitor and manage plug-and-play hardware devices
+Exec=aether-devices
+Icon=computer
+Terminal=false
+Categories=System;HardwareSettings;Qt;
+Keywords=Device;Hardware;Plug and Play;USB;PCI;Hotplug;
+StartupNotify=true

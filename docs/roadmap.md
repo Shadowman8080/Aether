@@ -32,7 +32,10 @@ it could honestly be called a release, roughly in dependency order.
   plus enforced device and capture controls.
 - Multi-user testing of screen lock, suspend and accessibility boundaries.
 - FIDO2 / central identity / biometrics.
-- USB and Thunderbolt device enrollment.
+- USB and Thunderbolt device enrollment. The plug-and-play layer itself — udev
+  policy, driver auto-loading, the Aether Devices manager and hotplug
+  notifications — is implemented in source; enrollment policy, trusted-device
+  state and hardware-backed verification remain.
 - Audited update rollback.
 - Protected remote logging and detections.
 - Independent, immutable backups separate from the restic repository.

@@ -1,0 +1,21 @@
+cmake_minimum_required(VERSION 3.25)
+project(AetherDevices VERSION 0.1 LANGUAGES CXX)
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_AUTOMOC ON)
+set(CMAKE_AUTORCC ON)
+set(CMAKE_AUTOUIC ON)
+
+find_package(Qt6 REQUIRED COMPONENTS Core Gui Widgets DBus)
+
+add_executable(aether-devices main.cpp)
+target_link_libraries(aether-devices PRIVATE Qt6::Core Qt6::Gui Qt6::Widgets)
+target_compile_options(aether-devices PRIVATE -Wall -Wextra -Wpedantic -fstack-protector-strong)
+target_link_options(aether-devices PRIVATE -Wl,-z,relro,-z,now)
+install(TARGETS aether-devices RUNTIME DESTINATION bin)
+
+add_executable(aether-device-notify notify/main.cpp)
+target_link_libraries(aether-device-notify PRIVATE Qt6::Core Qt6::DBus)
+target_compile_options(aether-device-notify PRIVATE -Wall -Wextra -Wpedantic -fstack-protector-strong)
+target_link_options(aether-device-notify PRIVATE -Wl,-z,relro,-z,now)
+install(TARGETS aether-device-notify RUNTIME DESTINATION bin)

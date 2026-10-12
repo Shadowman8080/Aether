@@ -18,6 +18,12 @@
     "checksum_source": "https://download.kde.org/stable/release-service/26.04.3/src/kdialog-26.04.3.tar.xz.sha256"
   },
   {
+    "key": "usbutils",
+    "url": "https://github.com/gregkh/usbutils/archive/v018/usbutils-018.tar.gz",
+    "sha256_expected": "7cb6f475730e6ac3348ced5def99974a5fa2897fda317808c64ca3e5139d0a9e",
+    "checksum_source": "https://github.com/gregkh/usbutils/archive/v018/usbutils-018.tar.gz"
+  },
+  {
     "key": "orca",
     "url": "https://download.gnome.org/sources/orca/50/orca-50.2.tar.xz",
     "sha256_expected": "0714421cde8ec4baf47f18e4b4a12b4e5c4a3cfe3b161569e070fe037713fd04",

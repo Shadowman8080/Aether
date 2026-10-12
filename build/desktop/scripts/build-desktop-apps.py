@@ -12,4 +12,8 @@ for name in ('dolphin', 'konsole', 'kate', 'ark', 'gwenview', 'okular',
              'kcalc', 'kio-extras', 'kdialog'):
     build(name)
 runpy.run_path('/recipes/scripts/build-vector.py', run_name='__main__')
+# Plug-and-play: the Aether Devices manager, the udev/hwdb/driver wiring and
+# the hardware enumeration utilities (lspci / lsusb).
+runpy.run_path('/recipes/scripts/build-aether-devices.py', run_name='__main__')
+runpy.run_path('/recipes/scripts/build-desktop-pnp-utils.py', run_name='__main__')
 print('Desktop applications installed; launch and file-operation tests remain required.', flush=True)

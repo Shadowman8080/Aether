@@ -122,6 +122,7 @@ are unit-tested, and nothing has been compiled or booted yet.
 | **Search** | AuraSearch — first-party launcher and search shell |
 | **AI** | Nimbrel + llama.cpp + Qwen3.5 0.8B, fully on-device |
 | **Files** | Vector — first-party applications & files browser |
+| **Devices** | Aether Devices — plug-and-play manager + hotplug notifications, udev/hwdb policy, driver auto-loading |
 | **Security** | nftables default-deny, AppArmor, `aether-security-status`, PAM lockout, cryptsetup/LUKS2 |
 | **Backups** | restic 0.19.1, encrypted, user-driven setup, no backup until it succeeds |
 | **Updates** | GnuPG package signing + TUF repository tooling — built and tested, **not deployed** |
@@ -285,6 +286,9 @@ The full per-area breakdown lives in [`docs/verification.md`](docs/verification.
 **Not verified**
 
 - **No physical hardware.** Every result is from virtualised or emulated CPUs
+- **Plug-and-play devices** are implemented in source (udev policy, device
+  manager, hotplug notifications, kernel driver classes) but **not yet compiled
+  into an image or boot-tested** — no hardware support claim exists
 - **x86_64 only.** i686, ARM64 and Raspberry Pi desktop images are not built or
   updated. (`x64` and `x86_64` are the same architecture.)
 - **Secure Boot is unsupported** and kernel module signatures are *not enforced*

@@ -1,0 +1,16 @@
+#!/bin/sh
+# SPDX-License-Identifier: GPL-3.0-or-later
+# Aether plug-and-play: rescan every bus for hardware changes.
+#
+# Equivalent of the Windows Device Manager "Scan for hardware changes" action.
+# systemd-udev re-triggers driver matching (modalias -> modprobe) for every
+# device, so anything plugged in while the graph was idle is now bound.
+# Run through pkexec by Aether Devices; harmless to run by hand as root.
+set -eu
+export PATH=/usr/bin:/usr/sbin:/bin:/sbin
+[ "$(id -u)" -eq 0 ] || exec pkexec /usr/libexec/aether-device-rescan
+
+udevadm trigger --type=subsystems --action=add
+udevadm trigger --type=devices --action=add
+udevadm settle
+echo "aether-device-rescan: hardware rescan complete"

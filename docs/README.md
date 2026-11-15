@@ -9,11 +9,17 @@ desktop release is 0.3.2 development for x86_64 (also called x64).
 ## Start using Aether
 
 - [Getting started](getting-started.md): downloads, VMware setup, login and first steps.
+- [Screenshot gallery](screenshots.md): desktop, installer, encryption and boot
+  captures from a running Aether VM.
 - [Current features and verified results](modern-desktop-20261006.md): Settings,
   applications, local AI, recovery and the limits of current testing.
 - [VMware and VirtualBox integration](guest-integration-status.md): clipboard,
   mouse integration and host settings.
 - [Nimbrel local AI](../src/nimbrel/README.md): how the assistant works and its limits.
+- [Installing several applications at once](beam.md): parallel preparation, one
+  package transaction at a time.
+- [Aether Pilot](pilot.md): Copilot-style actions that a person confirms and the
+  machine records.
 - [Sounds](sounds.md) and [icon motion](icon-motion.md): desktop feedback and reduced motion.
 
 ## Security, updates and recovery
@@ -23,6 +29,12 @@ desktop release is 0.3.2 development for x86_64 (also called x64).
 - [Release signing-key setup](../src/updates/LOCAL-KEY-SETUP.md): operator procedures
   for establishing release trust. Ordinary users do not need publisher keys.
 - [Security implementation](../src/security/SECURITY.md): protection mechanisms and limitations.
+- [Physical UEFI Secure Boot test plan](secure-boot-physical-test-plan.md):
+  enrollment, signed live boot, install, revocation and recovery checks on real
+  hardware.
+- [Printable Secure Boot checklist](secure-boot-physical-checklist.html) and
+  [JSON evidence template](secure-boot-evidence-template.json): field forms for
+  recording a physical test run.
 - [Optional USB protection](usb-protection.md): next-image trial and recovery instructions.
 - [Report a vulnerability](../SECURITY.md): the project's reporting policy.
 
@@ -35,7 +47,8 @@ production update feed is available. Flatpak sources are a separate, explicit op
 - [System architecture](architecture.md).
 - [Contributing](../CONTRIBUTING.md), [code of conduct](../CODE_OF_CONDUCT.md)
   and [licensing](licensing.md).
-- [Screenshots and videos](../media/README.md).
+- [Screenshots and videos](../media/README.md), including the
+  [documentation gallery](screenshots.md).
 
 ## Release records and future work
 
@@ -45,9 +58,15 @@ production update feed is available. Flatpak sources are a separate, explicit op
 - [0.3.1 build record](release-20261006.md) describes an unpublished, superseded draft.
 - [Earlier 0.3 verification](verification.md) and [original roadmap](roadmap.md)
   provide historical context; consult the current record for completed work.
+- [Encrypted OVMF source-runtime record](verification/20261113/encrypted-ovmf.json)
+  records the encrypted backend and both-passphrase boot evidence.
 
 The desktop currently targets x86_64. Historical x86 and ARM prototypes are not
-current desktop ports. VM tests do not certify physical hardware or Secure Boot.
+current desktop ports — see [ARM64 status](arm64.md) for exactly what exists. VM
+tests do not certify physical hardware. Secure Boot has QEMU/OVMF, VMware
+Workstation and VirtualBox boot evidence; physical hardware remains untested.
+See [Secure Boot](secure-boot.md) and the
+[physical test plan](secure-boot-physical-test-plan.md).
 
 ## Improving these docs
 

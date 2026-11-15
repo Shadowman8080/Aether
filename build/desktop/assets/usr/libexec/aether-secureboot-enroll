@@ -1,0 +1,111 @@
+#!/usr/bin/env python3
+"""Enroll the Aether Secure Boot key hierarchy in firmware Setup Mode.
+
+The private PK/KEK/db keys are never stored on the image. This helper only
+writes the public authenticated variable updates in /usr/share/aether/secureboot.
+Run it as root through pkexec from the installer.
+"""
+import json
+import os
+import ssl
+import subprocess
+import sys
+from pathlib import Path
+
+ASSETS = Path("/usr/share/aether/secureboot")
+EFIVARS = Path("/sys/firmware/efi/efivars")
+EFI_UPDATEVAR = Path("/usr/libexec/aether-efi-updatevar")
+GUID = "8be4df61-93ca-11d2-aa0d-00e098032b8c"
+
+
+def read_var(name):
+    try:
+        data = (EFIVARS / f"{name}-{GUID}").read_bytes()
+    except OSError:
+        return None
+    return data[4:] if len(data) >= 4 else None
+
+
+def cert_der():
+    try:
+        return ssl.PEM_cert_to_DER_cert((ASSETS / "db.crt").read_text())
+    except (OSError, ValueError, ssl.SSLError):
+        return None
+
+
+def db_has_aether_cert():
+    db = read_var("db")
+    der = cert_der()
+    return bool(db and der and der in db)
+
+
+def status():
+    secure = read_var("SecureBoot")
+    setup = read_var("SetupMode")
+    available = EFIVARS.is_dir() and EFI_UPDATEVAR.exists()
+    return {
+        "available": available,
+        "secure_boot": bool(secure and secure[0] == 1),
+        "setup_mode": bool(setup and setup[0] == 1),
+        "aether_key_enrolled": db_has_aether_cert(),
+        "can_enroll": available and bool(setup and setup[0] == 1) and
+                      all((ASSETS / name).is_file() for name in ("PK.auth", "KEK.auth", "db.auth")),
+    }
+
+
+def mount_efivarfs():
+    if os.path.ismount(EFIVARS):
+        return
+    EFIVARS.mkdir(parents=True, exist_ok=True)
+    result = subprocess.run(["/usr/bin/mount", "-t", "efivarfs", "efivarfs", str(EFIVARS)],
+                            capture_output=True, text=True)
+    if result.returncode != 0:
+        raise SystemExit("Cannot mount efivarfs: " + result.stderr.strip())
+
+
+def enroll():
+    if os.geteuid() != 0:
+        raise SystemExit("Enrollment must run with administrator rights.")
+    if not status()["available"]:
+        raise SystemExit("Firmware variables or /usr/bin/efi-updatevar are unavailable.")
+    mount_efivarfs()
+    state = status()
+    if state["aether_key_enrolled"]:
+        print("Aether's Secure Boot key is already enrolled.")
+        return 0
+    if not state["setup_mode"]:
+        raise SystemExit("Firmware is not in Setup Mode. Clear the Secure Boot keys in "
+                         "firmware setup, or disable Secure Boot, before enrolling Aether.")
+    env = dict(os.environ)
+    env["PATH"] = "/usr/bin:/usr/sbin:/bin:/sbin"
+    for name in ("PK", "KEK", "db"):
+        auth = ASSETS / f"{name}.auth"
+        print("Enrolling " + name, flush=True)
+        result = subprocess.run([str(EFI_UPDATEVAR), "-f", str(auth), name],
+                                capture_output=True, text=True, env=env)
+        if result.returncode != 0:
+            message = (result.stderr or result.stdout).strip()
+            raise SystemExit(f"Enrolling {name} failed: {message}")
+    subprocess.run(["sync"], check=False)
+    if not db_has_aether_cert():
+        raise SystemExit("The db write completed, but Aether's certificate was not found. "
+                         "Reboot into firmware setup and verify the key database.")
+    print("AETHER_SECUREBOOT_ENROLLED")
+    return 0
+
+
+def main():
+    if "--status" in sys.argv:
+        print(json.dumps(status()))
+        return 0
+    return enroll()
+
+
+if __name__ == "__main__":
+    try:
+        sys.exit(main())
+    except SystemExit:
+        raise
+    except Exception as error:
+        print("AETHER_SECUREBOOT_ERROR " + str(error), file=sys.stderr)
+        sys.exit(1)

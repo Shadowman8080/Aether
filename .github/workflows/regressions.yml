@@ -63,6 +63,10 @@ jobs:
         run: python src/updates/verify.py --output test-results/updates
       - name: Verify privacy, preferences and recovery validation
         run: python src/controlcenter/test_features.py
+      - name: Verify concurrent install scheduling and architecture guards
+        run: python src/beam/test_beam.py
+      - name: Verify assistant action catalog, confirmation and audit
+        run: python src/pilot/test_pilot.py
       - name: Verify offline inventory boundaries
         run: python src/updates/test_inventory.py
       - name: Verify network trust boundaries

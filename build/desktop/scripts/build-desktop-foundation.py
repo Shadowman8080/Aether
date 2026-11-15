@@ -4,7 +4,21 @@ manifest={x['key']:x for x in json.loads(Path('/recipes/configs/sources.json').r
 root=Path('/build'); jobs=str(os.cpu_count())
 for name in ('packages','logs','done'): (root/name).mkdir(exist_ok=True)
 def run(cmd,cwd,log): subprocess.run(cmd,cwd=cwd,stdout=log,stderr=subprocess.STDOUT,check=True)
+STATE={'phase':'build'}
+def _record_failure(key):
+ with (root/'failures.txt').open('a') as f: f.write(key+'\t'+str(root/'logs'/(key+'.log'))+'\n')
+ print('FAIL',key,flush=True)
 def build(key,kind='cmake',opts=()):
+ try:
+  _build(key,kind,opts)
+ except Exception:
+  _record_failure(key)
+  # A missing dependency shows up while configuring. Keep going so a single pass
+  # names every blocker instead of dying at the first one; a compile or install
+  # failure can leave a partial install behind, so that still stops the stage.
+  if STATE['phase']!='configure' or os.environ.get('AETHER_STRICT')=='1': raise
+def _build(key,kind='cmake',opts=()):
+ STATE['phase']='build'
  if os.environ.get('AETHER_BUILD_ONLY') and key not in os.environ['AETHER_BUILD_ONLY'].split(','): return
  item=manifest[key]; stamp=root/'done'/key
  if stamp.exists(): return
@@ -22,7 +36,9 @@ def build(key,kind='cmake',opts=()):
   else:
    with tarfile.open(archive) as t: t.extractall(dest,filter='data')
   (dest/'.extracted').touch()
- src=dest if key=='docbook-45-xml' else next(p for p in dest.iterdir() if p.is_dir())
+ src=dest if key in ('docbook-45-xml','inter-font') else next(p for p in dest.iterdir() if p.is_dir())
+ # Some Xorg libraries have dropped autotools in their release tarballs.
+ if kind=='autoconf' and not (src/'configure').exists() and not (src/'configure.ac').exists() and (src/'meson.build').exists(): kind='meson'
  with (root/'logs'/(key+'.log')).open('w') as log:
   if key=='gmp': run(['sed','-i','/long long t1;/,+1s/()/(...)/','configure'],src,log)
   if key=='intltool':
@@ -38,23 +54,33 @@ def build(key,kind='cmake',opts=()):
   if key=='kdeplasma-addons': run(['python3','/recipes/scripts/patch-optional-kameleon.py',str(src)],src,log)
   if key=='breeze': run(['python3','/recipes/scripts/patch-aether-decoration.py',str(src)],src,log)
   if kind=='cmake-bootstrap':
+   STATE['phase']='configure'
    run(['./bootstrap','--prefix=/usr','--parallel='+jobs,'--','-DCMAKE_BUILD_TYPE=Release'],src,log)
+   STATE['phase']='build'
    run(['make','-j'+jobs],src,log); run(['make','install'],src,log)
   elif kind=='cmake':
    source=src/key if key in ('llvm','clang') else src
    if key in ('llvm','clang') and not (dest/'.patched').exists():
-    run(['patch','-Np1','-i','/sources/lfs-cache/llvm-22.1.8-upstream_fix-1.patch'],src,log)
+    fix=Path('/sources/lfs-cache/llvm-22.1.8-upstream_fix-1.patch')
+    if fix.exists(): run(['patch','-Np1','-i',str(fix)],src,log)
+    else: print('Upstream fix patch is not present; building unpatched.',file=log)
     (dest/'.patched').touch()
+   STATE['phase']='configure'
    run(['cmake','-S',str(source),'-B','_build','-G','Ninja','-DCMAKE_INSTALL_PREFIX=/usr','-DCMAKE_INSTALL_LIBDIR=lib','-DCMAKE_BUILD_TYPE=Release','-DBUILD_TESTING=OFF','-DCMAKE_INSTALL_LIBEXECDIR=libexec',*opts],src,log)
+   STATE['phase']='build'
    run(['cmake','--build','_build','--parallel',jobs],src,log)
    run(['cmake','--install','_build'],src,log)
   elif kind=='meson':
    more=['--reconfigure'] if (src/'_build/meson-private/coredata.dat').exists() else []
+   STATE['phase']='configure'
    run(['meson','setup',*more,'_build','--prefix=/usr','--libdir=lib','--buildtype=release','--wrap-mode=nodownload',*opts],src,log)
+   STATE['phase']='build'
    run(['ninja','-C','_build','-j',jobs],src,log); run(['ninja','-C','_build','install'],src,log)
   elif kind=='autoconf':
    if not (src/'configure').exists(): run(['autoreconf','-fi'],src,log)
+   STATE['phase']='configure'
    run(['./configure','--prefix=/usr','--sysconfdir=/etc','--localstatedir=/var','--disable-static',*opts],src,log)
+   STATE['phase']='build'
    run(['make','-j'+jobs],src,log)
    if key in ('gmp','mpfr','mpc'): run(['make','-j'+jobs,'check'],src,log)
    run(['make','install'],src,log)
@@ -79,6 +105,12 @@ def build(key,kind='cmake',opts=()):
    run(['python3','/recipes/scripts/build-special-dependency.py',key,str(src),jobs],src,log)
   elif kind=='docbook':
    run(['python3','/recipes/scripts/install-docbook.py',key,str(src)],src,log)
+  elif kind=='font':
+   target=Path('/usr/share/fonts/TTF'); target.mkdir(parents=True,exist_ok=True)
+   faces=[p for p in src.rglob('*') if p.suffix.lower() in ('.ttf','.otf')]
+   assert faces,'No font faces in '+key
+   for face in faces: shutil.copy2(face,target/face.name)
+   run(['fc-cache','-f'],src,log)
   elif kind=='icu':
    (src/'_build').mkdir(exist_ok=True)
    run(['../source/configure','--prefix=/usr','--disable-static'],src/'_build',log)
@@ -98,10 +130,24 @@ def foundation():
  for name in ['Mako','PyYAML']: build(name,'python')
  build('wayland','meson',['-Ddocumentation=false','-Dtests=false'])
  build('wayland-protocols','meson',['-Dtests=false'])
+ # A pure LFS root has no X11 stack. Vulkan's WSI, Mesa's x11 platform and Qt's
+ # xcb platform plugin all configure against it, so build the X11 clients first.
+ for name in ['xorgproto','xtrans','libXau','libXdmcp','xcb-proto','libxcb','libX11','libXext','libXrender','libXfixes','libXrandr','libXcursor','libXcomposite','libXdamage','libXi','libXtst']:
+  build(name,'autoconf')
+ build('libpciaccess','meson')
+ build('libdrm','meson',['-Dtests=false','-Dman-pages=disabled'])
+ build('xkeyboard-config','meson')
+ # The same bare base ships no fonts or font rendering library at all, so Qt
+ # would otherwise configure without text. Build the text stack before Qt.
+ build('libpng',opts=['-DPNG_STATIC=OFF'])
+ build('freetype2','meson')
+ build('fontconfig','autoconf')
+ build('inter-font','font')
  build('vulkan-loader',opts=['-DBUILD_TESTS=OFF','-DBUILD_WSI_WAYLAND_SUPPORT=ON'])
  for name in ['xcb-util','xcb-util-image','xcb-util-keysyms','xcb-util-renderutil','xcb-util-wm','xcb-util-cursor','xcb-util-errors']: build(name,'autoconf')
  build('libxkbcommon','meson',['-Denable-docs=false','-Denable-xkbregistry=true'])
- build('libgudev','meson',['-Dintrospection=disabled','-Dvapi=disabled','-Dtests=disabled'])
+ build('mtdev','autoconf')
+ build('libevdev','meson',['-Dtests=disabled','-Ddocumentation=disabled'])
  build('libinput','meson',['-Ddebug-gui=false','-Dtests=false','-Dlibwacom=false','-Ddocumentation=false','-Dudev-dir=/usr/lib/udev'])
  build('llvm',opts=['-DLLVM_ENABLE_PROJECTS=','-DLLVM_TARGETS_TO_BUILD=X86;AArch64;ARM;AMDGPU','-DLLVM_BUILD_LLVM_DYLIB=ON','-DLLVM_LINK_LLVM_DYLIB=ON','-DLLVM_INCLUDE_TESTS=OFF','-DLLVM_INCLUDE_BENCHMARKS=OFF','-DLLVM_INCLUDE_EXAMPLES=OFF','-DLLVM_ENABLE_RTTI=ON','-DLLVM_PARALLEL_LINK_JOBS=1','-DLLVM_PARALLEL_TABLEGEN_JOBS=2'])
  build('clang',opts=['-DLLVM_DIR=/usr/lib/cmake/llvm','-DLLVM_INCLUDE_TESTS=OFF','-DCLANG_BUILD_TESTS=OFF','-DCLANG_INCLUDE_TESTS=OFF','-DCLANG_BUILD_EXAMPLES=OFF','-DCLANG_BUILD_STATIC_ANALYZER=OFF','-DCLANG_BUILD_ARCMT=OFF','-DCLANG_BUILD_CLANG_TOOLS=OFF','-DCLANG_LINK_CLANG_DYLIB=ON','-DLLVM_LINK_LLVM_DYLIB=ON','-DLLVM_PARALLEL_LINK_JOBS=1','-DLLVM_PARALLEL_TABLEGEN_JOBS=2','-DCMAKE_CXX_FLAGS_RELEASE=-O2 -DNDEBUG --param ggc-min-expand=20 --param ggc-min-heapsize=32768'])

@@ -35,7 +35,20 @@ if not (base/'apparmor.done').exists():
  run(['make','-j1','install','USE_SYSTEM=1'],src/'parser')
  run(['make','install'],src/'profiles')
  (base/'apparmor.done').write_text(items['apparmor']['sha256'])
-auto('devmapper',['--disable-selinux','--disable-udev_sync','--disable-udev_rules','--disable-readline','--enable-pkgconfig'],['device-mapper','install_device-mapper'])
+if not (base/'lvm2.done').exists():
+ src=extract('devmapper')
+ run(['./configure','--prefix=/usr','--sbindir=/usr/sbin','--libdir=/usr/lib',
+      '--with-usrlibdir=/usr/lib','--disable-selinux','--disable-udev_sync',
+      '--disable-udev_rules','--disable-readline','--disable-systemd-journal',
+      '--disable-sd-notify','--disable-fsadm','--disable-lvmimportvdo',
+      '--disable-blkdeactivate','--disable-use-lvmpolld','--enable-pkgconfig'],src)
+ run(['make','-j'+jobs,'tools'],src)
+ # install_lvm2 pulls in the generated man-page index, which is absent from
+ # some release tarballs. Install the runtime subtrees explicitly instead.
+ for directory in ('lib','libdm','conf','tools','scripts'):
+  run(['make','-C',directory,'install'],src)
+ run(['ldconfig'],src)
+ (base/'lvm2.done').write_text(items['devmapper']['sha256'])
 auto('cryptsetup',['--disable-asciidoc','--disable-ssh-token','--disable-pwquality','--disable-external-tokens','--disable-udev'])
 auto('dosfstools',['--enable-compat-symlinks'])
 auto('cpio',['--enable-mt','--with-rmt=/usr/libexec/rmt','CFLAGS=-O2 -pipe -std=gnu17 -fstack-protector-strong -D_FORTIFY_SOURCE=3'])

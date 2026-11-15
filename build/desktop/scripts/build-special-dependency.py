@@ -16,7 +16,7 @@ if key=='lua':
   p.symlink_to('liblua.so.5.4.8')
  Path('/usr/lib/pkgconfig/lua.pc').write_text('prefix=/usr\nlibdir=${prefix}/lib\nincludedir=${prefix}/include\nName: Lua\nDescription: Lua language runtime\nVersion: 5.4.8\nLibs: -L${libdir} -llua\nLibs.private: -lm -ldl\nCflags: -I${includedir}\n')
 elif key=='libvpx':
- run('./configure','--prefix=/usr','--enable-shared','--enable-pic','--disable-examples','--disable-tools','--disable-docs','--disable-unit-tests')
+ run('./configure','--prefix=/usr','--enable-shared','--enable-pic','--as=nasm','--disable-examples','--disable-tools','--disable-docs','--disable-unit-tests')
  run('make','-j'+jobs)
  run('make','install')
 elif key=='ffmpeg':
@@ -25,8 +25,9 @@ elif key=='ffmpeg':
  run('make','install')
 else:
  src=src/'wpa_supplicant'
- options=['CONFIG_DRIVER_NL80211=y','CONFIG_LIBNL32=y','CONFIG_CTRL_IFACE=y','CONFIG_CTRL_IFACE_DBUS_NEW=y','CONFIG_CTRL_IFACE_DBUS_INTRO=y','CONFIG_DEBUG_SYSLOG=y','CONFIG_IPV6=y','CONFIG_TLS=openssl','CONFIG_IEEE80211W=y','CONFIG_SAE=y','CONFIG_OWE=y','CONFIG_EAP_TLS=y','CONFIG_EAP_PEAP=y','CONFIG_EAP_TTLS=y','CONFIG_EAP_MSCHAPV2=y','CONFIG_WPS=y','CONFIG_PKCS12=y','CONFIG_SMARTCARD=y','CONFIG_INTERWORKING=y','CONFIG_IEEE80211R=y','CONFIG_P2P=y','CONFIG_AP=y']
+ options=['CONFIG_DRIVER_NL80211=y','CONFIG_LIBNL32=y','CONFIG_CTRL_IFACE=y','CONFIG_CTRL_IFACE_DBUS_NEW=y','CONFIG_CTRL_IFACE_DBUS_INTRO=y','CONFIG_DEBUG_SYSLOG=y','CONFIG_IPV6=y','CONFIG_TLS=openssl','CONFIG_IEEE80211W=y','CONFIG_SAE=y','CONFIG_OWE=y','CONFIG_EAP_TLS=y','CONFIG_EAP_PEAP=y','CONFIG_EAP_TTLS=y','CONFIG_EAP_MSCHAPV2=y','CONFIG_WPS=y','CONFIG_PKCS12=y','CONFIG_INTERWORKING=y','CONFIG_HS20=y','CONFIG_IEEE80211R=y','CONFIG_P2P=y','CONFIG_AP=y']
  (src/'.config').write_text('\n'.join(options)+'\n')
+ subprocess.run(['make','clean'],cwd=src,check=True)
  subprocess.run(['make','-j'+jobs,'BINDIR=/usr/sbin','LIBDIR=/usr/lib'],cwd=src,check=True)
  for name in ('wpa_cli','wpa_passphrase','wpa_supplicant'): install(src/name,'/usr/sbin/'+name,0o755)
  for p in (src/'systemd').glob('*.service'): install(p,'/usr/lib/systemd/system/'+p.name)

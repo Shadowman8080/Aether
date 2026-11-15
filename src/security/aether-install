@@ -153,7 +153,7 @@ def main(config=None):
     if backup and (not backup.startswith('/') or '\n' in backup):
         raise SystemExit('Use an absolute Linux path for the backup destination.')
     print('Disk:', chosen, '\nEncryption:', 'LUKS2' if encrypt else 'None', '\nAccount:', user)
-    print('Boot files remain on unencrypted /boot. Secure Boot is a separate, currently unfinished feature.')
+    print('Boot files remain on unencrypted /boot. UEFI installations can enroll Aether Secure Boot keys from the graphical installer when firmware is in Setup Mode.')
     confirmation = config.get('confirmation','') if config is not None else input('To erase this disk, type ERASE ' + chosen + ': ')
     if confirmation != 'ERASE ' + chosen:
         if config is not None: raise ValueError('Disk erase confirmation did not match.')

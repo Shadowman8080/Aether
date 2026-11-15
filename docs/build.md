@@ -68,6 +68,9 @@ revision, SHA-256, byte count and licence.
 - The kernel is built in-tree as `6.18.54-aether4` with nftables, AppArmor, Yama
   and Landlock, plus stack-offset randomisation, hardened usercopy, FORTIFY,
   allocation initialisation, IOMMU defaults and zram.
+- The installed encrypted-root initramfs is built with source-built cryptsetup
+  and LVM2 from the security-edition package stage. The release asset builder
+  rejects a runtime with host-library fallbacks.
 - Module signature *support* is compiled in but signatures are **not enforced**.
 
 ## Producing images

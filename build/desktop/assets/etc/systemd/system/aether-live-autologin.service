@@ -1,0 +1,13 @@
+[Unit]
+Description=Aether live session account and autologin
+Before=lightdm.service
+After=systemd-user-sessions.service
+[Service]
+Type=oneshot
+ExecStartPre=/bin/sh -c 'echo AETHER_LIVE_AUTOLOGIN_UNIT > /dev/console'
+ExecStart=/usr/libexec/aether-live-autologin
+StandardOutput=journal+console
+StandardError=journal+console
+RemainAfterExit=yes
+[Install]
+WantedBy=graphical.target

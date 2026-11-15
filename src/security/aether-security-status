@@ -4,6 +4,7 @@ import json
 import os
 from pathlib import Path
 import shutil
+import ssl
 import subprocess
 import sys
 
@@ -12,6 +13,14 @@ def read(path):
         return Path(path).read_text().strip()
     except (OSError, UnicodeError):
         return None
+
+def aether_key_enrolled():
+    try:
+        der = ssl.PEM_cert_to_DER_cert(Path('/usr/share/aether/secureboot/db.crt').read_text())
+        db = next(Path('/sys/firmware/efi/efivars').glob('db-*')).read_bytes()
+    except (OSError, StopIteration, ValueError, ssl.SSLError):
+        return False
+    return bool(der and der in db)
 
 def command(args):
     try:
@@ -26,12 +35,22 @@ def report():
         rows.append(dict(control=id, state=state, detail=detail))
     add('Release maintenance', 'development', 'Aether 0.3 has no production security-update repository or support SLA yet.')
     secure = list(Path('/sys/firmware/efi/efivars').glob('SecureBoot-*'))
+    setup = list(Path('/sys/firmware/efi/efivars').glob('SetupMode-*'))
     try:
         value = secure[0].read_bytes()[4] if secure else None
+        setup_value = setup[0].read_bytes()[4] if setup else None
     except (OSError, IndexError):
-        value = None
-    add('Secure Boot', 'enabled' if value == 1 else 'disabled' if value == 0 else 'unavailable',
-        'Firmware state only; this does not establish that every Aether boot artifact is authenticated.')
+        value = setup_value = None
+    enrolled = aether_key_enrolled()
+    if value == 1 and enrolled:
+        state, detail = 'enabled; Aether key enrolled', 'Firmware Secure Boot is on and db contains the Aether certificate. This authenticates the signed boot chain, not every installed package.'
+    elif value == 1:
+        state, detail = 'enabled; Aether key not found', 'Secure Boot is on but the Aether db certificate was not found; an Aether-signed chain is not trusted.'
+    elif value == 0 and setup_value == 1:
+        state, detail = 'setup mode', 'Firmware keys can be enrolled; Secure Boot is not currently enforcing signatures.'
+    else:
+        state, detail = ('disabled' if value == 0 else 'unavailable'), 'Firmware Secure Boot state only; this does not establish that every Aether boot artifact is authenticated.'
+    add('Secure Boot', state, detail)
     code, mounts = command(['findmnt', '-n', '-o', 'SOURCE,FSTYPE', '/'])
     add('System storage encryption', 'needs verification', mounts or 'Root backing device unavailable; LUKS tools alone do not encrypt the disk.')
     swaps = read('/proc/swaps') or ''

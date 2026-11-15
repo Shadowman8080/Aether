@@ -1,0 +1,350 @@
+{
+  "template_version": 1,
+  "plan": "docs/secure-boot-physical-test-plan.md",
+  "checklist": "docs/secure-boot-physical-checklist.html",
+  "instructions": {
+    "copy_to": "physical-<vendor>-<model>-<date>/result.json",
+    "status_values": [
+      "pass",
+      "fail",
+      "blocked",
+      "unsupported",
+      "not_run"
+    ],
+    "rules": [
+      "Use pass only when the expected behavior was observed and the evidence was saved.",
+      "A test that was not run is not a pass.",
+      "Use blocked when firmware or hardware prevents the test; do not infer a pass.",
+      "SBAT-01 is unsupported for shipped Aether media. Do not apply an unsigned SBAT update.",
+      "Do not include passwords, private keys, TPM secrets or recovery keys."
+    ]
+  },
+  "tester": {
+    "name": "",
+    "organization": "",
+    "date": "",
+    "contact": ""
+  },
+  "machine": {
+    "vendor": "",
+    "model": "",
+    "serial": "",
+    "firmware_version": "",
+    "firmware_date": "",
+    "architecture": "x86_64",
+    "test_location": "",
+    "disposable_machine": false,
+    "vendor_key_recovery_method": ""
+  },
+  "media": {
+    "iso_name": "",
+    "iso_sha256": "",
+    "expected_iso_sha256": "f8eabb694fe5089c7863d70ebb0c1d8502e8e495c38804c37e0a76ff8cbd5805",
+    "iso_hash_verified": "not_run",
+    "usb_device": "",
+    "whole_disk_write_verified": "not_run",
+    "public_assets_host_path": "",
+    "unsigned_test_binary": "",
+    "second_usb_prepared": false
+  },
+  "preflight": {
+    "safety_gate_confirmed": false,
+    "backups_confirmed": false,
+    "encryption_disabled": false,
+    "non_test_disks_removed": false,
+    "vendor_key_recovery_confirmed": false,
+    "public_assets_present": false,
+    "serial_console_or_camera_ready": false
+  },
+  "firmware": {
+    "initial": {
+      "secure_boot": "",
+      "setup_mode": "",
+      "vendor_keys": "",
+      "csm": "",
+      "fast_boot": ""
+    },
+    "final": {
+      "secure_boot": "",
+      "setup_mode": "",
+      "aether_key_enrolled": ""
+    },
+    "unsigned_binary_rejection_message": ""
+  },
+  "tests": [
+    {
+      "id": "FW-01",
+      "title": "Firmware baseline and Setup Mode",
+      "required": true,
+      "status": "not_run",
+      "expected": "Secure Boot state and key ownership recorded; Setup Mode reached; vendor key restore path documented; test machine remains recoverable.",
+      "observed": "",
+      "message": "",
+      "evidence": [
+        "firmware-before.jpg",
+        "setup-mode.jpg"
+      ],
+      "notes": ""
+    },
+    {
+      "id": "FW-02",
+      "title": "Unsigned EFI binary rejected",
+      "required": true,
+      "status": "not_run",
+      "expected": "Firmware refuses the unsigned BOOTX64.EFI before any Aether code runs; exact message recorded.",
+      "observed": "",
+      "message": "",
+      "evidence": [
+        "unsigned-rejected.jpg"
+      ],
+      "notes": ""
+    },
+    {
+      "id": "ENROLL-01",
+      "title": "Enrollment status before enrollment",
+      "required": true,
+      "status": "not_run",
+      "expected": "available=true, setup_mode=true, secure_boot=false, aether_key_enrolled=false, can_enroll=true.",
+      "observed": "",
+      "message": "",
+      "evidence": [
+        "enroll-status-before.txt"
+      ],
+      "notes": ""
+    },
+    {
+      "id": "ENROLL-02",
+      "title": "Installer GUI enrollment",
+      "required": true,
+      "status": "not_run",
+      "expected": "AETHER_SECUREBOOT_ENROLLED; second status reports aether_key_enrolled=true; Aether certificate present in db.",
+      "observed": "",
+      "message": "",
+      "evidence": [
+        "enroll-gui.jpg",
+        "enroll-status-after.txt",
+        "efivars-secureboot.txt"
+      ],
+      "notes": ""
+    },
+    {
+      "id": "ENROLL-03",
+      "title": "Enrollment refused outside Setup Mode",
+      "required": false,
+      "status": "not_run",
+      "expected": "Helper refuses with 'Firmware is not in Setup Mode'; PK, KEK and db are unchanged.",
+      "observed": "",
+      "message": "",
+      "evidence": [
+        "enroll-refusal.txt"
+      ],
+      "notes": "Use a separate machine with an existing PK and Secure Boot disabled. Not part of the minimum overall pass."
+    },
+    {
+      "id": "LIVE-01",
+      "title": "Signed live ISO boot with Secure Boot on",
+      "required": true,
+      "status": "not_run",
+      "expected": "Live desktop or login reached; secure_boot=true, setup_mode=false, aether_key_enrolled=true, can_enroll=false; no firmware violation.",
+      "observed": "",
+      "message": "",
+      "evidence": [
+        "live-boot.jpg",
+        "live-journal.txt"
+      ],
+      "notes": ""
+    },
+    {
+      "id": "LIVE-02",
+      "title": "Live media with Aether db absent",
+      "required": false,
+      "status": "not_run",
+      "expected": "With vendor keys and Secure Boot on, Aether live media is rejected unless the vendor db already contains Aether's certificate; record which case applies.",
+      "observed": "",
+      "message": "",
+      "evidence": [
+        "live-missing-db-rejected.jpg"
+      ],
+      "notes": "Do this before clearing the vendor keys."
+    },
+    {
+      "id": "INSTALL-01",
+      "title": "Signed install",
+      "required": true,
+      "status": "not_run",
+      "expected": "Installer reports Secure Boot enabled and the Aether signed chain enrolled; erase install completes with no errors.",
+      "observed": "",
+      "message": "",
+      "evidence": [
+        "install-complete.jpg"
+      ],
+      "notes": ""
+    },
+    {
+      "id": "INSTALL-02",
+      "title": "Installed boot and signature verification",
+      "required": true,
+      "status": "not_run",
+      "expected": "aether login: and desktop reached; secure_boot=true and key enrolled; sbverify passes for shim, GRUB and installed UKI.",
+      "observed": "",
+      "message": "",
+      "evidence": [
+        "installed-boot.jpg",
+        "esp-files.txt",
+        "sbverify.txt"
+      ],
+      "notes": ""
+    },
+    {
+      "id": "INSTALL-03",
+      "title": "Repeat installed boot",
+      "required": true,
+      "status": "not_run",
+      "expected": "Second reboot reaches the same login prompt and desktop with Secure Boot enabled.",
+      "observed": "",
+      "message": "",
+      "evidence": [
+        "installed-reboot.jpg"
+      ],
+      "notes": ""
+    },
+    {
+      "id": "REVOKE-01",
+      "title": "Add Aether db certificate to firmware dbx",
+      "required": true,
+      "status": "not_run",
+      "expected": "Firmware accepts the certificate, hash or ESL; both live and installed media are rejected before shim or GRUB; exact messages and firmware log recorded.",
+      "observed": "",
+      "message": "",
+      "evidence": [
+        "revocation-dbx.jpg",
+        "revocation-boot-failure.jpg"
+      ],
+      "notes": "Use a photo or transcript for both the live and installed attempts."
+    },
+    {
+      "id": "REVOKE-02",
+      "title": "Unsigned dbx update refused",
+      "required": false,
+      "status": "not_run",
+      "expected": "Firmware refuses the unsigned update and dbx is unchanged.",
+      "observed": "",
+      "message": "",
+      "evidence": [
+        "dbx-unsigned-refused.txt"
+      ],
+      "notes": "Record the before and after dbx state. Mark blocked if the firmware cannot perform this test."
+    },
+    {
+      "id": "REVOKE-03",
+      "title": "Signed dbx update (laboratory only)",
+      "required": false,
+      "status": "not_run",
+      "expected": "Disposable test hierarchy accepted; test image signed by the revoked test db is rejected; wrong-key update refused; rotation behaves as described. This is not an Aether production artifact.",
+      "observed": "",
+      "message": "",
+      "evidence": [
+        "dbx-signed-lab.txt"
+      ],
+      "notes": "Use only a disposable test machine or VM and a disposable test PKI. Never use Aether release private keys."
+    },
+    {
+      "id": "REVOKE-04",
+      "title": "Recovery and re-enrollment",
+      "required": true,
+      "status": "not_run",
+      "expected": "dbx entry removed or keys cleared; Setup Mode reached; Aether public keys enrolled; signed live and installed media boot again.",
+      "observed": "",
+      "message": "",
+      "evidence": [
+        "recovery-boot.jpg",
+        "recovery-status.txt"
+      ],
+      "notes": "Record recovery separately from the initial enrollment result."
+    },
+    {
+      "id": "SBAT-01",
+      "title": "SBAT revocation",
+      "required": false,
+      "status": "unsupported",
+      "expected": "Unsupported for shipped Aether media; do not apply an unsigned SBAT update. The disposable OVMF lab fixture covers the mechanism separately.",
+      "observed": "",
+      "message": "",
+      "evidence": [
+        "sbat-metadata.txt"
+      ],
+      "notes": "SBAT-01 is not a pass. Do not mark it pass because the shim boots."
+    }
+  ],
+  "overall": {
+    "required_tests": [
+      "FW-01",
+      "FW-02",
+      "ENROLL-01",
+      "ENROLL-02",
+      "LIVE-01",
+      "INSTALL-01",
+      "INSTALL-02",
+      "INSTALL-03",
+      "REVOKE-01",
+      "REVOKE-04"
+    ],
+    "optional_tests": [
+      "ENROLL-03",
+      "LIVE-02",
+      "REVOKE-02",
+      "REVOKE-03"
+    ],
+    "unsupported_tests": [
+      "SBAT-01"
+    ],
+    "result": "not_run",
+    "blocking_failures": [],
+    "limitations_acknowledged": false,
+    "notes": "",
+    "tester_signature": "",
+    "reviewer_signature": "",
+    "date": ""
+  },
+  "evidence": {
+    "directory": "physical-<vendor>-<model>-<date>",
+    "result_file": "result.json",
+    "completed_checklist": "secure-boot-physical-checklist.pdf",
+    "checksum_file": "SHA256SUMS",
+    "required_files": [
+      "README.txt",
+      "secure-boot-physical-checklist.pdf",
+      "result.json",
+      "firmware-before.jpg",
+      "setup-mode.jpg",
+      "unsigned-rejected.jpg",
+      "enroll-status-before.txt",
+      "enroll-gui.jpg",
+      "enroll-status-after.txt",
+      "efivars-secureboot.txt",
+      "enroll-refusal.txt",
+      "live-boot.jpg",
+      "live-journal.txt",
+      "live-missing-db-rejected.jpg",
+      "install-complete.jpg",
+      "installed-boot.jpg",
+      "installed-reboot.jpg",
+      "esp-files.txt",
+      "sbverify.txt",
+      "revocation-dbx.jpg",
+      "revocation-boot-failure.jpg",
+      "dbx-unsigned-refused.txt",
+      "dbx-signed-lab.txt",
+      "sbat-metadata.txt",
+      "recovery-boot.jpg",
+      "recovery-status.txt",
+      "SHA256SUMS"
+    ],
+    "exclude": [
+      "passwords",
+      "private keys",
+      "TPM secrets",
+      "recovery keys"
+    ]
+  }
+}

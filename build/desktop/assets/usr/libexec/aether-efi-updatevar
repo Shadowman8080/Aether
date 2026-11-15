@@ -1,0 +1,7 @@
+#!/bin/sh
+# efi-updatevar is built for the host toolchain, while the image has a newer
+# glibc and OpenSSL 4. Run it with the image loader and the private copies of
+# the OpenSSL 3 runtime it was built against.
+exec /usr/lib/ld-linux-x86-64.so.2 \
+    --library-path /usr/lib/aether-secureboot \
+    /usr/bin/efi-updatevar "$@"

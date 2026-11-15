@@ -10,7 +10,9 @@ date -u '+STARTED %FT%TZ' >"$base/logs/desktop/kernel.status"
 trap 'echo "EXIT $?" >>/opt/aether/logs/desktop/kernel.status' EXIT
 # This existing build tree is reusable; no released image is mounted or edited here.
 cp "$base/next/configs/guest-kernel.config" "$out/.config"
-for opt in BLK_DEV_LOOP INPUT_UINPUT OVERLAY_FS SQUASHFS SQUASHFS_XZ SQUASHFS_ZSTD MOUSE_PS2_VMMOUSE; do
+# Guest drivers: VMware Tools and VirtualBox Guest Additions depend on these
+# even before their userspace packages are installed.
+for opt in BLK_DEV_LOOP INPUT_UINPUT OVERLAY_FS SQUASHFS SQUASHFS_XZ SQUASHFS_ZSTD MOUSE_PS2_VMMOUSE VSOCKETS VMWARE_VMCI_VSOCKETS VMWARE_BALLOON; do
  "$src/scripts/config" --file "$out/.config" --enable "$opt"
 done
 # Windows-style plug-and-play device classes (webcams, USB serial, SD cards,
@@ -25,10 +27,13 @@ while IFS='=' read -r opt value; do
 done < "$base/desktop/configs/kernel-pnp.delta.config"
 "$src/scripts/config" --file "$out/.config" --set-str LOCALVERSION '-aether3'
 make -C "$src" O="$out" olddefconfig
-for opt in EFI EFIVAR_FS DRM_BOCHS DRM_VBOXVIDEO OVERLAY_FS SQUASHFS BLK_DEV_LOOP INPUT_UINPUT MOUSE_PS2_VMMOUSE; do
- grep -qx "CONFIG_$opt=y" "$out/.config"
+for opt in EFI EFIVAR_FS DRM_BOCHS DRM_VBOXVIDEO VBOXGUEST VBOXSF_FS OVERLAY_FS SQUASHFS BLK_DEV_LOOP INPUT_UINPUT MOUSE_PS2_VMMOUSE VSOCKETS VMWARE_VMCI_VSOCKETS VMWARE_BALLOON; do
+ grep -qx "CONFIG_$opt=y" "$out/.config" || { echo "Guest driver CONFIG_$opt did not take effect." >&2; exit 1; }
 done
-for opt in MEDIA_SUPPORT USB_VIDEO USB_SERIAL MMC NTFS3 EXFAT THUNDERBOLT RTC_DRV_CMOS INPUT_JOYDEV; do
+for opt in DRM_VMWGFX VMXNET3 VMWARE_VMCI; do
+ grep -Eq "^CONFIG_${opt}=[ym]$" "$out/.config" || { echo "Guest driver CONFIG_$opt is missing." >&2; exit 1; }
+done
+for opt in MEDIA_SUPPORT USB_VIDEO_CLASS USB_SERIAL MMC NTFS3_FS EXFAT_FS USB4 RTC_DRV_CMOS INPUT_JOYSTICK; do
  grep -Eq "^CONFIG_${opt}=[ym]$" "$out/.config" || { echo "PnP kernel option CONFIG_$opt did not take effect." >&2; exit 1; }
 done
 make -C "$src" O="$out" -j"$(nproc)" bzImage modules

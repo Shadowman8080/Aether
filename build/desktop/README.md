@@ -9,9 +9,11 @@ REQUIREMENTS.txt preserves the extracted text of the supplied **Desktop shell an
 ## Implemented source changes
 
 - Shared light and dark Aether look-and-feel packages, color schemes, original Aurora SVG wallpaper and Aether icon.
-- Slim top bar with launcher, application menu, input method panel, system tray and clock. Centered floating dock with application switching and show-desktop.
+- macOS-style shell: a translucent menu bar across the top (AuraSearch, application menu, input method, system tray, clock with date, power) and an always-visible centered floating dock at the bottom with application switching and show-desktop. Window controls sit on the left in Aether colours, window borders are slim, maximized windows are borderless, panels and windows blur the background, and Inter is the UI font.
 - AuraSearch patch on the pinned KDE KRunner frontend, preserving KDE attribution and all existing search/result accessibility behavior. Super+Space opens it; the aurasearch command delegates arguments without shell evaluation.
 - Local search defaults: no retained query/history, no web shortcuts or bookmark search, no shell runner. Basic filename indexing; content indexing is opt-in through settings.
+- Live media: the ISO boots straight into the Plasma session on a disposable `live` account — no boot-menu choice and no greeter. The desktop then shows a Try or Install dialog (`aether-live-welcome`); Try simply continues the session and Install opens the graphical wizard. The wizard and its privileged `/usr/libexec/aether-installer-backend` are built and tested. UEFI installs write a signed shim, GRUB and UKI; firmware key enrollment is offered when firmware is in Setup Mode.
+- VM guest compatibility: the kernel builds VMware and VirtualBox guest drivers (vmmouse, VMCI, vsock, balloon, vmxnet3, vmwgfx, vboxguest, vboxsf, vboxvideo) and the image ships a build-ready kernel tree plus a toolchain, so the VMware Tools and VirtualBox Guest Additions installers can compile modules inside the guest. No vendor userspace is preinstalled. See [GUEST-COMPAT.md](GUEST-COMPAT.md).
 - VMware guest integration: x86/x86_64 desktop kernels build the in-kernel vmmouse driver (`CONFIG_MOUSE_PS2_VMMOUSE=y`) for seamless pointer control, and the image ships `aether-vmware-tools` to report and enable the open-vm-tools desktop integration. Copy/paste and drag-and-drop remain X11-only; the greeter preselects and pins the X11 session under VMware. See `../VMWARE-GUEST-INTEGRATION.md`.
 - Plug-and-play devices: the Aether Devices manager (Windows Device Manager equivalent), the `aether-device-notify` hotplug toaster, the `60-aether-pnp.rules` udev policy, the `aether-device-rescan` helper, `lspci`/`lsusb` via pinned `pciutils`/`usbutils` builds, and the `kernel-pnp.delta.config` driver classes (webcams, USB serial, SD/MMC, NTFS/exFAT, Thunderbolt, joysticks, RTC). See [`../../src/devices/README.md`](../../src/devices/README.md). Source-implemented; compiled images and hardware testing are still open.
 - Source-verified native dependency build recipes using all available build CPUs. The native x86_64 desktop has completed its first full disk runtime test; image release validation is tracked below.
@@ -76,9 +78,14 @@ Do not publish 0.3 artifacts until authentication/locking, working core apps, Au
 - scripts/build-desktop-foundation.py: CMake/Wayland/Mesa/Qt foundation, per-package logs and resumable stamps.
 - scripts/patch-aurasearch.py: fail-closed patch against the pinned Plasma workspace source.
 - scripts/install-assets.sh: install common assets into an offline Aether root.
+- scripts/install-security-runtime.sh: install the source-built cryptsetup/LVM runtime and provenance marker from a completed security-edition root; host-library fallbacks are rejected unless explicitly labelled.
+- scripts/test-installer-backend.sh / scripts/test-encrypted-boot.py: disposable encrypted backend install and OVMF boot checks. The boot fixture creates firmware variables from public db material only.
 - scripts/build-aether-devices.py: build the Aether Devices manager + hotplug notifier and install the udev/modules-load/autostart policy (see `../../src/devices/README.md`).
 - scripts/build-desktop-pnp-utils.py: build `pciutils` (lspci) and pinned `usbutils` (lsusb).
+- scripts/test-secureboot-revocation.py: disposable OVMF fixture for signed dbx and SBAT revocation with test keys; not a production revocation tool.
 - configs/kernel-pnp.delta.config: plug-and-play driver classes merged into the desktop kernel build by `build-desktop-kernel.sh`.
+
+The foundation stage builds the X11 client libraries, freetype/fontconfig and the Inter font itself, because the source-built base root contains no X11 stack and no fonts. Qt is configured against them, so text rendering and the xcb platform plugin exist in the finished image.
 
 Native builds use nproc CPUs and the baseline x86-64 ISA, not -march=native. LLVM link concurrency is limited independently to avoid exhausting RAM while compilations use every CPU. A complete reproducible release still needs architecture-specific dependency/build manifests and image validation.
 

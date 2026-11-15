@@ -1,0 +1,26 @@
+#!/bin/sh
+# Live media only: report why the desktop did or did not appear.
+[ -e /run/aether-live ] || [ -e /run/initramfs/live/lower/etc/os-release ] || exit 0
+sleep 30
+{
+    echo '=== AETHER LIVE REPORT ==='
+    date -u
+    echo '--- lightdm config ---'
+    ls -l /etc/lightdm/lightdm.conf.d/ 2>&1
+    for conf in /etc/lightdm/lightdm.conf.d/*.conf; do
+        echo "## $conf"
+        cat "$conf" 2>&1
+    done
+    echo '--- display devices ---'
+    ls -l /dev/dri 2>&1
+    cat /proc/fb 2>&1
+    echo '--- sessions ---'
+    loginctl list-sessions --no-pager 2>&1
+    echo '--- xsession errors ---'
+    head -60 /home/live/.xsession-errors 2>&1
+    echo '--- session errors ---'
+    journalctl -b --no-pager 2>&1 | grep -iE 'kwin|plasmashell|startplasma|xwayland|wayland|drm|egl|gbm|failed to start|no such file|cannot|error' | head -120
+    echo '--- lightdm unit ---'
+    systemctl status lightdm --no-pager -l 2>&1 | head -25
+    echo '=== END AETHER LIVE REPORT ==='
+} > /dev/console 2>&1

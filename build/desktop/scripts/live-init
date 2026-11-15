@@ -48,8 +48,11 @@ printf '# Aether live session: temporary writable overlay\n' >/newroot/etc/fstab
 mkdir -p /newroot/run /newroot/dev /newroot/proc /newroot/sys
 /usr/bin/udevadm control --exit 2>/dev/null || :
 /usr/bin/plymouth update-root-fs --new-root-dir=/newroot 2>/dev/null || :
+: > /run/aether-live
+echo 'AETHER_LIVE_MARKER' >/dev/console 2>/dev/null || true
 mount -o move /run /newroot/run
 mount -o move /dev /newroot/dev
 mount -o move /proc /newroot/proc
 mount -o move /sys /newroot/sys
+echo 'AETHER_LIVE_SWITCH_ROOT' >/dev/console 2>/dev/null || true
 exec switch_root /newroot /sbin/init

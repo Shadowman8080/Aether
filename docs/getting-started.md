@@ -24,7 +24,11 @@ Read the included `README-VM.txt` and `VERIFICATION.json`. Compare downloads wit
 1. Extract the VM bundle and open its `.vmx` in VMware. The supplied configuration
    requires a VMware version supporting virtual hardware 22.
 2. The supplied VM uses four virtual CPUs, 6 GiB RAM, NAT, UEFI and a 32 GiB virtual
-   disk. Secure Boot is disabled. The build host is not needed to run Aether.
+   disk. The supplied legacy VM has Secure Boot disabled; current UEFI media and
+   installs support it after Aether's key is enrolled. Separate test VMs booted
+   the signed ISO and installed disk under VMware Workstation 26.0.1 and
+   VirtualBox 7.2.22 with Secure Boot enabled. The build host is not needed to
+   run Aether.
 3. Start the VM and sign in with the public development credentials below.
 
 - Username: `aether`
@@ -57,7 +61,10 @@ have not been certified for this snapshot.
 
 The installer is whole-disk only. Select only a disposable or backed-up target;
 it does not convert an existing installation. Disk encryption is an installer
-option. Secure Boot is not supported and `/boot` is not encrypted.
+option. On UEFI, the installer can enroll Aether's Secure Boot key when firmware
+is in Setup Mode and then installs a signed shim, GRUB and UKI. BIOS installs do
+not use Secure Boot. `/boot` is not encrypted. See
+[Secure Boot](secure-boot.md) for the enrollment steps and limits.
 
 Aether checks for OS updates automatically and asks before installation, but the
 public OS update feed remains unconfigured pending release trust and base-package

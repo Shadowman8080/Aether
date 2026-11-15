@@ -1,0 +1,56 @@
+{
+  "fixture": "desktop-encrypted-installer-ovmf",
+  "date": "2026-11-13",
+  "host": "QEMU/OVMF 4 MiB Secure Boot, disposable 20 GiB raw disk",
+  "asset": {
+    "path": "build/desktop/assets/usr/share/aether/secureboot/aether-installed.efi",
+    "sha256": "d9a605e04953a512b1395e120d032c3affb666f5ff9fe871b7cdae6084c88820",
+    "embedded_initrd": true,
+    "cmdline": "root=LABEL=AETHER_ROOT aether.luks=LABEL=AETHER_CRYPT ro rootwait quiet console=tty0 console=ttyS0,115200n8"
+  },
+  "source_runtime": {
+    "cryptsetup": "2.8.7",
+    "lvm2": "2.03.42",
+    "cryptsetup_source_sha256": "e776f0d381e86ca61042c457069491fe8e0ac286780c7c3b1e4f9921abc961da",
+    "lvm2_source_sha256": "352703ef5b72ebb22d4f250284a29b89fe64d4049c6bf64c693f9af486c8081e",
+    "host_library_fallbacks": true,
+    "production_eligible": false
+  },
+  "installer_backend": {
+    "result": "ENCRYPTED_BACKEND_PASS",
+    "layout": [
+      "BIOS boot",
+      "EFI system partition",
+      "ext4 AETHER_BOOT",
+      "LUKS2 AETHER_CRYPT with LVM aether/root"
+    ],
+    "luks_version": 2,
+    "keyslots": 2,
+    "key_bits": 256,
+    "cipher": "aes-cbc-essiv:sha256",
+    "normal_passphrase_accepted": true,
+    "recovery_passphrase_accepted": true
+  },
+  "ovmf_boot": {
+    "storage_passphrase": {
+      "result": "ENCRYPTED_BOOT_PASS",
+      "firmware_verification": "Verification succeeded",
+      "root_marker": "AETHER_ENCRYPTED_ROOT_MOUNTED /dev/mapper/aether-root",
+      "switch_marker": "AETHER_INITRAMFS_SWITCHING_TO_ROOT",
+      "login_prompt": "aether login:"
+    },
+    "recovery_passphrase": {
+      "result": "ENCRYPTED_BOOT_PASS",
+      "firmware_verification": "Verification succeeded",
+      "root_marker": "AETHER_ENCRYPTED_ROOT_MOUNTED /dev/mapper/aether-root",
+      "switch_marker": "AETHER_INITRAMFS_SWITCHING_TO_ROOT",
+      "login_prompt": "aether login:"
+    }
+  },
+  "limitations": [
+    "OVMF/QEMU laboratory evidence only; no physical firmware was tested.",
+    "The source runtime used labelled host-library fallbacks and is not production-eligible.",
+    "The EFI system partition and /boot remain unencrypted; no TPM measured boot or attestation is implemented.",
+    "The fixture uses the public Aether db certificate to build a disposable firmware variable store and does not use a private key."
+  ]
+}

@@ -1,0 +1,100 @@
+#!/bin/sh
+export PATH=/usr/sbin:/usr/bin:/sbin:/bin
+/bin/busybox --install -s /bin
+mount -t devtmpfs devtmpfs /dev
+mount -t proc proc /proc
+mount -t sysfs sysfs /sys
+mount -t tmpfs -o mode=0755 tmpfs /run
+[ ! -x /usr/lib/aether-initramfs/start-splash ] || /usr/lib/aether-initramfs/start-splash
+
+root_spec=''
+luks_spec=''
+slot=''
+for argument in $(cat /proc/cmdline); do
+    case "$argument" in
+        root=*) root_spec=${argument#root=} ;;
+        aether.luks=*) luks_spec=${argument#aether.luks=} ;;
+        aether.slot=*) slot=${argument#aether.slot=} ;;
+    esac
+done
+
+[ -n "$root_spec" ] || root_spec='LABEL=AETHER_ROOT'
+
+fail() {
+    /usr/bin/plymouth quit 2>/dev/null || :
+    echo "Aether could not unlock or mount the system disk. Reboot using recovery media."
+    echo "No unauthenticated recovery shell is started. Press Enter to reboot."
+    read answer
+    reboot -f
+    while :; do sleep 60; done
+}
+
+find_spec() {
+    spec=$1
+    case "$spec" in
+        LABEL=*) /usr/sbin/blkid -L "${spec#LABEL=}" -o device 2>/dev/null | head -n 1 ;;
+        UUID=*) /usr/sbin/blkid -U "${spec#UUID=}" -o device 2>/dev/null | head -n 1 ;;
+        PARTUUID=*) /usr/sbin/blkid -t "PARTUUID=${spec#PARTUUID=}" -o device 2>/dev/null | head -n 1 ;;
+        /dev/*) printf '%s\n' "$spec" ;;
+        *) return 1 ;;
+    esac
+}
+
+activate_lvm() {
+    if [ -x /usr/sbin/lvm ]; then
+        /usr/sbin/lvm vgchange -ay --ignorelockingfailure 2>/dev/null || true
+    fi
+}
+
+root_device=$(find_spec "$root_spec" 2>/dev/null || true)
+
+# Plain LVM roots need their volume group activated before the filesystem
+# label can be resolved.  Do this before looking for LUKS so an unencrypted
+# LVM install is not mistaken for a failed encrypted install.
+if [ -z "$root_device" ]; then
+    activate_lvm
+    root_device=$(find_spec "$root_spec" 2>/dev/null || true)
+fi
+
+# A LUKS container can hold the root filesystem directly or an LVM physical
+# volume.  Only try it when the requested root is still not visible and a
+# LUKS device is actually present.
+if [ -z "$root_device" ] && [ -n "$luks_spec" ]; then
+    luks_device=$(find_spec "$luks_spec" 2>/dev/null || true)
+    if [ -n "$luks_device" ]; then
+        /usr/sbin/modprobe dm_crypt || fail
+        /usr/sbin/modprobe essiv 2>/dev/null || :
+        echo "Unlock Aether encrypted storage (normal passphrase or recovery passphrase)."
+        /usr/sbin/cryptsetup open --type luks "$luks_device" aether-crypt || fail
+        activate_lvm
+        root_device=$(find_spec "$root_spec" 2>/dev/null || true)
+    fi
+fi
+
+
+[ -n "$root_device" ] || fail
+mount -t ext4 -o rw "$root_device" /newroot || fail
+echo "AETHER_ENCRYPTED_ROOT_MOUNTED $root_device"
+
+if [ -n "$slot" ]; then
+    echo "$slot" | grep -Eq '^[0-9]{8}T[0-9]{6}-[0-9a-f]{8}$' || fail
+    candidate="/newroot/var/lib/aether/slots/$slot/root"
+    [ -d "$candidate" ] && [ ! -L "$candidate" ] || fail
+    [ "$(stat -c %u "$candidate")" = 0 ] || fail
+    [ "$(cat "$candidate/etc/aether-slot-id")" = "$slot" ] || fail
+    mkdir -p /rollbackroot /run/aether-origin
+    chmod 700 /run/aether-origin
+    mount --bind "$candidate" /rollbackroot || fail
+    mount --bind /newroot/home /rollbackroot/home || fail
+    mount --move /newroot /run/aether-origin || fail
+    mount --move /rollbackroot /newroot || fail
+fi
+
+/usr/bin/udevadm control --exit 2>/dev/null || :
+/usr/bin/plymouth update-root-fs --new-root-dir=/newroot 2>/dev/null || :
+for directory in dev proc sys run; do
+    mkdir -p "/newroot/$directory"
+    mount --move "/$directory" "/newroot/$directory" || fail
+done
+echo "AETHER_INITRAMFS_SWITCHING_TO_ROOT"
+exec switch_root /newroot /sbin/init

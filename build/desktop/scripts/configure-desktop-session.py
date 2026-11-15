@@ -139,7 +139,8 @@ NoDisplay=true
 subprocess.run(['systemctl', '--root=/', 'disable', 'systemd-networkd.service'], check=True)
 subprocess.run(['systemctl', '--root=/', 'enable', 'NetworkManager.service',
                 'systemd-resolved.service', 'lightdm.service', 'cups.socket',
-                'bluetooth.service', 'avahi-daemon.service'], check=True)
+                'bluetooth.service', 'avahi-daemon.service',
+                'aether-live-autologin.service', 'aether-live-report.service'], check=True)
 subprocess.run(['systemctl', '--root=/', 'set-default', 'graphical.target'], check=True)
 subprocess.run(['systemctl', '--root=/', '--global', 'enable', 'pipewire.socket',
                 'pipewire-pulse.socket', 'wireplumber.service'], check=True)

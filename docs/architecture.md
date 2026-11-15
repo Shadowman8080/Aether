@@ -29,6 +29,9 @@ seams are still unfinished.
 │                     PAM (yescrypt), logind seat access       │
 │                     cryptsetup/LUKS2, restic 0.19.1 backups   │
 ├──────────────────────────────────────────────────────────────┤
+│  Boot               UEFI: signed shim → GRUB → signed UKI     │
+│                     BIOS: GRUB + kernel/initramfs             │
+├──────────────────────────────────────────────────────────────┤
 │  Init               systemd                                   │
 ├──────────────────────────────────────────────────────────────┤
 │  Kernel             Linux 6.18.54-aether4 (in-tree build)   │
@@ -57,6 +60,49 @@ Qt client  ──AF_UNIX──▶  /run/nimbrel/api.sock        (0666)
 `RestrictAddressFamilies=AF_UNIX` on `nimbrel-engine.service` means the engine
 cannot create an IP socket. This is enforced by the kernel, not by the
 application.
+
+## Install path
+
+Beam is the only component that installs more than one application, and it is
+the only one that has to think about concurrency:
+
+```
+plan.json (validated: ids, arch, dependencies, digests)
+   │
+   ├─ prepare ×N workers ──▶ flatpak --no-deploy / sha256 of a staged .deb
+   │                          (parallel, mutates nothing)
+   ▼
+commit ×1, dependency ordered, under an flock ──▶ dpkg / flatpak deploy
+   ▼
+journal.json (resume) + receipt.json (what happened)
+```
+
+The commit stage is single-file by design. A package database has one writer, so
+Beam keeps the fast work parallel and the dangerous work serial. See
+[`../src/beam/README.md`](../src/beam/README.md).
+
+## Assistant action path
+
+Pilot is the seam between "a model said something" and "the system changed":
+
+```
+actions.json (fixed catalog: id, typed params, privilege, risk, argv)
+   │
+   ▼
+proposal (single use, 300 s) ──▶ a person confirms
+   │
+   ├─ user action  ──▶ argv list, no shell
+   └─ admin action ──▶ pkexec /usr/libexec/aether-pilot-admin id [params]
+                          │ re-reads the root-owned catalog, rebuilds argv
+                          ▼
+                        argv list, no shell
+   ▼
+audit.jsonl (0600): action, params, privilege, status, exit code
+```
+
+Nimbrel may emit at most one catalog action inside a JSON block. Pilot rejects
+anything else, so a model cannot add an action, widen a parameter, or supply a
+command. See [`../src/pilot/README.md`](../src/pilot/README.md).
 
 ## Network posture
 
@@ -134,9 +180,16 @@ All build CPUs are used; the 0.3 desktop build ran on 16.
 
 These are architectural gaps, not just missing features:
 
-- **No verified boot chain.** Secure Boot is disabled and module signatures are
-  not enforced, so the kernel's integrity story stops at the bootloader.
-- **`/boot` is unencrypted.** LUKS2 covers the root filesystem only.
+- **The signed UEFI boot chain is real but narrow.** Shim, GRUB and UKIs are
+  signed by the Aether db key, and live/installed UEFI boots were verified
+  under OVMF. The installed UKI embeds a generic initramfs that supports LUKS2
+  and optional LVM root discovery, but key custody, production revocation and
+  physical firmware are not production-ready. A disposable OVMF lab fixture
+  exercises signed dbx and SBAT revocation with test keys. Kernel module
+  signatures are still not enforced.
+- **`/boot` is unencrypted.** LUKS2 covers the root filesystem only. The
+  encrypted-root chain has virtual-machine lab evidence; it does not encrypt
+  the EFI system partition or `/boot`.
 - **No deployed repository.** The installed update and recovery tooling is tested,
   but production trust and repository infrastructure remain unconfigured.
 - **Device hardware is source-built, not hardware-tested.** The plug-and-play

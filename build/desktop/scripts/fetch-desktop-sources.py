@@ -15,7 +15,7 @@ def expand(s,d):
 items=[]
 def add(key,url,md5=None,group='base'):
  items.append(dict(key=key,url=url,filename=url.rsplit('/',1)[-1],md5=md5,group=group))
-names=['cmake','git','llvm','wayland','wayland-protocols','libxkbcommon','libinput','mesa','xcb-util','xcb-util-image','xcb-util-keysyms','xcb-util-renderutil','xcb-util-wm','xcb-util-cursor','xcb-util-errors','libjpeg','double-conversion','icu','libwebp','tiff','extra-cmake-modules','linux-pam','polkit','libgudev','libwacom','libdisplay-info','seatd','xwayland','libei','libepoxy','Mako','MarkupSafe','PyYAML','packaging','setuptools','libxmlb','duktape','json-glib']
+names=['cmake','git','llvm','libpng','freetype2','fontconfig','xorgproto','pixman','libxcvt','libfontenc','libXfont2','libxkbfile','xkbcomp','xkeyboard-config','mtdev','libevdev','xtrans','libXau','libXdmcp','xcb-proto','libxcb','libX11','libXext','libXrender','libXfixes','libXrandr','libXcursor','libXcomposite','libXdamage','libXi','libXtst','libpciaccess','libdrm','wayland','wayland-protocols','libxkbcommon','libinput','mesa','xcb-util','xcb-util-image','xcb-util-keysyms','xcb-util-renderutil','xcb-util-wm','xcb-util-cursor','xcb-util-errors','libjpeg','double-conversion','icu','libwebp','tiff','extra-cmake-modules','linux-pam','polkit','libgudev','libwacom','libdisplay-info','seatd','xwayland','libei','libepoxy','Mako','MarkupSafe','PyYAML','packaging','setuptools','libxmlb','duktape','json-glib']
 extra=base/'desktop/configs/extra-sources.json'
 if extra.exists(): names+=json.loads(extra.read_text(encoding='utf-8-sig'))
 direct=base/'desktop/configs/direct-sources.json'
@@ -29,8 +29,24 @@ for key in dict.fromkeys(names):
   add(key,expand('https://xorg.freedesktop.org/archive/individual/lib/'+key+'-&'+key+'-version;.tar.xz',d),d[key+'-md5sum'])
   continue
  page={'libjpeg':'libjpeg-turbo','libsass':'sassc','speexdsp':'speex','lm-sensors':'lm_sensors'}.get(key,key.lower())
- files=[p for p in book.rglob(page+'.xml') if 'archive' not in p.parts]
- if not files: print('DEFERRED missing book file',key); continue
+ files=[p for p in book.rglob('*.xml') if p.name.lower()==page+'.xml' and 'archive' not in p.parts]
+ if not files:
+  # Xorg libraries are described in grouped chapter pages, not per-package
+  # files, so fall back to the book-wide download entities.
+  k=key+'-download-http'
+  if k in entities:
+   url=expand('&'+k+';',entities); md5=expand(entities.get(key+'-md5sum',''),entities)
+  elif key+'-version' in entities:
+   # The grouped x7lib/x7app chapters publish version and checksum entities
+   # only. Applications such as xkbcomp live under individual/app; libraries
+   # live under individual/lib.
+   subdir='app' if key in ('xkbcomp','xauth','xhost','xmodmap','xrandr','xrdb','setxkbmap','xinit','xev') else 'lib'
+   url=expand('https://xorg.freedesktop.org/archive/individual/'+subdir+'/'+key+'-&'+key+'-version;.tar.xz',entities)
+   md5=expand(entities.get(key+'-md5sum',''),entities)
+  else:
+   print('DEFERRED missing book file',key); continue
+  assert '&' not in url and re.fullmatch('[a-f0-9]{32}',md5),(key,url,md5)
+  add(key,url,md5); continue
  p=files[0]; d=entities|{k:v for k,v in rx.findall(booktext(p)) if v!='&'+k+';'}
  candidates=[k for k in d if k.endswith('-download-http') and k in dict(rx.findall(booktext(p)))]
  if not candidates: print('DEFERRED grouped book file',key); continue

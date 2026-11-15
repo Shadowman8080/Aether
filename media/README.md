@@ -9,7 +9,7 @@ frame really was plain.
 If a screenshot here contradicts the README, the README is wrong — please open
 an issue.
 
-## Screenshots — 33 files, `screenshots/`
+## Screenshots — 34 files, `screenshots/`
 
 Captured from the running guest with VMware's guest screen-capture facility, at
 the guest's own framebuffer resolution. Most are 1280x800; a few are 1024x768
@@ -45,6 +45,7 @@ from desktop → search → AI → installer → boot → lock. There are no gap
 | `22-encrypted-unlock.png` | Boot | LUKS2 unlock prompt for encrypted storage |
 | `23-security-encrypted-boot.png` | Boot | Kernel log from an encrypted boot, AppArmor and Landlock present |
 | `24-installed-desktop.png` | Desktop | First boot from the installed disk |
+| `24-modern-first-run.png` | Welcome | First-run setup with keyboard, time zone, display, users, sound and hardware |
 | `25-desktop-panels.png` | Desktop | Panel layout |
 | `26-lock-screen.png` | Lock screen | The lock screen clock and actions |
 | `27-wrong-password.png` | Greeter | "Sign-in failed. Check your credentials" |

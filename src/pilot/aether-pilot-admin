@@ -1,0 +1,90 @@
+#!/usr/bin/env python3
+# SPDX-License-Identifier: GPL-3.0-or-later
+"""Root executor for Aether Pilot.
+
+Pilot never passes a model's command line to root. It passes an action id plus
+validated parameter values, and this helper re-reads a root-owned catalog to
+build the argv itself. Unknown ids, extra arguments and invalid values are
+refused here even if the unprivileged half of Pilot is compromised.
+"""
+import json
+import os
+import re
+import subprocess
+import sys
+from pathlib import Path
+
+CATALOGS = (Path('/usr/share/aether/pilot/actions.json'), Path(__file__).with_name('actions.json'))
+PARAM_NAME = re.compile(r'[a-z][a-z0-9_]{0,31}\Z')
+
+
+def checked(path):
+    info = path.lstat()
+    if not path.is_file() or info.st_uid != 0 or info.st_mode & 0o022:
+        raise PermissionError('Action catalog must be a root-owned file that other users cannot write')
+    return path
+
+
+def resolve(action_id, values, catalog_path=None):
+    """Return the argv for one administrator action. No shell, no user arguments."""
+    if not isinstance(action_id, str) or not re.fullmatch(r'[a-z][a-z0-9]*(?:\.[a-z0-9][a-z0-9-]*)+', action_id):
+        raise ValueError('Invalid action id')
+    path = None
+    for candidate in ((Path(catalog_path),) if catalog_path else CATALOGS):
+        if candidate.exists():
+            path = candidate
+            break
+    if not path:
+        raise ValueError('No action catalog is installed')
+    actions = {(a.get('id')): a for a in json.loads(path.read_text(encoding='utf-8')).get('actions', [])
+               if isinstance(a, dict)}
+    action = actions.get(action_id)
+    if not action or action.get('privilege') != 'admin':
+        raise ValueError('That action is not an administrator action')
+    params = action.get('params') or {}
+    names = list(params)
+    if len(values) != len(names):
+        raise ValueError('This action needs exactly %d parameter(s)' % len(names))
+    supplied = dict(zip(names, values))
+    argv = []
+    for token in action.get('argv') or []:
+        match = re.fullmatch(r'\{([a-z][a-z0-9_]{0,31})\}', token)
+        if not match:
+            argv.append(token)
+            continue
+        name = match.group(1)
+        if name not in supplied:
+            raise ValueError('Missing action parameter: ' + name)
+        spec = params[name]
+        value = supplied[name]
+        if spec.get('type') == 'choice':
+            if value not in spec.get('values', []):
+                raise ValueError('Invalid value for ' + name)
+        elif not re.fullmatch(spec.get('pattern', ''), value):
+            raise ValueError('Invalid value for ' + name)
+        argv.append(value)
+    if not argv or not argv[0].startswith('/'):
+        raise ValueError('Action must run an absolute path')
+    return argv
+
+
+def main():
+    if os.geteuid() != 0:
+        raise PermissionError('Administrator authorization is required')
+    if len(sys.argv) < 2:
+        raise ValueError('Usage: aether-pilot-admin ACTION [PARAMETER...]')
+    path = next((c for c in CATALOGS if c.exists()), None)
+    if path is None:
+        raise ValueError('No action catalog is installed')
+    checked(path)
+    argv = resolve(sys.argv[1], sys.argv[2:], path)
+    result = subprocess.run(argv, check=False)
+    return result.returncode
+
+
+if __name__ == '__main__':
+    try:
+        sys.exit(main())
+    except (ValueError, PermissionError, OSError, json.JSONDecodeError) as error:
+        print('aether-pilot-admin: ' + str(error), file=sys.stderr)
+        sys.exit(1)

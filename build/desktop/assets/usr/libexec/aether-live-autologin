@@ -1,0 +1,49 @@
+#!/bin/sh
+# Runs before LightDM on the live ISO only. It creates a disposable live
+# account and signs it in automatically, so the media boots straight to the
+# "Try or Install" choice. Nothing here runs on an installed system.
+set -u
+say() { echo "AETHER_LIVE_AUTOLOGIN[$(date -u +%H:%M:%S)]: $*" >/dev/console 2>/dev/null || true; }
+say "start"
+live=0
+if [ -e /run/aether-live ]; then
+    live=1
+    say "marker /run/aether-live present"
+elif [ -e /run/initramfs/live/lower/etc/os-release ]; then
+    live=1
+    say "lower path present"
+elif grep -q 'overlay / overlay' /proc/mounts; then
+    live=1
+    say "overlay root detected"
+else
+    say "not a live system; exiting"
+    exit 0
+fi
+if ! id live >/dev/null 2>&1; then
+    if ! useradd -m -c 'Aether live session' -s /bin/bash live; then
+        say "useradd failed"
+        exit 1
+    fi
+    say "created live account"
+fi
+passwd -d live >/dev/null 2>&1 || say "warning: could not clear live password"
+for group in wheel video input audio render; do
+    getent group "$group" >/dev/null 2>&1 && usermod -aG "$group" live || true
+done
+install -d -m 755 /etc/lightdm/lightdm.conf.d
+# Plasma's Wayland compositor segfaults on this build, so the live session uses
+# the X11 entry, which is the one the greeter already runs successfully.
+x11_session=
+for entry in /usr/share/xsessions/*.desktop; do
+    [ -f "$entry" ] || continue
+    if grep -q 'startplasma-x11' "$entry"; then
+        x11_session=$(basename "$entry" .desktop)
+        break
+    fi
+done
+{
+    printf '%s\n' '[Seat:*]' 'autologin-user=live' 'autologin-user-timeout=0'
+    [ -n "$x11_session" ] && printf 'user-session=%s\n' "$x11_session"
+} > /etc/lightdm/lightdm.conf.d/60-aether-live.conf
+say "autologin configured for user live (session ${x11_session:-default})"
+cat /etc/lightdm/lightdm.conf.d/60-aether-live.conf >/dev/console 2>/dev/null || true

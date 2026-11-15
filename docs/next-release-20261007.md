@@ -118,3 +118,25 @@ assets must match their source revision and verification checksums.
   defaults, interrupted-trial recovery configuration, graphical-login services,
   firewall, diagnostic export and no failed units. UEFI also returned a real local
   AI answer. This remains a development candidate, not a completed twelve-item release.
+- Added **Aether Beam** (`src/beam/`): a plan-validated install scheduler that
+  downloads and verifies in a worker pool and commits one package transaction at
+  a time under a file lock, with dependency ordering, blocked-dependant reporting,
+  a resumable journal and a private receipt. The offline suite (21 tests) measures
+  real overlap instead of trusting the scheduler's report: preparation must run in
+  parallel, commits must not, and a failed application must not stop independent
+  ones. Wrong-architecture plans are refused. No image contains it and its flatpak
+  and `dpkg` paths are untested against a real package database.
+- Added **Aether Pilot** (`src/pilot/`), the Copilot-style layer: a fixed action
+  catalog with typed parameters, single-use expiring confirmations, a separate
+  root helper that rebuilds argv from a root-owned catalog, and a `0600` audit
+  log. Forged or malformed model proposals, shell metacharacters, undeclared
+  parameters and non-admin ids are rejected by the offline suite (27 tests).
+  Nimbrel gained an `assist` task whose only privilege is naming one catalog
+  action; the person still confirms it. No image contains Pilot and the `pkexec`
+  hand-off is untested.
+- Recorded the multi-architecture position in [ARM64 status](arm64.md): first-party
+  install and update code now maps and rejects architectures consistently, but
+  there is still no ARM64 userspace build, boot image or boot result.
+- Aether Settings gained "Install apps in parallel" and "Aether Pilot" pages.
+  They are compiled by the existing hosted desktop check; they have not been
+  clicked through on a booted image.

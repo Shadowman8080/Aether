@@ -1,8 +1,10 @@
 [KDE]
 LookAndFeelPackage=org.aether.desktop.light
 SingleClick=false
-AnimationDurationFactor=0.75
+AnimationDurationFactor=0.6
 [General]
 ColorScheme=AetherLight
+AccentColor=75,94,219
+font=Liberation Sans,10,-1,5,50,0,0,0,0,0
 [Icons]
 Theme=breeze

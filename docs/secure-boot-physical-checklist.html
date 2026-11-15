@@ -1,0 +1,622 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Aether physical UEFI Secure Boot checklist</title>
+<style>
+  :root {
+    --ink: #111;
+    --muted: #555;
+    --rule: #777;
+    --paper: #fff;
+    --soft: #f2f2f2;
+  }
+  * { box-sizing: border-box; }
+  html { font-size: 10pt; }
+  body {
+    margin: 0;
+    color: var(--ink);
+    background: #e8e8e8;
+    font-family: "Segoe UI", Arial, Helvetica, sans-serif;
+    line-height: 1.35;
+  }
+  a { color: #0645ad; }
+  .sheet {
+    width: min(8.5in, 100%);
+    margin: 0 auto;
+    padding: 0.55in 0.6in;
+    background: var(--paper);
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.18);
+  }
+  header.cover { border-top: 8px solid var(--ink); padding-top: 14pt; }
+  .kicker {
+    font-size: 8.5pt;
+    font-weight: 700;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin: 0 0 8pt;
+  }
+  h1 {
+    font-size: 25pt;
+    line-height: 1.05;
+    letter-spacing: -0.02em;
+    margin: 0 0 8pt;
+  }
+  .subtitle { font-size: 12.5pt; margin: 0 0 4pt; }
+  .meta { color: var(--muted); font-size: 9pt; margin: 0 0 16pt; }
+  h2 {
+    font-size: 13pt;
+    line-height: 1.2;
+    border-bottom: 1.5px solid var(--ink);
+    padding-bottom: 3pt;
+    margin: 0 0 8pt;
+    break-after: avoid;
+  }
+  h3 { font-size: 10.5pt; margin: 12pt 0 5pt; break-after: avoid; }
+  h4 { font-size: 10pt; margin: 8pt 0 3pt; }
+  p { margin: 0 0 6pt; }
+  ul, ol { margin: 4pt 0 8pt 18pt; padding: 0; }
+  li { margin: 0 0 4pt; }
+  .checklist { list-style: none; margin-left: 0; }
+  .checklist li { position: relative; padding-left: 20pt; }
+  .box {
+    position: absolute;
+    left: 0;
+    top: 0;
+    font-size: 13pt;
+    line-height: 1;
+    font-family: "Segoe UI Symbol", "DejaVu Sans", sans-serif;
+  }
+  .callout {
+    border: 1.5px solid var(--ink);
+    background: var(--soft);
+    padding: 9pt 10pt;
+    margin: 8pt 0 10pt;
+    break-inside: avoid;
+  }
+  .callout.stop { border-width: 2.5px; }
+  .callout strong { text-transform: uppercase; letter-spacing: 0.04em; }
+  .small { font-size: 8.5pt; color: var(--muted); }
+  .fill {
+    display: inline-block;
+    min-width: 1.55in;
+    min-height: 1.05em;
+    border-bottom: 1px solid var(--rule);
+    vertical-align: bottom;
+  }
+  .fill.wide { min-width: 3.4in; }
+  .fill.full { display: block; width: 100%; margin: 2pt 0 6pt; }
+  .field-row { margin: 5pt 0; break-inside: avoid; }
+  .field-row > span.label { display: inline-block; min-width: 1.7in; }
+  .lines { margin: 3pt 0 8pt; }
+  .lines span { display: block; height: 1.2em; border-bottom: 1px solid var(--rule); }
+  table { width: 100%; border-collapse: collapse; margin: 6pt 0 10pt; }
+  th, td { border: 1px solid #999; padding: 4pt 5pt; vertical-align: top; text-align: left; }
+  th { background: #e9e9e9; font-size: 8.5pt; }
+  td { font-size: 8.8pt; }
+  .matrix td:first-child, .matrix th:first-child { white-space: nowrap; font-weight: 700; }
+  .matrix td:nth-child(3), .matrix td:nth-child(4) { white-space: nowrap; }
+  .matrix tr { break-inside: avoid; }
+  .expected { border-left: 3px solid var(--ink); padding: 5pt 8pt; margin: 6pt 0; background: #fafafa; }
+  .test { border-top: 1px solid #bbb; padding-top: 6pt; margin-top: 6pt; break-inside: avoid; }
+  .test:first-of-type { border-top: 0; }
+  .req { font-size: 7.5pt; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); }
+  .statusline { font-size: 8.8pt; margin: 5pt 0 2pt; }
+  code { font-family: "Cascadia Mono", Consolas, "DejaVu Sans Mono", monospace; font-size: 8.6pt; }
+  pre {
+    font-family: "Cascadia Mono", Consolas, "DejaVu Sans Mono", monospace;
+    font-size: 8.3pt;
+    line-height: 1.3;
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+    border: 1px solid #aaa;
+    background: #f7f7f7;
+    padding: 6pt 7pt;
+    margin: 5pt 0 8pt;
+    break-inside: avoid;
+  }
+  .page-break { break-before: page; }
+  .no-print { margin: 8pt 0 14pt; }
+  .no-print button {
+    font: inherit;
+    font-weight: 700;
+    padding: 7pt 12pt;
+    border: 2px solid var(--ink);
+    background: var(--paper);
+    color: var(--ink);
+    cursor: pointer;
+  }
+  .signature { display: flex; gap: 18pt; margin-top: 24pt; }
+  .signature > div { flex: 1; }
+  .signature .fill { display: block; width: 100%; margin-top: 18pt; }
+  .footer-note { border-top: 1px solid var(--rule); margin-top: 16pt; padding-top: 5pt; font-size: 8pt; color: var(--muted); }
+  @media print {
+    @page { margin: 0.45in 0.5in; }
+    html { font-size: 9.5pt; }
+    body { background: #fff; }
+    .sheet { width: auto; max-width: none; margin: 0; padding: 0; box-shadow: none; }
+    .no-print { display: none !important; }
+    a { color: #000; text-decoration: none; }
+    h1, h2, h3, h4 { break-after: avoid; }
+    table, .callout, .test, .expected, pre { break-inside: avoid; }
+    .page-break { break-before: page; }
+  }
+</style>
+</head>
+<body>
+<div class="sheet">
+
+<header class="cover">
+  <p class="kicker">Aether / Secure Boot / Field test</p>
+  <h1>Physical UEFI Secure Boot<br>test checklist</h1>
+  <p class="subtitle">Printable field checklist for disposable x86_64 hardware</p>
+  <p class="meta">One copy per machine &middot; Plan: <a href="secure-boot-physical-test-plan.md">secure-boot-physical-test-plan.md</a> &middot; Evidence template: <a href="secure-boot-evidence-template.json">secure-boot-evidence-template.json</a></p>
+
+  <div class="callout stop">
+    <strong>Destructive test.</strong> This procedure clears firmware Secure Boot keys, erases the test disk and changes the firmware forbidden-signature database. Use only a machine that can be erased and recovered. Do not use production disks, production keys or a machine whose vendor keys cannot be restored.
+  </div>
+
+  <p><strong>Read the full plan before starting.</strong> This checklist is the field record; the plan contains the detailed rationale, commands and limitations. A test that was not run is not a pass.</p>
+
+  <div class="no-print">
+    <button type="button" onclick="window.print()">Print / Save as PDF</button>
+  </div>
+
+  <table>
+    <tbody>
+      <tr><th>Tester</th><td><span class="fill wide"></span></td><th>Date</th><td><span class="fill"></span></td></tr>
+      <tr><th>Organisation</th><td><span class="fill wide"></span></td><th>Test location</th><td><span class="fill"></span></td></tr>
+      <tr><th>Machine vendor</th><td><span class="fill wide"></span></td><th>Model</th><td><span class="fill"></span></td></tr>
+      <tr><th>Serial number</th><td><span class="fill wide"></span></td><th>Architecture</th><td>x86_64</td></tr>
+      <tr><th>Firmware version</th><td><span class="fill wide"></span></td><th>Firmware date</th><td><span class="fill"></span></td></tr>
+      <tr><th>Vendor-key recovery method</th><td colspan="3"><span class="fill full"></span></td></tr>
+      <tr><th>ISO filename</th><td><span class="fill wide"></span></td><th>USB device</th><td><span class="fill"></span></td></tr>
+      <tr><th>ISO SHA-256</th><td colspan="3"><span class="fill full"></span></td></tr>
+      <tr><th>Evidence directory</th><td colspan="3"><code>physical-&lt;vendor&gt;-&lt;model&gt;-&lt;date&gt;</code> <span class="fill wide"></span></td></tr>
+    </tbody>
+  </table>
+
+  <h2>Result key</h2>
+  <table>
+    <tbody>
+      <tr><th>PASS</th><td>The expected behaviour was directly observed and the listed evidence was saved.</td></tr>
+      <tr><th>FAIL</th><td>The expected behaviour was not observed. Record the exact failure and stop if the plan says to stop.</td></tr>
+      <tr><th>BLOCKED</th><td>Firmware or hardware prevented the test. This is not a pass.</td></tr>
+      <tr><th>UNSUPPORTED</th><td>The shipped media do not contain the required artifact. SBAT-01 is unsupported; do not mark it pass.</td></tr>
+      <tr><th>NOT RUN</th><td>Not attempted. This is not a pass.</td></tr>
+    </tbody>
+  </table>
+
+  <p class="small">Keep this completed checklist with <code>result.json</code>, the evidence files and <code>SHA256SUMS</code>. Do not include passwords, private keys, TPM secrets or recovery keys in the evidence directory.</p>
+</header>
+
+<section class="page-break">
+  <h2>Before you touch firmware</h2>
+  <div class="callout stop">
+    <strong>Stop now if any answer is no.</strong> A disposable machine, a tested vendor-key recovery path and backups are prerequisites, not optional preparation.
+  </div>
+
+  <ul class="checklist">
+    <li><span class="box">&#9744;</span> I confirm this is a disposable test machine, not a production or daily-use system.</li>
+    <li><span class="box">&#9744;</span> I have backed up all data and recorded the vendor, model, serial and firmware version.</li>
+    <li><span class="box">&#9744;</span> BitLocker, LUKS, TPM-bound unlocking and similar protection are disabled; recovery keys are available outside the test media.</li>
+    <li><span class="box">&#9744;</span> Every disk that is not the disposable test target is removed or disconnected.</li>
+    <li><span class="box">&#9744;</span> I know how to restore the vendor Secure Boot keys by firmware menu, factory restore or reflash.</li>
+    <li><span class="box">&#9744;</span> CSM/legacy boot and Fast Boot are disabled; UEFI boot is selected.</li>
+    <li><span class="box">&#9744;</span> The exact release ISO hash matches the expected value below.</li>
+    <li><span class="box">&#9744;</span> The ISO was written to the whole USB device with <code>dd conv=fsync</code>, not to a partition.</li>
+    <li><span class="box">&#9744;</span> A second FAT32 USB is prepared with an unsigned EFI test binary at <code>EFI/BOOT/BOOTX64.EFI</code>.</li>
+    <li><span class="box">&#9744;</span> Public <code>db.crt</code>, <code>db.der</code>, <code>PK.auth</code>, <code>KEK.auth</code> and <code>db.auth</code> are available on a trusted host.</li>
+    <li><span class="box">&#9744;</span> No release private key or build-host private key is on the test machine or test media.</li>
+    <li><span class="box">&#9744;</span> A camera or serial console is ready for photographs and exact firmware messages.</li>
+    <li><span class="box">&#9744;</span> The evidence directory exists and is writable.</li>
+  </ul>
+
+  <p><strong>Expected ISO SHA-256 for the tested signed image:</strong><br>
+  <code>f8eabb694fe5089c7863d70ebb0c1d8502e8e495c38804c37e0a76ff8cbd5805</code></p>
+
+  <pre>sha256sum aether-0.3-x86_64-desktop.iso
+lsblk
+sudo dd if=aether-0.3-x86_64-desktop.iso of=/dev/sdX bs=4M status=progress conv=fsync
+sync</pre>
+
+  <div class="field-row"><span class="label">ISO hash verified:</span> <span class="box">&#9744;</span> Yes &nbsp;&nbsp; <span class="box">&#9744;</span> No &nbsp;&nbsp; Evidence: <span class="fill wide"></span></div>
+  <div class="field-row"><span class="label">Vendor-key recovery rehearsed or documented:</span> <span class="box">&#9744;</span> Yes &nbsp;&nbsp; <span class="box">&#9744;</span> No</div>
+  <p>If the firmware has no way to restore vendor keys and the machine is not disposable, stop. Do not clear the keys.</p>
+</section>
+
+<section class="page-break">
+  <h2>Test matrix</h2>
+  <p>Enter the final status in this table and expand the detailed sections that follow. <strong>Required</strong> rows control the overall result; optional rows are recorded but do not by themselves change a physical pass.</p>
+
+  <table class="matrix">
+    <thead>
+      <tr><th>ID</th><th>Test and expected result</th><th>Req.</th><th>Status</th><th>Evidence</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>FW-01</td><td>Firmware baseline and Setup Mode; state recorded and reversible</td><td>Yes</td><td></td><td></td></tr>
+      <tr><td>FW-02</td><td>Unsigned EFI binary rejected by firmware</td><td>Yes</td><td></td><td></td></tr>
+      <tr><td>ENROLL-01</td><td>Before enrollment: <code>setup_mode=true</code>, <code>can_enroll=true</code></td><td>Yes</td><td></td><td></td></tr>
+      <tr><td>ENROLL-02</td><td>GUI enrollment prints <code>AETHER_SECUREBOOT_ENROLLED</code>; certificate in db</td><td>Yes</td><td></td><td></td></tr>
+      <tr><td>ENROLL-03</td><td>Enrollment helper refuses outside Setup Mode; no key change</td><td>No</td><td></td><td></td></tr>
+      <tr><td>LIVE-01</td><td>Signed live ISO boots with Secure Boot enabled; no violation</td><td>Yes</td><td></td><td></td></tr>
+      <tr><td>LIVE-02</td><td>With vendor keys and no Aether db, live media is rejected (or vendor db exception recorded)</td><td>No</td><td></td><td></td></tr>
+      <tr><td>INSTALL-01</td><td>Installer reports enabled enrolled signed chain; install completes</td><td>Yes</td><td></td><td></td></tr>
+      <tr><td>INSTALL-02</td><td>Installed boot reaches desktop; <code>sbverify</code> passes for all three ESP files</td><td>Yes</td><td></td><td></td></tr>
+      <tr><td>INSTALL-03</td><td>Repeat installed boot reaches the same result</td><td>Yes</td><td></td><td></td></tr>
+      <tr><td>REVOKE-01</td><td>Aether dbx entry rejects both live and installed media</td><td>Yes</td><td></td><td></td></tr>
+      <tr><td>REVOKE-02</td><td>Unsigned dbx update refused; dbx unchanged</td><td>No</td><td></td><td></td></tr>
+      <tr><td>REVOKE-03</td><td>Signed dbx update accepted for disposable test image; wrong key refused (lab only)</td><td>No</td><td></td><td></td></tr>
+      <tr><td>REVOKE-04</td><td>Recovery and re-enrollment restore a known-good Aether boot</td><td>Yes</td><td></td><td></td></tr>
+      <tr><td>SBAT-01</td><td>Unsupported for shipped Aether media; do not apply an unsigned update</td><td>No</td><td>UNSUPPORTED</td><td></td></tr>
+    </tbody>
+  </table>
+
+  <p class="small">Required: FW-01, FW-02, ENROLL-01, ENROLL-02, LIVE-01, INSTALL-01, INSTALL-02, INSTALL-03, REVOKE-01, REVOKE-04. ENROLL-03, LIVE-02, REVOKE-02 and REVOKE-03 are supplemental. SBAT-01 is unsupported and is never a pass.</p>
+</section>
+
+<section class="page-break">
+  <h2>1. Firmware baseline and negative controls</h2>
+
+  <div class="test" id="fw-01">
+    <h3>FW-01 <span class="req">required</span> &mdash; Firmware baseline and Setup Mode</h3>
+    <ul class="checklist">
+      <li><span class="box">&#9744;</span> Enter firmware setup. Disable CSM/legacy support, enable UEFI, and disable Fast Boot.</li>
+      <li><span class="box">&#9744;</span> Record the initial Secure Boot state, Secure Boot mode, PK/KEK/db ownership and whether vendor keys are present.</li>
+      <li><span class="box">&#9744;</span> Photograph the firmware identity, Secure Boot and key-management screens.</li>
+      <li><span class="box">&#9744;</span> Confirm the vendor-key restore/factory-reset/reflash path is available.</li>
+      <li><span class="box">&#9744;</span> <strong>Do not clear the keys yet.</strong> Complete FW-02 and LIVE-02 below while the vendor keys are still present.</li>
+    </ul>
+    <p class="expected"><strong>Expected baseline:</strong> Initial state is recorded; the vendor-key recovery path is documented; vendor keys are still present. Complete the Setup Mode transition after the two controls below.</p>
+    <div class="field-row"><span class="label">Initial Secure Boot:</span> <span class="fill"></span> &nbsp; Initial key state: <span class="fill"></span></div>
+    <div class="field-row"><span class="label">Vendor restore available:</span> <span class="box">&#9744;</span> Yes &nbsp; <span class="box">&#9744;</span> No</div>
+    <p class="small"><strong>Status:</strong> finish FW-01 in the completion block after FW-02 and LIVE-02.</p>
+    <p>Baseline notes:</p><div class="lines"><span></span><span></span></div>
+  </div>
+
+  <div class="test" id="fw-02">
+    <h3>FW-02 <span class="req">required</span> &mdash; Unsigned EFI binary rejected</h3>
+    <ul class="checklist">
+      <li><span class="box">&#9744;</span> On the trusted host, verify the test binary is unsigned or not signed by a trusted key. A rejected <code>sbverify</code> is expected.</li>
+      <li><span class="box">&#9744;</span> Place it at <code>EFI/BOOT/BOOTX64.EFI</code> on the second FAT32 USB.</li>
+      <li><span class="box">&#9744;</span> With Secure Boot enabled and vendor keys still present, boot that USB in UEFI mode.</li>
+      <li><span class="box">&#9744;</span> Record the exact firmware message (for example <em>Security Violation</em> or <em>Access Denied</em>).</li>
+      <li><span class="box">&#9744;</span> If the binary boots, stop the whole test. Secure Boot is not enforcing signatures.</li>
+    </ul>
+    <p class="expected"><strong>Expected:</strong> Firmware refuses the unsigned binary before any Aether code runs.</p>
+    <pre>sbverify --cert db.crt /path/to/EFI/BOOT/BOOTX64.EFI
+# Expected: verification fails because the test binary is not trusted.</pre>
+    <div class="field-row"><span class="label">Exact message:</span> <span class="fill wide"></span></div>
+    <div class="statusline">Result: <span class="box">&#9744;</span> PASS &nbsp; <span class="box">&#9744;</span> FAIL &nbsp; <span class="box">&#9744;</span> BLOCKED &nbsp; <span class="box">&#9744;</span> NOT RUN &nbsp; Evidence: unsigned-rejected.jpg</div>
+  </div>
+
+  <div class="test" id="live-02">
+    <h3>LIVE-02 <span class="req">supplemental</span> &mdash; Live media with Aether db absent</h3>
+    <p>Do this before clearing the vendor keys. It is a control for the firmware's db state, not a pass requirement.</p>
+    <ul class="checklist">
+      <li><span class="box">&#9744;</span> Keep the vendor keys and enable Secure Boot.</li>
+      <li><span class="box">&#9744;</span> Try the Aether live USB. It should be rejected because Aether's db certificate is not enrolled.</li>
+      <li><span class="box">&#9744;</span> If the vendor db already contains Aether's certificate, record that exception and verify the certificate's presence.</li>
+    </ul>
+    <p class="expected"><strong>Expected:</strong> Aether live media is rejected by firmware, unless the vendor db already trusts Aether; record which case applies.</p>
+    <div class="field-row"><span class="label">Case:</span> <span class="box">&#9744;</span> Rejected &nbsp; <span class="box">&#9744;</span> Vendor db already trusted Aether &nbsp; <span class="box">&#9744;</span> Blocked</div>
+    <div class="statusline">Result: <span class="box">&#9744;</span> PASS &nbsp; <span class="box">&#9744;</span> FAIL &nbsp; <span class="box">&#9744;</span> BLOCKED &nbsp; <span class="box">&#9744;</span> NOT RUN &nbsp; Evidence: live-missing-db-rejected.jpg</div>
+  </div>
+
+  <div class="test" id="fw-01-completion">
+    <h3>FW-01 completion &mdash; enter Setup Mode</h3>
+    <p>Complete this block only after FW-02 and LIVE-02. Both controls need the vendor keys to remain present.</p>
+    <ul class="checklist">
+      <li><span class="box">&#9744;</span> Clear/delete all Secure Boot keys. Confirm the firmware reports <strong>Setup Mode</strong>.</li>
+      <li><span class="box">&#9744;</span> Record whether changing keys was reversible and how it would be reversed.</li>
+      <li><span class="box">&#9744;</span> Save the Setup Mode photograph as <code>setup-mode.jpg</code>.</li>
+    </ul>
+    <p class="expected"><strong>Expected:</strong> Setup Mode is reached; the vendor-key recovery path remains documented; the machine remains recoverable.</p>
+    <div class="field-row"><span class="label">Setup Mode reached:</span> <span class="box">&#9744;</span> Yes &nbsp; <span class="box">&#9744;</span> No</div>
+    <div class="statusline">Result: <span class="box">&#9744;</span> PASS &nbsp; <span class="box">&#9744;</span> FAIL &nbsp; <span class="box">&#9744;</span> BLOCKED &nbsp; <span class="box">&#9744;</span> NOT RUN &nbsp; Evidence: firmware-before.jpg, setup-mode.jpg</div>
+  </div>
+</section>
+
+<section class="page-break">
+  <h2>2. Setup Mode and Aether enrollment</h2>
+
+  <div class="test" id="enroll-01">
+    <h3>ENROLL-01 <span class="req">required</span> &mdash; Enrollment status before enrollment</h3>
+    <ul class="checklist">
+      <li><span class="box">&#9744;</span> Boot the verified Aether ISO in UEFI mode with Secure Boot off (Setup Mode).</li>
+      <li><span class="box">&#9744;</span> Open a live terminal and run the status command.</li>
+      <li><span class="box">&#9744;</span> Save the full output to <code>enroll-status-before.txt</code>.</li>
+    </ul>
+    <pre>pkexec /usr/libexec/aether-secureboot-enroll --status</pre>
+    <p class="expected"><strong>Expected:</strong> <code>available=true</code>, <code>setup_mode=true</code>, <code>secure_boot=false</code>, <code>aether_key_enrolled=false</code>, <code>can_enroll=true</code>.</p>
+    <div class="statusline">Result: <span class="box">&#9744;</span> PASS &nbsp; <span class="box">&#9744;</span> FAIL &nbsp; <span class="box">&#9744;</span> BLOCKED &nbsp; <span class="box">&#9744;</span> NOT RUN &nbsp; Evidence: enroll-status-before.txt</div>
+  </div>
+
+  <div class="test" id="enroll-02">
+    <h3>ENROLL-02 <span class="req">required</span> &mdash; Installer GUI enrollment</h3>
+    <ul class="checklist">
+      <li><span class="box">&#9744;</span> Open the installer and go to the disk page.</li>
+      <li><span class="box">&#9744;</span> Confirm the <strong>Secure Boot key enrollment</strong> card is visible.</li>
+      <li><span class="box">&#9744;</span> Click <strong>Enroll Aether Secure Boot key</strong> and authenticate with <code>pkexec</code>.</li>
+      <li><span class="box">&#9744;</span> Record the dialog text and look for <code>AETHER_SECUREBOOT_ENROLLED</code>.</li>
+      <li><span class="box">&#9744;</span> Run <code>--status</code> again and save <code>enroll-status-after.txt</code>.</li>
+      <li><span class="box">&#9744;</span> Confirm Aether's public certificate is present in the firmware <code>db</code>; save <code>efivars-secureboot.txt</code>.</li>
+    </ul>
+    <p class="expected"><strong>Expected:</strong> Enrollment succeeds, the dialog asks for a reboot, the second status reports <code>aether_key_enrolled=true</code>, and the certificate is in db.</p>
+    <div class="field-row"><span class="label">Enrollment message:</span> <span class="fill wide"></span></div>
+    <div class="statusline">Result: <span class="box">&#9744;</span> PASS &nbsp; <span class="box">&#9744;</span> FAIL &nbsp; <span class="box">&#9744;</span> BLOCKED &nbsp; <span class="box">&#9744;</span> NOT RUN &nbsp; Evidence: enroll-gui.jpg, enroll-status-after.txt, efivars-secureboot.txt</div>
+  </div>
+
+  <div class="test" id="enroll-03">
+    <h3>ENROLL-03 <span class="req">supplemental</span> &mdash; Enrollment refused outside Setup Mode</h3>
+    <p>Use a separate machine or VM with an existing PK and Secure Boot <strong>disabled</strong>, so the Aether live media can boot. Do not use the machine whose keys were just cleared.</p>
+    <ul class="checklist">
+      <li><span class="box">&#9744;</span> Boot the live media and run the enrollment helper.</li>
+      <li><span class="box">&#9744;</span> Record the exact refusal text.</li>
+      <li><span class="box">&#9744;</span> Verify <code>PK</code>, <code>KEK</code> and <code>db</code> were not modified.</li>
+    </ul>
+    <p class="expected"><strong>Expected:</strong> Refusal with <em>Firmware is not in Setup Mode</em>; no key change.</p>
+    <div class="statusline">Result: <span class="box">&#9744;</span> PASS &nbsp; <span class="box">&#9744;</span> FAIL &nbsp; <span class="box">&#9744;</span> BLOCKED &nbsp; <span class="box">&#9744;</span> NOT RUN / no second machine &nbsp; Evidence: enroll-refusal.txt</div>
+  </div>
+
+  <div class="test">
+    <h3>Enable Secure Boot after enrollment</h3>
+    <ul class="checklist">
+      <li><span class="box">&#9744;</span> Reboot into firmware setup and enable Secure Boot.</li>
+      <li><span class="box">&#9744;</span> Verify <code>SetupMode=0</code> and <code>SecureBoot=1</code>.</li>
+      <li><span class="box">&#9744;</span> Photograph the key and Secure Boot screens.</li>
+    </ul>
+    <p><strong>Do not install yet.</strong> Test the signed live boot first.</p>
+    <div class="field-row"><span class="label">SetupMode at this point:</span> <span class="fill"></span> &nbsp; SecureBoot: <span class="fill"></span></div>
+  </div>
+</section>
+
+<section class="page-break">
+  <h2>3. Signed live media</h2>
+
+  <div class="test" id="live-01">
+    <h3>LIVE-01 <span class="req">required</span> &mdash; Signed live ISO with Secure Boot on</h3>
+    <ul class="checklist">
+      <li><span class="box">&#9744;</span> Boot the same verified USB in UEFI mode with Secure Boot enabled.</li>
+      <li><span class="box">&#9744;</span> Confirm the Aether live session reaches the graphical live desktop.</li>
+      <li><span class="box">&#9744;</span> Record <code>AETHER_LIVE_AUTOLOGIN</code> and <code>AETHER_LIGHTDM_START</code> if a serial console is available; otherwise photograph the desktop.</li>
+      <li><span class="box">&#9744;</span> Run the status command and save <code>live-journal.txt</code> from the journal/dmesg checks.</li>
+    </ul>
+    <pre>pkexec /usr/libexec/aether-secureboot-enroll --status
+sudo journalctl -b -k | grep -iE 'secure boot|lockdown|efi'
+sudo dmesg | grep -iE 'secure boot|lockdown'</pre>
+    <p class="expected"><strong>Expected:</strong> <code>secure_boot=true</code>, <code>setup_mode=false</code>, <code>aether_key_enrolled=true</code>, <code>can_enroll=false</code>; no firmware violation; live desktop is reached.</p>
+    <ul class="checklist">
+      <li><span class="box">&#9744;</span> Optional negative control: a second USB with the Aether db removed or a deliberately invalid signed UKI is rejected by firmware. Do not modify the only release USB.</li>
+    </ul>
+    <div class="field-row"><span class="label">Live desktop reached:</span> <span class="box">&#9744;</span> Yes &nbsp; <span class="box">&#9744;</span> No &nbsp; Firmware violation: <span class="box">&#9744;</span> None &nbsp; <span class="box">&#9744;</span> Seen</div>
+    <div class="statusline">Result: <span class="box">&#9744;</span> PASS &nbsp; <span class="box">&#9744;</span> FAIL &nbsp; <span class="box">&#9744;</span> BLOCKED &nbsp; <span class="box">&#9744;</span> NOT RUN &nbsp; Evidence: live-boot.jpg, live-journal.txt</div>
+  </div>
+
+  <p>If the live session starts only with Secure Boot off, LIVE-01 fails even if the desktop itself works.</p>
+</section>
+
+<section class="page-break">
+  <h2>4. Install the signed chain</h2>
+
+  <div class="test" id="install-01">
+    <h3>INSTALL-01 <span class="req">required</span> &mdash; Signed install</h3>
+    <ul class="checklist">
+      <li><span class="box">&#9744;</span> From the signed live session, open the installer.</li>
+      <li><span class="box">&#9744;</span> Select the disposable target disk only.</li>
+      <li><span class="box">&#9744;</span> Confirm the installer reports <strong>Secure Boot is enabled and Aether's signed boot chain is enrolled</strong> or the equivalent enabled status.</li>
+      <li><span class="box">&#9744;</span> For this required baseline, leave LUKS/encryption <strong>off</strong>; encrypted/LVM boot is lab-tested under OVMF and is not part of this physical pass count.</li>
+      <li><span class="box">&#9744;</span> Confirm erase, install, and wait for completion. Record the completion message and any errors.</li>
+      <li><span class="box">&#9744;</span> Shut down, remove the USB, and boot the installed disk in UEFI mode with Secure Boot still enabled.</li>
+    </ul>
+    <p class="expected"><strong>Expected:</strong> The installer reports an enabled enrolled chain and the install completes without errors.</p>
+    <div class="statusline">Result: <span class="box">&#9744;</span> PASS &nbsp; <span class="box">&#9744;</span> FAIL &nbsp; <span class="box">&#9744;</span> BLOCKED &nbsp; <span class="box">&#9744;</span> NOT RUN &nbsp; Evidence: install-complete.jpg</div>
+  </div>
+</section>
+
+<section class="page-break">
+  <h2>5. Verified installed boot</h2>
+
+  <div class="test" id="install-02">
+    <h3>INSTALL-02 <span class="req">required</span> &mdash; Installed boot and signature verification</h3>
+    <ul class="checklist">
+      <li><span class="box">&#9744;</span> Sign in at <code>aether login:</code>. Complete the first-boot password change if prompted and reach Plasma.</li>
+      <li><span class="box">&#9744;</span> Record firmware state and the Aether boot entry.</li>
+      <li><span class="box">&#9744;</span> Inspect the ESP and save <code>esp-files.txt</code> with ownership, sizes and SHA-256 hashes.</li>
+      <li><span class="box">&#9744;</span> Verify all three signatures with <code>sbverify</code> from a trusted host or the live media; save <code>sbverify.txt</code> and the tool version.</li>
+    </ul>
+    <pre>pkexec /usr/libexec/aether-secureboot-enroll --status
+efibootmgr -v
+sudo findmnt /boot/efi
+sudo ls -l /boot/efi/EFI/BOOT /boot/efi/EFI/aether
+sudo sha256sum /boot/efi/EFI/BOOT/BOOTX64.EFI \
+  /boot/efi/EFI/BOOT/grubx64.efi /boot/efi/EFI/aether/aether.efi</pre>
+    <pre>sudo mount -o ro /dev/sdXN /mnt/esp
+sbverify --cert db.crt /mnt/esp/EFI/BOOT/BOOTX64.EFI
+sbverify --cert db.crt /mnt/esp/EFI/BOOT/grubx64.efi
+sbverify --cert db.crt /mnt/esp/EFI/aether/aether.efi
+sbverify --version</pre>
+    <p class="expected"><strong>Expected:</strong> <code>secure_boot=true</code>, <code>aether_key_enrolled=true</code>; the boot entry points to the signed ESP loader; all three <code>sbverify</code> checks pass.</p>
+    <div class="field-row"><span class="label">Login/desktop reached:</span> <span class="box">&#9744;</span> Yes &nbsp; <span class="box">&#9744;</span> No &nbsp; All three signatures verified: <span class="box">&#9744;</span> Yes &nbsp; <span class="box">&#9744;</span> No</div>
+    <div class="statusline">Result: <span class="box">&#9744;</span> PASS &nbsp; <span class="box">&#9744;</span> FAIL &nbsp; <span class="box">&#9744;</span> BLOCKED &nbsp; <span class="box">&#9744;</span> NOT RUN &nbsp; Evidence: installed-boot.jpg, esp-files.txt, sbverify.txt</div>
+  </div>
+
+  <div class="test" id="install-03">
+    <h3>INSTALL-03 <span class="req">required</span> &mdash; Repeat installed boot</h3>
+    <ul class="checklist">
+      <li><span class="box">&#9744;</span> Reboot a second time with Secure Boot enabled.</li>
+      <li><span class="box">&#9744;</span> Confirm the same login prompt and desktop are reached.</li>
+    </ul>
+    <p class="expected"><strong>Expected:</strong> The result is not a one-time boot; the installed chain still boots.</p>
+    <div class="statusline">Result: <span class="box">&#9744;</span> PASS &nbsp; <span class="box">&#9744;</span> FAIL &nbsp; <span class="box">&#9744;</span> BLOCKED &nbsp; <span class="box">&#9744;</span> NOT RUN &nbsp; Evidence: installed-reboot.jpg</div>
+  </div>
+</section>
+
+<section class="page-break">
+  <h2>6. Revocation and recovery</h2>
+  <div class="callout stop">
+    <strong>Destructive.</strong> Complete the install and recovery steps first. Keep the vendor firmware recovery path available. Revocation tests exercise firmware and a laboratory hierarchy; they are not a shipped Aether revocation feature.
+  </div>
+
+  <div class="test" id="revoke-01">
+    <h3>REVOKE-01 <span class="req">required</span> &mdash; Add Aether db certificate to firmware dbx</h3>
+    <ul class="checklist">
+      <li><span class="box">&#9744;</span> On the trusted host, convert the public certificate to DER.</li>
+      <li><span class="box">&#9744;</span> Put it on a FAT32 USB. In firmware key management, append it to <strong>dbx</strong> / <strong>Forbidden Signature Database</strong>.</li>
+      <li><span class="box">&#9744;</span> Record whether firmware accepted a certificate, hash or ESL, and photograph the screen.</li>
+      <li><span class="box">&#9744;</span> Reboot with Secure Boot enabled and try both the Aether live USB and installed disk.</li>
+      <li><span class="box">&#9744;</span> Both must be rejected by firmware before shim or GRUB runs. Photograph the exact messages and save the firmware log.</li>
+      <li><span class="box">&#9744;</span> If either still boots, <strong>FAIL</strong>: stop and preserve logs. Do not continue to other revocation variants.</li>
+    </ul>
+    <pre>openssl x509 -in db.crt -outform DER -out aether-db.der</pre>
+    <p class="expected"><strong>Expected:</strong> Firmware accepts the entry and rejects both media before the Aether chain starts. Firmware without a dbx UI is <strong>BLOCKED</strong>, not pass.</p>
+    <div class="field-row"><span class="label">Entry type accepted:</span> <span class="box">&#9744;</span> Certificate &nbsp; <span class="box">&#9744;</span> Hash &nbsp; <span class="box">&#9744;</span> ESL &nbsp; <span class="box">&#9744;</span> No dbx support</div>
+    <div class="field-row"><span class="label">Live rejected:</span> <span class="box">&#9744;</span> Yes &nbsp; <span class="box">&#9744;</span> No &nbsp; Installed rejected: <span class="box">&#9744;</span> Yes &nbsp; <span class="box">&#9744;</span> No</div>
+    <div class="statusline">Result: <span class="box">&#9744;</span> PASS &nbsp; <span class="box">&#9744;</span> FAIL &nbsp; <span class="box">&#9744;</span> BLOCKED &nbsp; <span class="box">&#9744;</span> NOT RUN &nbsp; Evidence: revocation-dbx.jpg, revocation-boot-failure.jpg</div>
+  </div>
+
+  <div class="test" id="revoke-02">
+    <h3>REVOKE-02 <span class="req">supplemental</span> &mdash; Unsigned dbx update refused</h3>
+    <p>This checks firmware update enforcement. It is not a requirement for the physical Aether pass; record it when the firmware supports the operation.</p>
+    <ul class="checklist">
+      <li><span class="box">&#9744;</span> Save the current dbx contents before the attempt.</li>
+      <li><span class="box">&#9744;</span> Try an unsigned or wrongly signed dbx update with <code>efi-updatevar</code>.</li>
+      <li><span class="box">&#9744;</span> Confirm the update is refused and the dbx contents are unchanged.</li>
+    </ul>
+    <pre>sudo efi-readvar -v dbx &gt; dbx-before.txt
+sudo efi-updatevar -f unsigned.auth dbx
+sudo efi-readvar -v dbx &gt; dbx-after.txt</pre>
+    <p class="expected"><strong>Expected:</strong> Refusal; before and after dbx state match. Mark <strong>BLOCKED</strong> if this operation is unavailable.</p>
+    <div class="statusline">Result: <span class="box">&#9744;</span> PASS &nbsp; <span class="box">&#9744;</span> FAIL &nbsp; <span class="box">&#9744;</span> BLOCKED &nbsp; <span class="box">&#9744;</span> NOT RUN &nbsp; Evidence: dbx-unsigned-refused.txt</div>
+  </div>
+
+  <div class="test" id="revoke-03">
+    <h3>REVOKE-03 <span class="req">laboratory only</span> &mdash; Signed dbx update</h3>
+    <p>Use only a disposable test machine or VM and a disposable test PKI. Never use Aether release private keys. This is not a production rotation or revocation procedure.</p>
+    <ul class="checklist">
+      <li><span class="box">&#9744;</span> Generate a disposable PK/KEK/db hierarchy and enroll it on the test machine/VM. Keep private keys off the test media.</li>
+      <li><span class="box">&#9744;</span> Build a dbx ESL containing the test db certificate and sign it with the test KEK.</li>
+      <li><span class="box">&#9744;</span> Apply the signed update; reboot and confirm the test image signed by that db is rejected.</li>
+      <li><span class="box">&#9744;</span> Try an unsigned or wrong-KEK update; firmware must refuse it and leave dbx unchanged.</li>
+      <li><span class="box">&#9744;</span> Rotation: enroll a new test db, sign a new test image, and confirm the old image is rejected while the new one boots.</li>
+    </ul>
+    <pre>cert-to-efi-sig-list test-db.crt test-db.esl
+sign-efi-sig-list -k test-KEK.key -c test-KEK.crt dbx test-db.esl test-db.auth
+sudo efi-updatevar -f test-db.auth dbx</pre>
+    <p class="expected"><strong>Expected:</strong> Signed update works for the disposable test image; wrong-key update is refused; rotation follows the test hierarchy. Record as lab evidence only.</p>
+    <div class="statusline">Result: <span class="box">&#9744;</span> PASS (lab) &nbsp; <span class="box">&#9744;</span> FAIL &nbsp; <span class="box">&#9744;</span> BLOCKED &nbsp; <span class="box">&#9744;</span> NOT RUN &nbsp; Evidence: dbx-signed-lab.txt</div>
+  </div>
+
+  <div class="test" id="sbat-01">
+    <h3>SBAT-01 <span class="req">unsupported</span> &mdash; SBAT revocation</h3>
+    <p class="expected"><strong>Status: UNSUPPORTED for shipped Aether media.</strong> Do not mark this test pass because the shim boots, and do not apply an unsigned SBAT update.</p>
+    <ul class="checklist">
+      <li><span class="box">&#9744;</span> Record the installed shim SBAT metadata if a tool is available.</li>
+      <li><span class="box">&#9744;</span> Record the OVMF lab-fixture result separately, if it was run; it does not make SBAT a physical pass.</li>
+      <li><span class="box">&#9744;</span> Do not apply an unsigned SBAT update to this machine.</li>
+    </ul>
+    <pre>objcopy --dump-section .sbat=shim.sbat shimx64.efi
+strings shim.sbat</pre>
+    <p>A physical SBAT pass would require a separately reviewed, signed update for the Aether chain and a recovery procedure. None exists in this build.</p>
+    <div class="statusline">Status: <strong>UNSUPPORTED</strong> &nbsp; Evidence: sbat-metadata.txt</div>
+  </div>
+
+  <div class="test" id="revoke-04">
+    <h3>REVOKE-04 <span class="req">required</span> &mdash; Recovery and re-enrollment</h3>
+    <ul class="checklist">
+      <li><span class="box">&#9744;</span> Enter firmware setup. Delete the dbx entry if possible, or clear all Secure Boot keys. Record exactly what was done.</li>
+      <li><span class="box">&#9744;</span> Verify dbx no longer contains Aether's certificate. If clearing did not remove it, use factory-key restore or reflash.</li>
+      <li><span class="box">&#9744;</span> If the intended end state is vendor-managed without Aether, restore vendor keys and stop.</li>
+      <li><span class="box">&#9744;</span> For Aether recovery, leave Setup Mode active. Boot the Aether ISO with Secure Boot off and enroll the public <code>PK.auth</code>, <code>KEK.auth</code> and <code>db.auth</code>.</li>
+      <li><span class="box">&#9744;</span> Enable Secure Boot, then confirm the signed live ISO and the installed disk both boot again.</li>
+    </ul>
+    <p class="expected"><strong>Expected:</strong> The revocation entry is gone; Setup Mode is reached; Aether enrollment succeeds; both signed live and installed media boot. Recovery proves the machine is usable, not production key rotation or custody.</p>
+    <div class="field-row"><span class="label">Recovery operation:</span> <span class="box">&#9744;</span> Deleted dbx entry &nbsp; <span class="box">&#9744;</span> Cleared keys &nbsp; <span class="box">&#9744;</span> Factory restore/reflash</div>
+    <div class="field-row"><span class="label">Live restored:</span> <span class="box">&#9744;</span> Yes &nbsp; <span class="box">&#9744;</span> No &nbsp; Installed restored: <span class="box">&#9744;</span> Yes &nbsp; <span class="box">&#9744;</span> No</div>
+    <div class="statusline">Result: <span class="box">&#9744;</span> PASS &nbsp; <span class="box">&#9744;</span> FAIL &nbsp; <span class="box">&#9744;</span> BLOCKED &nbsp; <span class="box">&#9744;</span> NOT RUN &nbsp; Evidence: recovery-boot.jpg, recovery-status.txt</div>
+  </div>
+</section>
+
+<section class="page-break">
+  <h2>Final result and sign-off</h2>
+
+  <h3>Overall result</h3>
+  <p>Mark <strong>PASS</strong> only if every required test is <strong>PASS</strong>, and record the evidence. A single required failure or blocked test prevents a physical Secure Boot pass for this firmware model.</p>
+  <ul class="checklist">
+    <li><span class="box">&#9744;</span> <strong>PASS</strong> &mdash; all required tests passed.</li>
+    <li><span class="box">&#9744;</span> <strong>FAIL</strong> &mdash; at least one required test failed.</li>
+    <li><span class="box">&#9744;</span> <strong>BLOCKED</strong> &mdash; at least one required test could not be run.</li>
+    <li><span class="box">&#9744;</span> <strong>NOT RUN</strong> &mdash; the test was not attempted.</li>
+  </ul>
+
+  <table>
+    <tbody>
+      <tr><th>Required tests passed</th><td><span class="fill wide"></span> / 10</td></tr>
+      <tr><th>Failed test IDs</th><td><span class="fill full"></span></td></tr>
+      <tr><th>Blocked test IDs</th><td><span class="fill full"></span></td></tr>
+      <tr><th>Optional test notes</th><td><span class="fill full"></span></td></tr>
+      <tr><th>Unsupported</th><td>SBAT-01 (not a pass)</td></tr>
+    </tbody>
+  </table>
+
+  <h3>Known limitations acknowledged</h3>
+  <ul class="checklist">
+    <li><span class="box">&#9744;</span> Results apply only to this machine, firmware version and ISO hash.</li>
+    <li><span class="box">&#9744;</span> The Aether PK/KEK/db hierarchy is build-host material, not an HSM-backed release root.</li>
+    <li><span class="box">&#9744;</span> Aether has no production revocation, SBAT-update or key-rotation tooling.</li>
+    <li><span class="box">&#9744;</span> The installed signed UKI includes a generic initramfs with LUKS2/LVM support, but encrypted boot has only OVMF lab evidence; physical encrypted-root coverage remains open.</li>
+    <li><span class="box">&#9744;</span> No TPM measured boot or attestation was tested.</li>
+    <li><span class="box">&#9744;</span> SBAT-01 is unsupported for shipped media; the lab fixture is separate evidence.</li>
+  </ul>
+
+  <h3>Evidence manifest</h3>
+  <p>Keep one immutable directory per machine. Save the completed checklist and JSON result with the files below. Do not include passwords, private keys, TPM secrets or recovery keys.</p>
+  <pre>physical-&lt;vendor&gt;-&lt;model&gt;-&lt;date&gt;/
+  README.txt                 machine, firmware, tester, date, ISO hash
+  secure-boot-physical-checklist.pdf
+                             completed printed checklist
+  result.json                completed JSON template
+  firmware-before.jpg
+  setup-mode.jpg
+  unsigned-rejected.jpg
+  enroll-status-before.txt
+  enroll-gui.jpg
+  enroll-status-after.txt
+  efivars-secureboot.txt
+  enroll-refusal.txt
+  live-boot.jpg
+  live-journal.txt
+  live-missing-db-rejected.jpg
+  install-complete.jpg
+  installed-boot.jpg
+  installed-reboot.jpg
+  esp-files.txt
+  sbverify.txt
+  revocation-dbx.jpg
+  revocation-boot-failure.jpg
+  dbx-unsigned-refused.txt
+  dbx-signed-lab.txt
+  sbat-metadata.txt
+  recovery-boot.jpg
+  recovery-status.txt
+  SHA256SUMS</pre>
+
+  <pre>cd physical-&lt;vendor&gt;-&lt;model&gt;-&lt;date&gt;
+find . -maxdepth 1 -type f ! -name SHA256SUMS -print0 \
+  | sort -z | xargs -0 sha256sum &gt; SHA256SUMS
+sha256sum -c SHA256SUMS</pre>
+
+  <div class="signature">
+    <div>Tester signature<span class="fill"></span></div>
+    <div>Reviewer signature<span class="fill"></span></div>
+    <div>Date<span class="fill"></span></div>
+  </div>
+
+  <p class="footer-note">Aether physical UEFI Secure Boot checklist &middot; Keep with the evidence directory &middot; See <a href="secure-boot-physical-test-plan.md">the full plan</a> for rationale and limitations.</p>
+</section>
+
+</div>
+</body>
+</html>

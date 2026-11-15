@@ -4,10 +4,17 @@
 
 [Documentation](docs/README.md) · [Development downloads](https://github.com/Shadowman8080/Aether/releases) · [October 6 progress](docs/modern-desktop-20261006.md) · [Image verification](docs/modern-desktop-20261006.md#validation)
 
-**New in the October 6 snapshot:** Aether Settings, a Flatpak app store,
-on-demand Nimbrel, privacy controls, phone connection and recovery. Public OS
-update trust remains unconfigured while release keys and the base package
-inventory are prepared. Aether is still a work in progress.
+**New in the November 4 snapshot:** **Aether Beam** installs several
+applications at once — preparation is threaded, package transactions stay
+serialized — and **Aether Pilot** is a Copilot-style assistant that may only
+propose an action from a fixed, reviewed catalog, which a person confirms and the
+machine records. Both are implemented in source and unit-tested offline; no
+published image contains them yet.
+
+**In the October 6 snapshot:** Aether Settings, a Flatpak app store, on-demand
+Nimbrel, privacy controls, phone connection and recovery. Public OS update trust
+remains unconfigured while release keys and the base package inventory are
+prepared. Aether is still a work in progress.
 
 Aether is a from-scratch desktop Linux built by compiling every package in its
 base system from pinned upstream sources. No binary distribution is downloaded
@@ -52,7 +59,8 @@ Being blunt about the model: **0.8B is small.** It is good enough for
 definitions, summaries and light drafting, and it will confidently get things
 wrong. That is why Nimbrel labels its own output *"Check important answers"*.
 Nimbrel has **no command execution, no network access, and no vision** — by
-design, not by omission.
+design, not by omission. Acting on the machine is [Aether Pilot](docs/pilot.md)'s
+job instead: a fixed catalog, a person's confirmation, and an audit line.
 
 ## The desktop
 
@@ -124,9 +132,12 @@ are unit-tested, and nothing has been compiled or booted yet.
 | **Files** | Vector — first-party applications & files browser |
 | **Devices** | Aether Devices — plug-and-play manager + hotplug notifications, udev/hwdb policy, driver auto-loading |
 | **Security** | nftables default-deny, AppArmor, `aether-security-status`, PAM lockout, cryptsetup/LUKS2 |
+| **Secure Boot** | UEFI signed shim → GRUB → UKI, Aether PK/KEK/db enrollment, signed live UEFI media |
 | **Backups** | restic 0.19.1, encrypted, user-driven setup, no backup until it succeeds |
 | **Updates** | GnuPG package signing + TUF repository tooling — built and tested, **not deployed** |
 | **Install** | Interactive x86_64 installer: whole-disk, optional LUKS2, mandatory first-boot password change |
+| **Installs** | Beam — concurrent download and verification, one package transaction at a time, resumable |
+| **Pilot** | Allowlisted system actions that a person confirms, with a local audit log |
 
 <p align="center">
   <img src="media/screenshots/08-vector-applications.png" width="880" alt="Vector showing 23 installed Aether and KDE applications">
@@ -282,6 +293,12 @@ The full per-area breakdown lives in [`docs/verification.md`](docs/verification.
 - Native Tesseract OCR recognises a generated English test image
 - The released VMDK passes `qemu-img compare` against the detached raw image:
   *Images are identical*
+- **Secure Boot**: signed shim, GRUB and UKI booted under OVMF with firmware
+  Secure Boot enabled and the Aether db enrolled; the same signed chain booted
+  an installed disk to `aether login:`, and the signed live ISO booted to the
+  live desktop. VMware Workstation 26.0.1 and VirtualBox 7.2.22 also booted the
+  signed ISO and an installed disk to `aether login:` with Secure Boot enabled.
+  Legacy BIOS live boot also passed.
 
 **Not verified**
 
@@ -290,11 +307,43 @@ The full per-area breakdown lives in [`docs/verification.md`](docs/verification.
   manager, hotplug notifications, kernel driver classes) but **not yet compiled
   into an image or boot-tested** — no hardware support claim exists
 - **x86_64 only.** i686, ARM64 and Raspberry Pi desktop images are not built or
-  updated. (`x64` and `x86_64` are the same architecture.)
-- **Secure Boot is unsupported** and kernel module signatures are *not enforced*
+  updated. (`x64` and `x86_64` are the same architecture.) See
+  [ARM64 status](docs/arm64.md) for what exists and what is missing.
+- **Beam and Pilot are not in any image.** Both are implemented in source and
+  unit-tested offline; nothing has been compiled into an image or booted.
+- **Secure Boot** is implemented for UEFI Aether media and installs when the
+  Aether key is enrolled. Physical hardware, firmware other than
+  OVMF/VMware/VirtualBox, production key revocation, and the installer's GUI
+  enrollment action are still unverified. A disposable OVMF lab fixture now
+  executes signed dbx and SBAT revocation mechanisms with test keys; it is not
+  a shipped revocation feature. Kernel module signatures are *not enforced*.
 - BIOS unlock automation is **intermittent** and is not marked as passing; UEFI
   is the recommended configuration
 - Native VMware/VirtualBox clipboard and drag-drop are only partially verified
+
+## Secure Boot
+
+Aether has a real UEFI Secure Boot chain: firmware verifies a signed shim,
+shim verifies signed GRUB, and GRUB chainloads a signed unified kernel image.
+The installer enrolls Aether's public PK/KEK/db hierarchy in firmware Setup
+Mode, using `efi-updatevar` through `pkexec`, then installs the signed chain.
+The live ISO uses the same chain for UEFI; BIOS live media uses normal
+kernel/initramfs entries because BIOS has no Secure Boot.
+
+The private keys stay outside the repository and outside every image. The
+installed signed UKI embeds a generic initramfs and discovers
+`LABEL=AETHER_ROOT`; it can unlock an optional LUKS2 `AETHER_CRYPT` volume and
+activate LVM before mounting the root. `/boot` remains unencrypted. Boots are
+verified under QEMU/OVMF, VMware Workstation 26.0.1 and VirtualBox 7.2.22;
+physical firmware, including physical encrypted-root installs, has not been
+certified. The encrypted lab rerun used source-built cryptsetup/LVM, but its
+staged runtime still had labelled host-library fallbacks; a release asset
+requires a complete source runtime with no fallbacks. Production revocation,
+TPM attestation and key custody are not production-grade. A disposable OVMF fixture exercises signed dbx and SBAT
+revocation without the release keys. See [Secure Boot details](docs/secure-boot.md)
+for enrollment steps, evidence, the lab fixture and limits, and the
+[physical UEFI Secure Boot test plan](docs/secure-boot-physical-test-plan.md)
+for the real-hardware procedure.
 
 ## What is not done
 
@@ -303,7 +352,12 @@ Stated plainly, because a project that hides this is not worth trusting:
 - ❌ No **production update repository**. The TUF/signing tooling is built and
   tested, and an automatic checker is installed. Public release trust remains unconfigured.
 - ❌ No **ARM64**, i686 or Raspberry Pi desktop image
-- ❌ No **Secure Boot**, no signed UKI, no verified boot chain
+- ❌ No in-app Pilot confirmation pane; confirmed actions run through
+  `aether-pilot` and Aether Settings, and Beam's only queue view is its receipt
+- ❌ No production **Secure Boot key custody, rotation or revocation**; the
+  Aether db key is a build-host key, not an HSM-backed release root. A
+  disposable OVMF lab fixture exercises signed dbx and SBAT revocation with
+  test keys, but it is not a production revocation process.
 - ❌ No **TPM** enrollment or attestation
 - ❌ **Most desktop apps are still unconfined** by AppArmor
 - ❌ Installer is **whole-disk only** — it does not convert an existing install
@@ -321,6 +375,7 @@ Start at the **[Aether documentation hub](docs/README.md)** for setup, features,
 security, updates and developer guides.
 
 - [Getting started](docs/getting-started.md)
+- [Screenshot gallery](docs/screenshots.md)
 - [Current features and verification](docs/modern-desktop-20261006.md)
 - [VMware and VirtualBox](docs/guest-integration-status.md)
 - [Building Aether](docs/build.md)
@@ -334,6 +389,8 @@ media/          screenshots and videos (all recorded from a real Aether VM)
 src/desktop/    Vector, greeter, installer, Plasma shell + power menu
 src/server/     server edition: role catalog, installer, install backend
 src/nimbrel/    on-device AI client, gateway, engine wiring
+src/beam/       concurrent application installation
+src/pilot/      confirmed, logged system actions for the assistant
 src/security/   firewall, AppArmor, PAM, backups, security tooling
 src/updates/    GnuPG signing + TUF repository and client
 src/assets/     wallpapers, colour schemes, screensavers, Plymouth, layouts

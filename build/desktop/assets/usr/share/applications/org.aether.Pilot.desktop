@@ -1,0 +1,12 @@
+[Desktop Entry]
+Type=Application
+Name=Aether Pilot
+GenericName=AI Assistant
+Comment=Suggest a system action from a fixed catalog; nothing runs until you confirm it
+Exec=/usr/bin/aether-pilot-ui
+Icon=org.aether.Pilot
+Terminal=false
+Categories=Utility;System;
+Keywords=ai;assistant;pilot;copilot;actions;automation;
+StartupNotify=false
+StartupWMClass=aether-pilot-ui

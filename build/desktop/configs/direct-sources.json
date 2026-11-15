@@ -222,5 +222,23 @@
     "checksum_source": "https://github.com/SSSD/sssd/releases/download/2.13.1/sssd-2.13.1.tar.gz.sha256sum",
     "provenance": "Official SSSD upstream release 2.13.1 over HTTPS; SHA-256 verified against the checksum file published with the release",
     "sha256_expected": "05ea79e89f0be399983925b8874ac196d6dc5fd4416f83609557b9fc8ef798b5"
+  },
+  {
+    "key": "inter-font",
+    "url": "https://github.com/rsms/inter/releases/download/v4.1/Inter-4.1.zip",
+    "sha256_expected": "9883fdd4a49d4fb66bd8177ba6625ef9a64aa45899767dde3d36aa425756b11e",
+    "provenance": "Official Inter 4.1 release asset over HTTPS; SHA-256 pinned from the first verified download"
+  },
+  {
+    "key": "kColorPicker",
+    "url": "https://github.com/ksnip/kColorPicker/archive/refs/tags/v0.3.1.tar.gz",
+    "filename": "kColorPicker-0.3.1.tar.gz",
+    "sha256_expected": "e78c785ec4a8a22a48a91835c97601f5704b5076b154415353b0d2697dc0b4f7"
+  },
+  {
+    "key": "kImageAnnotator",
+    "url": "https://github.com/ksnip/kImageAnnotator/archive/refs/tags/v0.7.2.tar.gz",
+    "filename": "kImageAnnotator-0.7.2.tar.gz",
+    "sha256_expected": "7eb593d975b1590a184354ef68dbc3c26479d58eaea00de461d73695176f623c"
   }
 ]

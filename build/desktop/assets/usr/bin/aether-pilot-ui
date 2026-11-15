@@ -1,0 +1,182 @@
+#!/usr/bin/env python3
+"""Aether Pilot — desktop front end.
+
+The command-line tool owns validation, confirmation, execution and the audit
+log. This window only drives it: nothing runs until the person approves the
+exact proposal, and every confirmed action is recorded by aether-pilot.
+"""
+import json
+import os
+import subprocess
+import sys
+import tempfile
+
+PILOT = '/usr/bin/aether-pilot'
+KD = '/usr/bin/kdialog'
+
+
+def kdialog(*args):
+    return subprocess.run([KD, *args], capture_output=True, text=True)
+
+
+def pilot(*args):
+    return subprocess.run([PILOT, *args], capture_output=True, text=True)
+
+
+def show(title, text, width=760, height=460):
+    fd, path = tempfile.mkstemp(prefix='aether-pilot-', suffix='.txt')
+    try:
+        with os.fdopen(fd, 'w', encoding='utf-8') as handle:
+            handle.write(text)
+        kdialog('--title', title, '--textbox', path, str(width), str(height))
+    finally:
+        os.unlink(path)
+
+
+def complain(message):
+    kdialog('--title', 'Aether Pilot', '--error', message)
+
+
+def confirm(title, text, warning=False):
+    return kdialog('--geometry', '760x460', '--title', title,
+                   '--warningyesno' if warning else '--yesno', text).returncode == 0
+
+
+def catalog_text():
+    result = pilot('catalog')
+    if result.returncode != 0:
+        return result.stderr.strip() or 'Pilot could not read its catalog.'
+    return result.stdout
+
+
+def describe(proposal):
+    lines = [proposal.get('title', proposal.get('action', 'Action')), '']
+    if proposal.get('summary'):
+        lines.extend([proposal['summary'], ''])
+    params = proposal.get('params') or {}
+    if params:
+        lines.append('Parameters:')
+        for name, value in params.items():
+            lines.append('  %s = %s' % (name, value))
+        lines.append('')
+    lines.append('Privilege: %s' % proposal.get('privilege', 'user'))
+    lines.append('Risk: %s' % proposal.get('risk', 'read'))
+    command = proposal.get('command') or []
+    if command:
+        lines.append('Runs: ' + ' '.join(command))
+    lines.extend(['', 'This proposal expires in five minutes and works once.'])
+    return '\n'.join(lines)
+
+
+def ask():
+    answer = kdialog('--title', 'Ask Aether Pilot', '--inputbox',
+                     'What do you want to do?', 'check for updates')
+    if answer.returncode != 0:
+        return
+    text = answer.stdout.strip()
+    if not text:
+        return
+    result = pilot('suggest', text)
+    if result.returncode != 0:
+        complain(result.stderr.strip() or 'Pilot could not propose an action.')
+        return
+    try:
+        proposals = json.loads(result.stdout)
+    except ValueError:
+        show('Aether Pilot', result.stdout)
+        return
+    if not proposals:
+        complain("No action in Pilot's catalog matches that request.")
+        return
+    proposal = proposals[0]
+    if 'missing' in proposal:
+        missing = ', '.join(proposal['missing'])
+        complain('Pilot needs more detail: %s.\n\nName the value, for example:\n'
+                 '  install app org.example.Tool' % missing)
+        return
+    if not confirm('Aether Pilot', describe(proposal)):
+        return
+    arguments = ['run', str(proposal['id'])]
+    if proposal.get('risk') == 'high':
+        if not confirm('High-risk action', 'This action is marked high risk.\n\n' +
+                       describe(proposal) + '\n\nRun it anyway?', warning=True):
+            return
+        arguments.append('--yes')
+    receipt = pilot(*arguments)
+    show('Aether Pilot result', receipt.stdout or receipt.stderr)
+
+
+def audit():
+    result = pilot('audit', '--limit', '20')
+    show('Aether Pilot audit',
+         result.stdout or result.stderr or 'Nothing has been confirmed yet.')
+
+
+def status():
+    current = pilot('status')
+    try:
+        state = json.loads(current.stdout)
+        text = 'Pilot is %s for this account.\n\nActions in the catalog: %s\n\nState: %s' % (
+            'on' if state.get('enabled') else 'off', state.get('actions', '?'),
+            state.get('state', 'unknown'))
+    except (ValueError, AttributeError):
+        text = current.stdout or current.stderr
+    show('Aether Pilot status', text)
+
+
+def toggle():
+    enabled = True
+    current = pilot('status')
+    try:
+        enabled = bool(json.loads(current.stdout).get('enabled'))
+    except (ValueError, AttributeError):
+        pass
+    if enabled:
+        if not confirm('Aether Pilot',
+                       'Turn Pilot off for this account?\n\nEvery proposal is refused until you turn it on again.'):
+            return
+        result = pilot('disable')
+    else:
+        result = pilot('enable')
+    show('Aether Pilot', result.stdout or result.stderr)
+
+
+def main():
+    if not os.access(KD, os.X_OK):
+        print('kdialog is required for the Pilot window.', file=sys.stderr)
+        return 1
+    if not os.access(PILOT, os.X_OK):
+        print('aether-pilot is not installed.', file=sys.stderr)
+        return 1
+    while True:
+        enabled = True
+        current = pilot('status')
+        try:
+            enabled = bool(json.loads(current.stdout).get('enabled'))
+        except (ValueError, AttributeError):
+            pass
+        menu = kdialog('--title', 'Aether Pilot', '--menu',
+                       'Pilot suggests actions from a fixed catalog. Nothing runs until you confirm it.',
+                       'ask', 'Ask Pilot to suggest an action',
+                       'catalog', 'See what Pilot can do',
+                       'audit', 'Review confirmed actions',
+                       'status', 'Show whether Pilot is on',
+                       'toggle', 'Turn Pilot %s for this account' % ('off' if enabled else 'on'))
+        if menu.returncode != 0:
+            return 0
+        choice = menu.stdout.strip()
+        if choice == 'ask':
+            ask()
+        elif choice == 'catalog':
+            show('What Pilot can do', catalog_text())
+        elif choice == 'audit':
+            audit()
+        elif choice == 'status':
+            status()
+        elif choice == 'toggle':
+            toggle()
+    return 0
+
+
+if __name__ == '__main__':
+    sys.exit(main())

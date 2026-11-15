@@ -3,8 +3,12 @@ from pathlib import Path
 import json,runpy
 ns=runpy.run_path('/recipes/scripts/build-desktop-foundation.py');build=ns['build']
 manifest=json.loads(Path('/recipes/configs/sources.json').read_text())
-# API documentation and mobile-modem integration are optional in the desktop image.
-skip={'kapidox','modemmanager-qt'}
+# API documentation is optional; ModemManagerQt is not, because plasma-nm
+# requires it at configure time with no opt-out.
+skip={'kapidox'}
+# kdoctools encodes doc URIs with Perl's URI::Escape, which is not in core Perl.
+build('uri','perl')
+build('zxing','cmake',['-DBUILD_SHARED_LIBS=ON','-DBUILD_EXAMPLES=OFF','-DBUILD_BLACKBOX_TESTS=OFF','-DBUILD_UNIT_TESTS=OFF'])
 for item in manifest:
  if item['group']!='frameworks' or item['key'] in skip: continue
  options=['-DBUILD_PYTHON_BINDINGS=OFF']

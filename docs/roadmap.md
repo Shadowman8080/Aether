@@ -10,8 +10,10 @@ it could honestly be called a release, roughly in dependency order.
 
 1. **A deployed, authenticated update repository.** The signing and TUF tooling
    is built and tested; the infrastructure is empty. Nothing updates today.
-2. **A verified boot chain.** Secure Boot support, signed kernel/initramfs,
-   signed unified kernel images, and a documented revocation story.
+2. **Production trust for the verified boot chain.** Signed shim, GRUB and
+   unified kernel images are implemented and boot-tested under OVMF. What is
+   missing is independent key custody, rotation and revocation,
+   physical-firmware coverage, and physical encrypted-root coverage.
 3. **Key custody.** Public-release root keys held independently, offline or
    hardware-backed, with an independently recoverable backup and a *tested*
    rotation and revocation procedure. Two keys on one online builder is not
@@ -45,7 +47,12 @@ it could honestly be called a release, roughly in dependency order.
 
 - Partitioned installs — the current installer is **whole-disk only**.
 - Convert or migrate an existing installation without erasing it.
-- Separate `/boot` encryption, then encrypted hibernation.
+- Separate `/boot` encryption, then encrypted hibernation. Encrypting `/boot`
+  under the current signed UKI chain is blocked: firmware and shim will not
+  chainload a UKI from GRUB's crypto device, while loading a signed kernel and
+  initramfs from it needs a working EFI handoff that this kernel/GRUB pair does
+  not provide. A solution needs a boot-chain redesign, not just a LUKS
+  partition.
 - Offline and unattended install modes.
 
 ## Architecture

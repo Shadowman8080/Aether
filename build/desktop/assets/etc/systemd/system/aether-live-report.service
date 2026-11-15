@@ -1,0 +1,11 @@
+[Unit]
+Description=Aether live boot diagnostics
+After=lightdm.service
+Wants=lightdm.service
+[Service]
+Type=oneshot
+ExecStart=/bin/sh /usr/libexec/aether-live-report
+StandardOutput=journal+console
+StandardError=journal+console
+[Install]
+WantedBy=graphical.target

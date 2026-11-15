@@ -36,8 +36,12 @@ These are documented on purpose. They are not discoveries.
 
 ### Cryptography and boot
 
-- **Secure Boot is unsupported** and the kernel/initramfs are not a verified
-  signed boot chain.
+- **Secure Boot is implemented for UEFI Aether media and installs**, but only
+  when Aether's self-signed key hierarchy is enrolled in firmware Setup Mode.
+  The private PK/KEK/db keys are build-host material, not independently
+  custodied release keys; rotation, revocation, physical hardware and firmware
+  beyond OVMF, VMware Workstation and VirtualBox are untested. Kernel module
+  signatures are still not enforced.
 - **Kernel module signature support is compiled in but signatures are not
   enforced.**
 - `/boot` is **not encrypted**; only the root filesystem is covered by LUKS2.
@@ -57,9 +61,12 @@ These are documented on purpose. They are not discoveries.
   are not secrets and must never be published.
 - Backup credentials are **root-readable local files** so unattended operation
   works. Root compromise therefore exposes them.
-- Update signing keys, TUF role keys and object-storage upload credentials are
-  **not yet separated into independent custody**. Two keys on one online builder
-  do not provide compromise resilience.
+- Update signing keys, TUF role keys, Secure Boot PK/KEK/db keys and
+  object-storage upload credentials are **not yet separated into independent
+  custody**. Keys on one online builder do not provide compromise resilience,
+  and production Secure Boot revocation/rotation has not been tested. A
+  disposable OVMF lab fixture exercises signed dbx and SBAT revocation using
+  test keys; it is not a production key or update process.
 - The object-storage bucket used during development is **private development
   storage**, not a production update repository, and its token has expired.
 
@@ -103,6 +110,10 @@ Implemented and tested:
 - Five-minute idle locking, lock-on-resume, minimal nonpersistent clipboard
   history, removable-media automount disabled
 - Source-built cryptsetup/LUKS2 and an interactive x86_64 live installer
+- A signed UEFI Secure Boot chain (shim → GRUB → UKI) with authenticated
+  PK/KEK/db enrollment, a signed live UKI, and an installer that writes only
+  the signed chain. QEMU/OVMF, VMware Workstation and VirtualBox evidence is
+  recorded in [`docs/secure-boot.md`](docs/secure-boot.md)
 - Source-built restic 0.19.1 with explicit encrypted backup setup, a daily
   timer, repository consistency checking and restore to a new directory
 

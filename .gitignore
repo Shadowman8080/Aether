@@ -137,6 +137,8 @@ coverage.xml
 *.o
 *.a
 *.so.*
+# Bundled host-side OpenSSL runtime for the Secure Boot enrollment helper.
+!build/desktop/assets/usr/lib/aether-secureboot/*.so.*
 *.gcda
 *.gcno
 
@@ -167,6 +169,10 @@ npm-debug.log*
 yarn-error.log*
 journal/
 *.journal
+
+# Local validation captures and status files (curated media is committed)
+/build/artifacts/
+/build/desktop/BUILD_STATUS.txt
 
 # Screenshots captured during ad-hoc testing (curated media is committed)
 /media/screenshots/scratch-*

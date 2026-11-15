@@ -13,8 +13,16 @@ grep -qx 'EXIT 0' "$base/logs/desktop/build.status" || {
     echo 'Foundation did not complete successfully; inspect its package log.' >&2
     exit 1
 }
+failures="$base/build/native-desktop/failures.txt"
 for stage in dependencies frameworks plasma apps; do
     echo "STAGE $stage" | tee -a "$status"
+    : >"$failures"
     AETHER_BUILD_LABEL="$stage" bash "$base/desktop/scripts/run-desktop-build.sh" "build-desktop-$stage.py"
+    if [ -s "$failures" ]; then
+        echo "FAILURES $stage $(wc -l <"$failures")" | tee -a "$status"
+        echo "Packages that could not be configured (package<TAB>log):" >&2
+        cat "$failures" >&2
+        exit 2
+    fi
 done
 echo 'PACKAGES_COMPLETE: session configuration, kernel integration and boot tests still required.' | tee -a "$status"

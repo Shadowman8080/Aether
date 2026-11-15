@@ -1,0 +1,8 @@
+[Desktop Entry]
+Type=Application
+Name=Try or Install Aether
+Comment=Choose whether to try the live desktop or install Aether
+Exec=/usr/bin/aether-live-welcome
+OnlyShowIn=KDE;
+NoDisplay=true
+X-KDE-autostart-phase=2

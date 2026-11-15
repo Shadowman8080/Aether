@@ -63,7 +63,14 @@ Either legacy BIOS or UEFI can be selected; disable Secure Boot for this unsigne
 prototype. No hard disk is required. Keep the Ubuntu build VM intact.
 
 Log in as `root` at the console with no password. This is intentional for this
-local development image; no remote login server is installed. The normal boot
+local development image; no remote login server is installed.
+
+VirtualBox boots this console image with `nomodeset` (see `scripts/make-iso.sh`).
+Without it, VirtualBox's default VMSVGA adapter -- like VMware's SVGA II -- is
+claimed by the in-kernel `vmwgfx` driver, which has no fbcon takeover here: the
+kernel logs `Console: switching to colour dummy device` and the VM shows a black
+screen while it is actually running and reachable on the serial console. A third
+menu entry boots without `nomodeset` for anyone testing graphics/KMS. The normal boot
 menu opens the console, and the self-test menu powers off after its checks.
 Changes disappear on shutdown. Run `poweroff` to stop the guest.
 

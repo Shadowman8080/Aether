@@ -1,0 +1,13 @@
+#!/bin/sh
+# Live media only: offer the Ubuntu-style choice before the desktop is usable.
+set -eu
+if [ -e /run/aether-live ] || [ -e /run/initramfs/live/lower/etc/os-release ] ||
+        grep -q 'overlay / overlay' /proc/mounts; then
+    :
+else
+    exit 0
+fi
+if grep -qw 'aether.installer=1' /proc/cmdline 2>/dev/null; then
+    exec /usr/bin/aether-installer
+fi
+exec /usr/bin/aether-installer --welcome

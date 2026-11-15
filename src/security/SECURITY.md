@@ -11,8 +11,9 @@ cannot be established by installing packages alone.
 - Linux 6.18.54-aether4: nftables, AppArmor, Yama and Landlock; stack-offset
   randomization, hardened/randomized slab allocation, hardened usercopy,
   FORTIFY, allocation initialization, IOMMU defaults and zram. Module signature
-  support is available but signatures are **not enforced**. Secure Boot remains
-  disabled and the kernel/initramfs are not a verified signed boot chain.
+  support is available but signatures are **not enforced**. UEFI Secure Boot now
+  has a signed shim → GRUB → UKI chain and an installer enrollment path; it is
+  virtual-machine tested, with build-host key custody and no revocation story.
 - Source-built nftables 1.1.7 and its libraries; stateful IPv4/IPv6 incoming and
   forwarding default-deny policy. DNS, DHCP, IPv6 discovery and normal outgoing
   client traffic remain possible. Firewall reload owns only its own table.
@@ -40,7 +41,9 @@ cannot be established by installing packages alone.
   indexing exclusions. VMware still selects X11 for requested clipboard support;
   this weakens isolation between applications sharing that session. Native
   VMware clipboard/window-autofit and suspend/resume need hardware/UI tests.
-- Source-built cryptsetup/LUKS2 and an interactive x86_64 live installer. The
+- Source-built cryptsetup/LUKS2 and LVM2 2.03.42, including the LVM command-
+  line tools used by the installed initramfs, plus an interactive x86_64 live
+  installer. The
   installer requires explicit disk erasure confirmation, offers encryption,
   adds a separate recovery passphrase, requires a personal account password,
   and asks for a backup destination. It does not convert an existing disk in

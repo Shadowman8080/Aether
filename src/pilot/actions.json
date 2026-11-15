@@ -1,0 +1,101 @@
+{
+  "schema": 1,
+  "actions": [
+    {
+      "id": "security.status",
+      "title": "Show protection status",
+      "summary": "Reports which protections are active, unverified or unsupported.",
+      "phrases": ["security status", "am i protected", "protection status", "security check"],
+      "privilege": "user",
+      "risk": "read",
+      "argv": ["/usr/bin/aether-security-status"]
+    },
+    {
+      "id": "updates.check",
+      "title": "Check for Aether updates",
+      "summary": "Verifies signed update metadata and lists pending packages. Installs nothing.",
+      "phrases": ["check for updates", "any updates", "update my system", "os update"],
+      "privilege": "user",
+      "risk": "read",
+      "argv": ["/usr/bin/aether-update", "check"]
+    },
+    {
+      "id": "install.beam",
+      "title": "Show the concurrent install queue",
+      "summary": "Prints the last install receipt: what was installed, failed or blocked.",
+      "phrases": ["install queue", "what is installing", "download progress", "install status"],
+      "privilege": "user",
+      "risk": "read",
+      "argv": ["/usr/bin/aether-beam", "status"]
+    },
+    {
+      "id": "network.status",
+      "title": "Show firewall status",
+      "summary": "Lists the default-deny policy and any ports opened on purpose.",
+      "phrases": ["firewall status", "what ports are open", "network protection"],
+      "privilege": "admin",
+      "risk": "read",
+      "argv": ["/usr/bin/aether-firewall", "status"]
+    },
+    {
+      "id": "install.flatpak",
+      "title": "Install an application",
+      "summary": "Installs one Flatpak application for this account. Requires an enabled remote.",
+      "phrases": ["install app", "install application", "get me", "add an app"],
+      "privilege": "user",
+      "risk": "medium",
+      "params": {
+        "ref": {"type": "pattern", "pattern": "[A-Za-z0-9][A-Za-z0-9._+-]{1,127}(/[A-Za-z0-9._+-]{1,64}){0,2}", "title": "Flatpak application reference"}
+      },
+      "argv": ["/usr/bin/flatpak", "install", "--noninteractive", "--user", "{ref}"]
+    },
+    {
+      "id": "ai.disable",
+      "title": "Turn off on-device AI",
+      "summary": "Stops Nimbrel for every account on this device until it is enabled again.",
+      "phrases": ["turn off ai", "disable ai", "stop the assistant", "disable nimbrel"],
+      "privilege": "admin",
+      "risk": "high",
+      "argv": ["/usr/libexec/aether-system-admin", "ai-disable"]
+    },
+    {
+      "id": "ai.enable",
+      "title": "Enable on-device AI",
+      "summary": "Allows Nimbrel to start on demand when opened. No model is downloaded.",
+      "phrases": ["turn on ai", "enable ai", "start the assistant", "enable nimbrel"],
+      "privilege": "admin",
+      "risk": "medium",
+      "argv": ["/usr/libexec/aether-system-admin", "ai-enable"]
+    },
+    {
+      "id": "backup.run",
+      "title": "Run the encrypted backup",
+      "summary": "Runs the configured local encrypted backup. Success is not a restore test.",
+      "phrases": ["back up now", "run backup", "make a backup", "back up my files"],
+      "privilege": "admin",
+      "risk": "medium",
+      "argv": ["/usr/bin/aether-backup", "run"]
+    },
+    {
+      "id": "firmware.check",
+      "title": "Check for firmware updates",
+      "summary": "Refreshes signed firmware metadata and lists available updates. Flashes nothing.",
+      "phrases": ["firmware update", "update firmware", "bios update"],
+      "privilege": "admin",
+      "risk": "medium",
+      "argv": ["/usr/libexec/aether-system-admin", "firmware-check"]
+    },
+    {
+      "id": "network.trust-home",
+      "title": "Trust a connection as Home",
+      "summary": "Applies home-scoped firewall exceptions only while that saved connection is active.",
+      "phrases": ["trust this network", "mark as home", "home network", "allow phone on this network"],
+      "privilege": "admin",
+      "risk": "medium",
+      "params": {
+        "connection": {"type": "pattern", "pattern": "[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}", "title": "Connection UUID"}
+      },
+      "argv": ["/usr/libexec/aether-system-admin", "network-home", "{connection}"]
+    }
+  ]
+}

@@ -10,14 +10,17 @@ source=$(findmnt -n -o SOURCE --mountpoint "$root")
 loop=${source%p3}
 [[ "$(losetup -n -O BACK-FILE "$loop")" == "$base/build/aether-0.3-system.raw" ]]
 grep -qx 'EXIT 0' "$base/logs/desktop/kernel.status"
-for program in plasmashell krunner startplasma-wayland sddm dolphin konsole; do
+for program in plasmashell krunner startplasma-wayland dolphin konsole aether-greeter; do
  test -x "$root/usr/bin/$program"
 done
+# The session greeter is LightDM; SDDM is not part of this image.
+test -x "$root/usr/sbin/lightdm"
 stage=$base/build/desktop-kernel-stage
 release=$(cat "$stage/kernel-release")
 [[ "$release" == 6.18.54-aether3 ]]
 cp -a "$stage/boot/." "$root/boot/"
 cp -a "$stage/lib/modules/." "$root/usr/lib/modules/"
+bash "$base/desktop/scripts/install-guest-build-support.sh"
 mount --rbind /dev "$root/dev"
 mount --make-rslave "$root/dev"
 mount -t proc proc "$root/proc"
@@ -25,9 +28,27 @@ mount -t sysfs sysfs "$root/sys"
 mount -t tmpfs tmpfs "$root/run"
 mount --bind "$base/desktop" "$root/recipes"
 mount -o remount,bind,ro "$root/recipes"
-chroot "$root" /usr/bin/env SYSTEMD_OFFLINE=1 python3 /recipes/scripts/configure-desktop-session.py
+# Common assets first: the session configuration enables units that the assets
+# provide, so enabling before installation would fail.
 bash "$base/desktop/scripts/install-assets.sh" "$root"
+security_root=${AETHER_SECURITY_ROOT:-$base/security-system}
+if [ -d "$security_root" ]; then
+    AETHER_SECURITY_ROOT="$security_root" bash "$base/desktop/scripts/install-security-runtime.sh" "$root"
+elif [ "${AETHER_REQUIRE_ENCRYPTED_BOOT:-0}" = 1 ]; then
+    echo 'source-built security runtime missing; encrypted installed boot is required' >&2
+    exit 1
+else
+    echo 'WARNING: source-built security runtime is absent; encrypted installed boot remains lab-only.' >&2
+fi
+chroot "$root" /usr/bin/env SYSTEMD_OFFLINE=1 python3 /recipes/scripts/configure-desktop-session.py
 chroot "$root" depmod "$release"
+if [ -x "$root/usr/bin/aether-mkinitramfs" ] && [ -x "$root/usr/sbin/cryptsetup" ] \
+        && [ -x "$root/usr/sbin/lvm" ]; then
+    chroot "$root" /usr/bin/aether-mkinitramfs "/boot/initramfs-$release.img"
+else
+    echo 'WARNING: encrypted installed initramfs was not generated; source-built crypto runtime is incomplete.' >&2
+    [ "${AETHER_REQUIRE_ENCRYPTED_BOOT:-0}" = 1 ] && exit 1
+fi
 chroot "$root" grub-install --target=i386-pc --recheck "$loop"
 chroot "$root" grub-install --target=x86_64-efi --efi-directory=/boot/efi --bootloader-id=Aether --no-nvram
 chroot "$root" grub-install --target=x86_64-efi --efi-directory=/boot/efi --removable --no-nvram

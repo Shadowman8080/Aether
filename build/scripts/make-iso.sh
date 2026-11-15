@@ -14,12 +14,21 @@ terminal_input console serial
 terminal_output console serial
 set default=0
 set timeout=3
+# nomodeset is deliberate. Under VirtualBox's default VMSVGA adapter (and
+# VMware's SVGA II) the in-kernel vmwgfx driver claims the display, but this
+# console-only image has no fbcon takeover for it: the kernel logs
+# "switching to colour dummy device" and the VM shows a black screen while it
+# is actually running. Staying in VGA text mode keeps tty0 visible there.
 menuentry 'Aether Linux 0.1 - First Light' {
-    linux /boot/vmlinuz console=tty0 console=ttyS0,115200 rdinit=/init
+    linux /boot/vmlinuz console=tty0 console=ttyS0,115200 rdinit=/init nomodeset
     initrd /boot/initramfs.gz
 }
 menuentry 'Aether Linux - boot self-test (powers off)' {
-    linux /boot/vmlinuz console=tty0 console=ttyS0,115200 rdinit=/init aether.selftest=1
+    linux /boot/vmlinuz console=tty0 console=ttyS0,115200 rdinit=/init aether.selftest=1 nomodeset
+    initrd /boot/initramfs.gz
+}
+menuentry 'Aether Linux - graphics/KMS console' {
+    linux /boot/vmlinuz console=tty0 console=ttyS0,115200 rdinit=/init
     initrd /boot/initramfs.gz
 }
 CFG

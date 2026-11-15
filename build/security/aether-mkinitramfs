@@ -40,32 +40,54 @@ with tempfile.TemporaryDirectory(prefix='aether-initramfs-') as directory:
             dest = root / library.lstrip('/')
             dest.parent.mkdir(parents=True, exist_ok=True)
             shutil.copy2(library, dest, follow_symlinks=True)
+            # The minimal initramfs has no ld.so.cache.  Multiarch library
+            # paths are not in the loader's default search path, so also make
+            # the library visible beside the common /usr/lib libraries.
+            if library.startswith('/usr/lib/') and not library.startswith('/usr/lib64/'):
+                alternate = root / 'usr/lib' / Path(library).name
+                if not alternate.exists():
+                    shutil.copy2(library, alternate, follow_symlinks=True)
     binary('/usr/lib/aether-initramfs/busybox', '/bin/busybox')
     binary('/usr/sbin/cryptsetup')
     binary('/usr/sbin/blkid')
     binary('/usr/sbin/modprobe')
+    binary('/usr/sbin/lvm')
+    for name in ('vgchange', 'lvchange', 'pvscan', 'vgscan', 'lvscan', 'lvs', 'vgs', 'pvs'):
+        link = root / 'usr/sbin' / name
+        if not link.exists():
+            link.symlink_to('lvm')
+    lvm_config = Path('/etc/lvm/lvm.conf')
+    if lvm_config.is_file():
+        destination = root / 'etc/lvm/lvm.conf'
+        destination.parent.mkdir(parents=True, exist_ok=True)
+        shutil.copy2(lvm_config, destination)
     # Checkpoint boot validates the root owner before selecting a system copy.
     # The minimal BusyBox build does not provide the stat applet.
     binary('/usr/bin/stat')
     module_root = Path('/lib/modules') / release
-    dependency_output = subprocess.check_output(
-        ['modprobe', '--set-version', release, '--show-depends', 'dm_crypt'], text=True)
     destination = root / 'lib/modules' / release
     destination.mkdir(parents=True)
+    copied = set()
+    for module_name in ('dm_crypt', 'dm_mod', 'essiv'):
+        dependency_output = subprocess.check_output(
+            ['modprobe', '--set-version', release, '--show-depends', module_name], text=True)
+        for line in dependency_output.splitlines():
+            fields = line.split()
+            if not fields or fields[0] == 'builtin':
+                continue
+            if fields[0] != 'insmod' or len(fields) != 2:
+                raise RuntimeError('Unexpected encryption module dependency: ' + line)
+            module = Path(fields[1])
+            if module in copied:
+                continue
+            copied.add(module)
+            relative = module.relative_to(module_root)
+            target = destination / relative
+            target.parent.mkdir(parents=True, exist_ok=True)
+            shutil.copy2(module, target)
     for metadata in module_root.glob('modules.*'):
         if metadata.is_file():
             shutil.copy2(metadata, destination / metadata.name)
-    for line in dependency_output.splitlines():
-        fields = line.split()
-        if not fields or fields[0] == 'builtin':
-            continue
-        if fields[0] != 'insmod' or len(fields) != 2:
-            raise RuntimeError('Unexpected encryption module dependency: ' + line)
-        module = Path(fields[1])
-        relative = module.relative_to(module_root)
-        target = destination / relative
-        target.parent.mkdir(parents=True, exist_ok=True)
-        shutil.copy2(module, target)
     subprocess.run(['chroot', directory, '/usr/sbin/modprobe', '--set-version', release,
                     '--show-depends', 'dm_crypt'], check=True)
     (root / 'bin/sh').symlink_to('busybox')

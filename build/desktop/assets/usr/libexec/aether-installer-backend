@@ -1,0 +1,545 @@
+#!/usr/bin/env python3
+"""Aether installer backend.
+
+Invoked by the graphical installer through pkexec as
+    /usr/libexec/aether-installer-backend --graphical
+
+Reads one compact JSON object from stdin, erases exactly the disk the user
+confirmed, copies the read-only live root onto it, configures the account and
+bootloader, and reports progress on stdout as
+
+    AETHER_PROGRESS {"step": 0, "message": "..."}
+
+with step in 0..7. The process exits 0 only when the disk is fully installed
+and unmounted. Every failure prints AETHER_ERROR and exits non-zero; a failure
+after partitioning may leave the disk half-written, and the installer text
+already tells the user exactly that.
+"""
+import json
+import os
+import re
+import shutil
+import ssl
+import subprocess
+import sys
+from contextlib import contextmanager
+from pathlib import Path
+
+LIVE_ROOT = Path("/run/initramfs/live/lower")
+TARGET = Path("/mnt/aether-install")
+SECUREBOOT_ASSETS = Path("/usr/share/aether/secureboot")
+AETHER_ROOT_PARTUUID = "4d930fbf-d515-4033-8860-36586b69500b"
+AETHER_ROOT_LABEL = "AETHER_ROOT"
+AETHER_BOOT_LABEL = "AETHER_BOOT"
+AETHER_CRYPT_LABEL = "AETHER_CRYPT"
+AETHER_VG = "aether"
+LUKS_MAPPER = "aether-crypt"
+EFIVAR_GUID = "8be4df61-93ca-11d2-aa0d-00e098032b8c"
+PROGRESS = "AETHER_PROGRESS "
+MIN_DISK_BYTES = 16 * 1024**3
+DISK_RE = re.compile(r"^/dev/(sd[a-z]+|hd[a-z]+|vd[a-z]+|xvd[a-z]+|nvme\d+n\d+|mmcblk\d+|loop\d+)$")
+NAME_RE = re.compile(r"^[a-z][a-z0-9_-]{0,30}$")
+ZONE_RE = re.compile(r"^[A-Za-z0-9_+-]+(/[A-Za-z0-9_+-]+)*$")
+KEYMAP_RE = re.compile(r"^[a-z0-9-]+$")
+
+
+def emit(step, message):
+    print(PROGRESS + json.dumps({"step": step, "message": message}), flush=True)
+
+
+def run(cmd, **kwargs):
+    printable = " ".join(str(part) for part in cmd)
+    print("+ " + printable, flush=True)
+    kwargs.setdefault("check", True)
+    return subprocess.run(cmd, **kwargs)
+
+
+@contextmanager
+def key_pipe(secret):
+    read_fd, write_fd = os.pipe()
+    try:
+        os.write(write_fd, secret.encode())
+        os.close(write_fd)
+        write_fd = None
+        yield read_fd
+    finally:
+        os.close(read_fd)
+        if write_fd is not None:
+            os.close(write_fd)
+
+
+def fail(message):
+    print("AETHER_ERROR " + message, flush=True)
+    sys.exit(1)
+
+
+def partition_device(disk, number):
+    if re.search(r"(nvme\d+n\d+|mmcblk\d+|loop\d+)$", disk):
+        return f"{disk}p{number}"
+    return f"{disk}{number}"
+
+
+def mounted_sources():
+    sources = set()
+    for line in Path("/proc/mounts").read_text().splitlines():
+        fields = line.split()
+        if len(fields) > 1:
+            sources.add(os.path.realpath(fields[0]))
+    return sources
+
+
+def disk_is_mounted(disk):
+    live = mounted_sources()
+    name = os.path.basename(disk)
+    for entry in Path("/sys/class/block").iterdir():
+        if entry.name == name or entry.name.startswith(name) and entry.name[len(name):].lstrip("p").isdigit():
+            if os.path.realpath("/dev/" + entry.name) in live:
+                return entry.name
+    return None
+
+
+def check_tools(encrypt, lvm):
+    required = ["sfdisk", "mkfs.ext4", "mkfs.fat", "mkfs.vfat", "tar", "grub-install",
+                "grub-mkconfig", "chroot", "blkid", "udevadm", "useradd", "chpasswd"]
+    if encrypt:
+        required.append("cryptsetup")
+    if lvm:
+        required.append("lvm")
+    found = {}
+    for tool in required:
+        path = shutil.which(tool)
+        if path:
+            found[tool] = path
+    missing = [tool for tool in ("sfdisk", "mkfs.ext4", "tar", "grub-install", "chroot") if tool not in found]
+    if "mkfs.fat" not in found and "mkfs.vfat" not in found:
+        missing.append("dosfstools (mkfs.fat)")
+    if encrypt and "cryptsetup" not in found:
+        missing.append("cryptsetup")
+    if lvm and "lvm" not in found:
+        missing.append("lvm2")
+    if missing:
+        fail("This live image is missing installer tools: " + ", ".join(missing))
+    return found
+
+
+def read_efi_var(name):
+    try:
+        data = (Path("/sys/firmware/efi/efivars") / f"{name}-{EFIVAR_GUID}").read_bytes()
+    except OSError:
+        return None
+    return data[4:] if len(data) >= 4 else None
+
+
+def secure_boot_enabled():
+    value = read_efi_var("SecureBoot")
+    return bool(value and value[0] == 1)
+
+
+def aether_key_enrolled():
+    try:
+        der = ssl.PEM_cert_to_DER_cert((SECUREBOOT_ASSETS / "db.crt").read_text())
+    except (OSError, ValueError, ssl.SSLError):
+        return False
+    db = read_efi_var("db")
+    return bool(db and der in db)
+
+
+def validate(config):
+    if os.geteuid() != 0:
+        fail("The installer backend must run with administrator rights.")
+    if not (LIVE_ROOT / "etc/os-release").exists():
+        fail("No Aether live image found at " + str(LIVE_ROOT) + "; refusing to touch any disk.")
+    if secure_boot_enabled() and not aether_key_enrolled():
+        fail("Secure Boot is enabled in firmware, but Aether's key is not enrolled. "
+             "Disable Secure Boot, or clear the firmware keys and enroll Aether's key before installing.")
+    disk = str(config.get("disk", ""))
+    if not DISK_RE.match(disk):
+        fail("Refusing to install to a path that is not a whole disk: " + repr(disk))
+    if not Path(disk).exists():
+        fail("The selected disk does not exist: " + disk)
+    if config.get("confirmation") != "ERASE " + disk:
+        fail("The erase confirmation does not match the selected disk.")
+    name = os.path.basename(disk)
+    try:
+        sectors = int(Path("/sys/class/block", name, "size").read_text())
+    except OSError:
+        fail("Cannot read the size of " + disk + ".")
+    if sectors * 512 < MIN_DISK_BYTES:
+        fail("The selected disk is smaller than 16 GiB.")
+    busy = disk_is_mounted(disk)
+    if busy:
+        fail(f"{busy} is mounted. Unmount it before installing.")
+    live_source = ""
+    try:
+        live_source = subprocess.run(["findmnt", "-n", "-o", "SOURCE", "--mountpoint",
+                                      "/run/initramfs/live"], check=False,
+                                     capture_output=True, text=True).stdout.strip()
+    except OSError:
+        pass
+    if live_source:
+        backing = re.sub(r"p?\d+$", "", os.path.realpath(live_source))
+        if os.path.realpath(backing) == os.path.realpath(disk):
+            fail("The selected disk holds the running live image.")
+    username = str(config.get("username", ""))
+    if not NAME_RE.match(username):
+        fail("Invalid account name.")
+    password = str(config.get("password", ""))
+    if len(password) < 12:
+        fail("The account password must be at least 12 characters.")
+    timezone = str(config.get("timezone", "UTC"))
+    if timezone != "UTC" and (not ZONE_RE.match(timezone) or not Path("/usr/share/zoneinfo", timezone).is_file()):
+        fail("Unknown time zone: " + timezone)
+    keyboard = str(config.get("keyboard", "us"))
+    if not KEYMAP_RE.match(keyboard):
+        fail("Invalid keyboard layout.")
+    encrypt = bool(config.get("encrypt"))
+    lvm = bool(config.get("lvm"))
+    storage = str(config.get("storage_password", "")) if encrypt else ""
+    recovery = str(config.get("recovery_password", "")) if encrypt else ""
+    if encrypt:
+        if len(storage) < 12:
+            fail("The storage passphrase must be at least 12 characters.")
+        if len(recovery) < 12:
+            fail("The recovery passphrase must be at least 12 characters.")
+        if storage == recovery:
+            fail("The storage and recovery passphrases must be different.")
+        if any(character in storage + recovery for character in "\n\r\0"):
+            fail("Storage passphrases cannot contain newlines or NUL bytes.")
+    backup = str(config.get("backup", "")).strip()
+    if backup and (not backup.startswith("/") or "\n" in backup):
+        fail("Use an absolute Linux path for the backup destination.")
+    return disk, username, password, timezone, keyboard, backup, encrypt, lvm, storage, recovery
+
+
+def unmount_everything(disk):
+    live = set()
+    for line in Path("/proc/mounts").read_text().splitlines():
+        fields = line.split()
+        if len(fields) > 1:
+            live.add(fields[0])
+    name = os.path.basename(disk)
+    for entry in sorted(Path("/sys/class/block").iterdir()):
+        if entry.name != name and not (entry.name.startswith(name) and entry.name[len(name):].lstrip("p").isdigit()):
+            continue
+        device = "/dev/" + entry.name
+        if device in live:
+            subprocess.run(["umount", device], check=False)
+    subprocess.run(["swapoff", "-a"], check=False)
+
+
+def partition(disk):
+    script = (
+        "label: gpt\n"
+        'start=1MiB, size=1MiB, type=21686148-6449-6E6F-744E-656564454649, name="BIOS boot"\n'
+        'start=2MiB, size=512MiB, type=C12A7328-F81F-11D2-BA4B-00A0C93EC93B, name="Aether EFI"\n'
+        'start=514MiB, size=1GiB, type=0FC63DAF-8483-4772-8E79-3D69D8477DE4, name="Aether Boot"\n'
+        f'uuid={AETHER_ROOT_PARTUUID}, type=0FC63DAF-8483-4772-8E79-3D69D8477DE4, name="Aether Data"\n'
+    )
+    run(["wipefs", "-a", disk])
+    run(["sfdisk", "--wipe", "always", "--wipe-partitions", "always", disk],
+        input=script, text=True)
+    run(["udevadm", "settle"])
+    run(["partx", "-u", disk], check=False)
+
+
+def filesystem_uuid(device):
+    result = run(["blkid", "-s", "UUID", "-o", "value", device],
+                 capture_output=True, text=True)
+    value = result.stdout.strip()
+    if not value:
+        fail("Could not read the filesystem UUID from " + device + ".")
+    return value
+
+
+def prepare_root(data, encrypt, lvm, storage, recovery):
+    """Format the data partition and return (root device, LUKS UUID)."""
+    luks_uuid = None
+    physical = data
+    if encrypt:
+        with key_pipe(storage) as key_fd:
+            # The desktop kernel has AES, CBC and SHA-256 built in but not
+            # XTS.  Use LUKS2 with CBC/ESSIV so the signed installed kernel
+            # can unlock the root without rebuilding the kernel.
+            run(["cryptsetup", "luksFormat", "--batch-mode", "--type", "luks2",
+                 "--pbkdf", "argon2id", "--cipher", "aes-cbc-essiv:sha256",
+                 "--key-size", "256", "--label", AETHER_CRYPT_LABEL,
+                 f"--key-file=/dev/fd/{key_fd}", data], pass_fds=(key_fd,))
+        with key_pipe(storage) as key_fd:
+            run(["cryptsetup", "open", "--key-file=/dev/fd/" + str(key_fd), data, LUKS_MAPPER],
+                pass_fds=(key_fd,))
+        luks_uuid = run(["cryptsetup", "luksUUID", data], capture_output=True,
+                        text=True).stdout.strip()
+        if not luks_uuid:
+            fail("Could not read the LUKS UUID from the new volume.")
+        # The recovery credential is an independent second key. Supply the
+        # normal key on an inherited fd and the new recovery key on stdin so
+        # neither appears in the process list.
+        with key_pipe(storage) as key_fd:
+            run(["cryptsetup", "luksAddKey", "--key-file=/dev/fd/" + str(key_fd), data, "-"],
+                input=recovery, text=True, pass_fds=(key_fd,))
+        physical = "/dev/mapper/" + LUKS_MAPPER
+    if lvm:
+        run(["lvm", "pvcreate", "-ff", "-y", physical])
+        run(["lvm", "vgcreate", "-y", AETHER_VG, physical])
+        # The installer runs in a minimal chroot without udev.  Do not ask LVM
+        # to wipe a device node that the surrounding udev has not created yet.
+        run(["lvm", "lvcreate", "-y", "--zero", "n", "--wipesignatures", "n",
+             "-n", "root", "-l", "100%FREE", AETHER_VG])
+        run(["lvm", "vgchange", "-ay", AETHER_VG])
+        physical = "/dev/mapper/" + AETHER_VG + "-root"
+    run(["mkfs.ext4", "-F", "-L", AETHER_ROOT_LABEL, physical])
+    return physical, luks_uuid
+
+
+def copy_root():
+    excludes = ["--exclude=./proc/*", "--exclude=./sys/*", "--exclude=./dev/*",
+                "--exclude=./run/*", "--exclude=./tmp/*", "--exclude=./mnt/*",
+                "--exclude=./media/*", "--exclude=./lost+found", "--exclude=./boot/efi/*"]
+    pipeline = ("set -o pipefail; tar -C {live} -cf - --one-file-system {excludes} . "
+                "| tar -C {target} -xpf -").format(
+        live=str(LIVE_ROOT), target=str(TARGET), excludes=" ".join(excludes))
+    print("+ " + pipeline, flush=True)
+    subprocess.run(["bash", "-c", pipeline], check=True)
+
+
+def write(path, text, mode=0o644):
+    target = TARGET / path
+    target.parent.mkdir(parents=True, exist_ok=True)
+    target.write_text(text)
+    os.chmod(target, mode)
+
+
+def configure(username, password, timezone, keyboard, backup, root_uuid, boot_uuid, efi_uuid,
+              encrypt, luks_uuid):
+    fstab = (f"UUID={root_uuid} / ext4 defaults 1 1\n"
+             f"UUID={boot_uuid} /boot ext4 defaults,nodev,nosuid 0 2\n"
+             f"UUID={efi_uuid} /boot/efi vfat defaults,umask=0077 0 2\n")
+    if (TARGET / "swapfile").exists():
+        fstab += "/swapfile none swap sw 0 0\n"
+    write("etc/fstab", fstab)
+    if encrypt:
+        write("etc/crypttab", f"{LUKS_MAPPER} UUID={luks_uuid} none luks\n", 0o600)
+    else:
+        existing_crypttab = TARGET / "etc/crypttab"
+        if existing_crypttab.is_symlink() or existing_crypttab.exists():
+            existing_crypttab.unlink()
+    write("etc/hostname", "aether\n")
+    write("etc/hosts", "127.0.0.1 localhost aether\n::1 localhost aether\n")
+    write("etc/locale.conf", "LANG=en_US.UTF-8\n")
+    write("etc/vconsole.conf", "KEYMAP=" + keyboard + "\n")
+    write("etc/timezone", timezone + "\n")
+    if backup:
+        security = TARGET / "etc/aether-security"
+        security.mkdir(parents=True, exist_ok=True)
+        os.chmod(security, 0o700)
+        destination = security / "backup-destination"
+        destination.write_text(backup + "\n")
+        os.chmod(destination, 0o600)
+    localtime = TARGET / "etc/localtime"
+    if localtime.is_symlink() or localtime.exists():
+        localtime.unlink()
+    localtime.symlink_to("/usr/share/zoneinfo/" + timezone)
+    write("etc/default/grub", 'GRUB_DEFAULT=0\nGRUB_TIMEOUT=3\nGRUB_DISTRIBUTOR="Aether Linux"\n'
+                              'GRUB_CMDLINE_LINUX="quiet root=LABEL=AETHER_ROOT aether.luks=LABEL=AETHER_CRYPT"\n'
+                              'GRUB_TERMINAL=console\nGRUB_DISABLE_OS_PROBER=true\n')
+    for directory in ("proc", "sys", "dev", "run", "tmp", "mnt", "media", "boot", "boot/efi"):
+        (TARGET / directory).mkdir(parents=True, exist_ok=True)
+    os.chmod(TARGET / "tmp", 0o1777)
+    # The live session's autologin and welcome must not exist on an installed system.
+    for wants in ("etc/systemd/system/multi-user.target.wants",
+                  "etc/systemd/system/graphical.target.wants"):
+        link = TARGET / wants / "aether-live-autologin.service"
+        if link.is_symlink() or link.exists():
+            link.unlink()
+    welcome = TARGET / "etc/xdg/autostart/aether-live-welcome.desktop"
+    if welcome.exists():
+        welcome.unlink()
+    machine_id = TARGET / "etc/machine-id"
+    machine_id.write_text("")
+    os.chmod(machine_id, 0o444)
+    # The live media allow the active session to start the installer without a
+    # password. That is acceptable on disposable media, but an installed system
+    # must ask for administrator authentication again.
+    policy = TARGET / "usr/share/polkit-1/actions/org.aether.install.policy"
+    if policy.exists():
+        policy.write_text(policy.read_text().replace(
+            "<allow_active>yes</allow_active>",
+            "<allow_active>auth_admin</allow_active>"))
+
+    groups = set()
+    group_file = TARGET / "etc/group"
+    if group_file.exists():
+        for line in group_file.read_text().splitlines():
+            fields = line.split(":")
+            if fields:
+                groups.add(fields[0])
+    supplementary = [g for g in ("wheel", "video", "audio", "input", "render", "storage",
+                                 "optical", "network", "games") if g in groups]
+    command = ["chroot", str(TARGET), "useradd", "-m", "-s", "/bin/bash"]
+    if supplementary:
+        command += ["-G", ",".join(supplementary)]
+    command.append(username)
+    existing = subprocess.run(["chroot", str(TARGET), "id", "-u", username],
+                              check=False, capture_output=True)
+    if existing.returncode == 0:
+        command = ["chroot", str(TARGET), "usermod", "-a", "-G", ",".join(supplementary), username] if supplementary else None
+    if command:
+        run(command)
+    run(["chroot", str(TARGET), "chpasswd"], input=f"{username}:{password}\n", text=True)
+    password = ""
+    run(["chroot", str(TARGET), "passwd", "-l", "root"], check=False)
+    for manager in ("sddm.service", "lightdm.service", "gdm.service"):
+        if (TARGET / "usr/lib/systemd/system" / manager).exists() or \
+           (TARGET / "etc/systemd/system" / manager).exists():
+            run(["chroot", str(TARGET), "systemctl", "enable", manager])
+            break
+    run(["chroot", str(TARGET), "systemctl", "set-default", "graphical.target"], check=False)
+
+
+def install_signed_uefi():
+    required = ("shimx64.efi", "grubx64.efi", "aether-installed.efi", "grub-installed.cfg")
+    missing = [name for name in required if not (SECUREBOOT_ASSETS / name).is_file()]
+    if missing:
+        fail("Signed Secure Boot assets are missing from the live image: " + ", ".join(missing))
+
+    esp = TARGET / "boot/efi"
+    boot = esp / "EFI/BOOT"
+    aether = esp / "EFI/aether"
+    boot.mkdir(parents=True, exist_ok=True)
+    aether.mkdir(parents=True, exist_ok=True)
+
+    # shim is signed by Aether's db key and loads grubx64.efi from the same
+    # directory. The firmware verifies the UKI when GRUB chainloads it.
+    shutil.copy2(SECUREBOOT_ASSETS / "shimx64.efi", boot / "BOOTX64.EFI")
+    shutil.copy2(SECUREBOOT_ASSETS / "grubx64.efi", boot / "grubx64.efi")
+    if (SECUREBOOT_ASSETS / "mmx64.efi").is_file():
+        shutil.copy2(SECUREBOOT_ASSETS / "mmx64.efi", boot / "mmx64.efi")
+    shutil.copy2(SECUREBOOT_ASSETS / "aether-installed.efi", aether / "aether.efi")
+
+    grub_config = (SECUREBOOT_ASSETS / "grub-installed.cfg").read_text()
+    esp_config = esp / "boot/grub"
+    esp_config.mkdir(parents=True, exist_ok=True)
+    (esp_config / "grub.cfg").write_text(grub_config)
+
+    # If the standalone GRUB falls back to the root filesystem, use the same
+    # signed UKI rather than the stale live-image kernel entries.
+    root_config = TARGET / "boot/grub"
+    root_config.mkdir(parents=True, exist_ok=True)
+    (root_config / "grub.cfg").write_text(
+        "set default=0\n"
+        "set timeout=3\n"
+        "menuentry 'Aether Linux 0.3' {\n"
+        "    chainloader /boot/efi/EFI/aether/aether.efi\n"
+        "}\n")
+
+
+def install_bootloader(disk, encrypt, lvm):
+    if Path("/sys/firmware/efi").is_dir():
+        install_signed_uefi()
+        return
+
+    if encrypt or lvm:
+        fail("Encrypted and LVM roots require the signed UEFI boot path; "
+             "this firmware booted in legacy BIOS mode.")
+
+    if (TARGET / "usr/lib/grub/i386-pc").is_dir():
+        run(["grub-install", "--target=i386-pc", "--recheck", "--no-floppy",
+             "--boot-directory=" + str(TARGET / "boot"), disk])
+    run(["chroot", str(TARGET), "grub-mkconfig", "-o", "/boot/grub/grub.cfg"], check=False)
+    config = TARGET / "boot/grub/grub.cfg"
+    root_ids = ["PARTUUID=" + AETHER_ROOT_PARTUUID]
+    current = config.read_text() if config.exists() else ""
+    if not any(identifier in current for identifier in root_ids):
+        kernels = sorted((TARGET / "boot").glob("vmlinuz-*"))
+        if not kernels:
+            fail("No kernel found in the copied system; cannot write a boot entry.")
+        kernel = "/boot/" + kernels[-1].name
+        root_spec = root_ids[0]
+        config.parent.mkdir(parents=True, exist_ok=True)
+        config.write_text(
+            "set default=0\n"
+            "set timeout=3\n"
+            "menuentry 'Aether Linux 0.3' {\n"
+            f"    linux {kernel} root={root_spec} rootwait rw console=tty0 console=ttyS0,115200n8 quiet loglevel=3\n"
+            "}\n"
+            "menuentry 'Aether Linux 0.3 - console recovery' {\n"
+            f"    linux {kernel} root={root_spec} rootwait rw console=tty0 console=ttyS0,115200n8 systemd.unit=multi-user.target\n"
+            "}\n")
+
+
+def main():
+    config = json.load(sys.stdin)
+    emit(0, "Checking the selected disk")
+    encrypt = bool(config.get("encrypt"))
+    lvm = bool(config.get("lvm"))
+    tools = check_tools(encrypt, lvm)
+    (disk, username, password, timezone, keyboard, backup,
+     encrypt, lvm, storage, recovery) = validate(config)
+    if (encrypt or lvm) and not Path("/sys/firmware/efi").is_dir():
+        fail("Encrypted and LVM roots require UEFI firmware and the signed boot path.")
+    esp = partition_device(disk, 2)
+    boot = partition_device(disk, 3)
+    data = partition_device(disk, 4)
+
+    mounted = False
+    luks_uuid = None
+    try:
+        emit(1, "Erasing " + disk)
+        unmount_everything(disk)
+        partition(disk)
+        emit(2, "Formatting the EFI, boot, and encrypted root filesystems")
+        run([tools.get("mkfs.fat", tools.get("mkfs.vfat")), "-F32", "-n", "AETHER_EFI", esp])
+        run(["mkfs.ext4", "-F", "-L", AETHER_BOOT_LABEL, boot])
+        emit(3, "Creating the protected root filesystem")
+        root_device, luks_uuid = prepare_root(data, encrypt, lvm, storage, recovery)
+        storage = recovery = ""
+        emit(4, "Mounting the new filesystems")
+        TARGET.mkdir(parents=True, exist_ok=True)
+        run(["mount", root_device, str(TARGET)])
+        mounted = True
+        (TARGET / "boot").mkdir(parents=True, exist_ok=True)
+        run(["mount", boot, str(TARGET / "boot")])
+        (TARGET / "boot/efi").mkdir(parents=True, exist_ok=True)
+        run(["mount", esp, str(TARGET / "boot/efi")])
+        emit(4, "Copying the live system (this takes several minutes)")
+        copy_root()
+        emit(5, "Configuring the account and system settings")
+        for source, target in (("/dev", TARGET / "dev"), ("/proc", TARGET / "proc"),
+                               ("/sys", TARGET / "sys")):
+            target.mkdir(parents=True, exist_ok=True)
+            run(["mount", "--bind", source, str(target)])
+        configure(username, password, timezone, keyboard, backup,
+                  filesystem_uuid(root_device), filesystem_uuid(boot), filesystem_uuid(esp),
+                  encrypt, luks_uuid)
+        emit(6, "Installing the bootloader")
+        install_bootloader(disk, encrypt, lvm)
+        emit(7, "Finishing and unmounting")
+        subprocess.run(["sync"], check=False)
+        run(["umount", str(TARGET / "sys")], check=False)
+        run(["umount", str(TARGET / "proc")], check=False)
+        run(["umount", str(TARGET / "dev")], check=False)
+        run(["umount", str(TARGET / "boot/efi")], check=False)
+        run(["umount", str(TARGET / "boot")], check=False)
+        run(["umount", str(TARGET)], check=False)
+        mounted = False
+        if lvm:
+            run(["lvm", "vgchange", "-an", AETHER_VG], check=False)
+        if luks_uuid:
+            run(["cryptsetup", "close", LUKS_MAPPER], check=False)
+    except subprocess.CalledProcessError as error:
+        fail("Command failed: " + " ".join(str(part) for part in error.cmd))
+    finally:
+        if mounted:
+            subprocess.run(["umount", "-R", str(TARGET)], check=False)
+        if lvm:
+            subprocess.run(["lvm", "vgchange", "-an", AETHER_VG], check=False)
+        if luks_uuid:
+            subprocess.run(["cryptsetup", "close", LUKS_MAPPER], check=False)
+    emit(7, "Aether is installed. Shut down, remove the ISO, then start your new system.")
+
+
+if __name__ == "__main__":
+    try:
+        main()
+    except json.JSONDecodeError:
+        fail("The installer did not receive a valid configuration.")

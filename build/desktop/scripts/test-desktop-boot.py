@@ -17,11 +17,15 @@ import sys
 import time
 import wave
 import array
+import struct
+import zlib
 import pexpect
 
 mode = sys.argv[1]
 assert mode in ('uefi', 'bios')
 live = 'iso' in sys.argv[2:]
+if live:
+    raise SystemExit('Live media auto-logs in as the live user; run test-live-iso.py ' + mode + ' instead.')
 x11 = 'x11' in sys.argv[2:]
 label = mode + ('-iso' if live else '') + ('-x11' if x11 else '')
 base = Path('/opt/aether/build/aether-0.3-system.raw')
@@ -110,8 +114,26 @@ def type_password(value=None):
             assert character.isascii() and character.isalnum(), 'Unsupported test password character'
             keys(character)
 
+def ppm_to_png(source, target):
+    data = Path(source).read_bytes()
+    assert data[:2] == b'P6', 'expected binary PPM from screendump'
+    header = data.split(maxsplit=4)
+    width, height, maxval = int(header[1]), int(header[2]), int(header[3])
+    assert maxval == 255
+    pixels = header[4]
+    def chunk(tag, body):
+        return struct.pack('>I', len(body)) + tag + body + struct.pack('>I', zlib.crc32(tag + body) & 0xffffffff)
+    raw = b''.join(b'\x00' + pixels[y * width * 3:(y + 1) * width * 3] for y in range(height))
+    out = b'\x89PNG\r\n\x1a\n'
+    out += chunk(b'IHDR', struct.pack('>IIBBBBB', width, height, 8, 2, 0, 0, 0))
+    out += chunk(b'IDAT', zlib.compress(raw, 6))
+    out += chunk(b'IEND', b'')
+    Path(target).write_bytes(out)
+
 def screenshot(name):
-    qmp_command('screendump', {'filename': str(work / (name + '.ppm'))})
+    ppm = work / (name + '.ppm')
+    qmp_command('screendump', {'filename': str(ppm)})
+    ppm_to_png(ppm, work / (name + '.png'))
 
 def user_bus(text):
     return command('env XDG_RUNTIME_DIR=/run/user/1000 DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/1000/bus ' + text)

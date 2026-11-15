@@ -14,14 +14,18 @@ required = (
     '/usr/lib/open-vm-tools/plugins/vmusr/libdndcp.so',
     '/usr/lib/open-vm-tools/plugins/vmusr/libresolutionSet.so',
 )
-for name in required:
-    if not Path(name).is_file():
-        raise SystemExit('Required guest integration component missing: ' + name)
-for name in ('/usr/bin/vmtoolsd', '/usr/lib/open-vm-tools/plugins/vmusr/libdndcp.so',
-             '/usr/lib/open-vm-tools/plugins/vmusr/libresolutionSet.so'):
-    result = subprocess.run(['ldd', name], capture_output=True, text=True, check=True)
-    if 'not found' in result.stdout:
-        raise SystemExit('Missing runtime library: ' + result.stdout)
+missing = [name for name in required if not Path(name).is_file()]
+if missing:
+    # open-vm-tools is not part of this image stage. Keep the kernel driver and
+    # the X11 session pinning, and let the user install VMware Tools itself.
+    print('open-vm-tools is not installed; skipping the VMware clipboard setup: '
+          + ', '.join(missing))
+else:
+    for name in ('/usr/bin/vmtoolsd', '/usr/lib/open-vm-tools/plugins/vmusr/libdndcp.so',
+                 '/usr/lib/open-vm-tools/plugins/vmusr/libresolutionSet.so'):
+        result = subprocess.run(['ldd', name], capture_output=True, text=True, check=True)
+        if 'not found' in result.stdout:
+            raise SystemExit('Missing runtime library: ' + result.stdout)
 
 def write(name, contents, mode=0o644):
     p = Path(name)
@@ -71,7 +75,8 @@ else
     rm -f "$config"
 fi
 ''', 0o755)
-write('/etc/systemd/system/lightdm.service.d/20-aether-guest.conf', '''[Unit]
+if not missing:
+    write('/etc/systemd/system/lightdm.service.d/20-aether-guest.conf', '''[Unit]
 Wants=vmtoolsd.service vmware-vmblock.service
 After=vmtoolsd.service vmware-vmblock.service
 
@@ -93,10 +98,11 @@ X-KDE-autostart-phase=1
 ''')
 # First-class integration manager: reports and enables the bundled components.
 write('/usr/bin/aether-vmware-tools', Path('/recipes/guest/aether-vmware-tools').read_text(), 0o755)
-os.chown('/usr/bin/vmware-user-suid-wrapper', 0, 0)
-Path('/usr/bin/vmware-user-suid-wrapper').chmod(0o4755)
-for service in ('vmtoolsd.service', 'vmware-vmblock.service'):
-    subprocess.run(['systemctl', '--root=/', 'enable', service], check=True)
+if not missing:
+    os.chown('/usr/bin/vmware-user-suid-wrapper', 0, 0)
+    Path('/usr/bin/vmware-user-suid-wrapper').chmod(0o4755)
+    for service in ('vmtoolsd.service', 'vmware-vmblock.service'):
+        subprocess.run(['systemctl', '--root=/', 'enable', service], check=True)
 subprocess.run(['sh', '-n', '/usr/bin/aether-vmware-session'], check=True)
 subprocess.run(['sh', '-n', '/usr/libexec/aether-guest-display-setup'], check=True)
 subprocess.run(['sh', '-n', '/usr/bin/aether-vmware-tools'], check=True)

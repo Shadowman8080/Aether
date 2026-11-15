@@ -76,6 +76,57 @@ graphics, VMXNET3 networking, HDA audio. Builds ran on 16 build CPUs.
   domain join ran, and no installed server has been booted. Every server claim
   beyond the catalog/backend unit tests is unvalidated.
 
+**Secure Boot (QEMU/OVMF, VMware Workstation, VirtualBox)**
+
+- Built and signed shim 15.8, standalone GRUB 2.14 and live/installed UKIs with
+  the Aether db key; `sbverify` passed on each.
+- Enrolled PK, KEK and db through `efi-updatevar` in Setup Mode.
+- Under QEMU/OVMF, the signed live ISO booted with firmware Secure Boot enabled
+  to the live LightDM session (`AETHER_LIVE_AUTOLOGIN`,
+  `AETHER_LIGHTDM_START`).
+- The backend UEFI test reported `INSTALLER_UEFI_PASS`: the ESP contained the
+  signed shim, GRUB, installed UKI and chainloader config, all signature-verified.
+- An OVMF encrypted-install fixture used the graphical backend on a fresh
+  20 GiB disk with LUKS2 and LVM enabled. Firmware verified shim, GRUB and the
+  installed UKI; the embedded initramfs unlocked the LUKS volume, activated the
+  `aether/root` LV, reported `AETHER_ENCRYPTED_ROOT_MOUNTED` and
+  `AETHER_INITRAMFS_SWITCHING_TO_ROOT`, and the installed system reached
+  `aether login:` on the serial console. The independent recovery passphrase
+  also unlocked the same disk and reached the login prompt. A later rerun used
+  cryptsetup 2.8.7 and LVM 2.03.42 compiled from the pinned source archives;
+  the boot again reached `aether login:`. That lab runtime is labelled with
+  host-library fallbacks, so it is not a production runtime.
+- The unencrypted UEFI backend fixture and a four-partition installed-disk boot
+  also passed with the same signed UKI and embedded initramfs, reaching
+  `aether login:` without a LUKS prompt.
+- The repository encrypted fixture (`test-installer-backend.sh` +
+  `test-encrypted-boot.py`) installed an encrypted/LVM disk, verified both LUKS
+  keyslots, and booted the installed UKI with both the normal and recovery
+  passphrases to `aether login:` under OVMF Secure Boot. The source-runtime
+  rerun used cryptsetup 2.8.7 and LVM 2.03.42 from the pinned archives.
+- The backend-installed disk booted through the signed chain with Secure Boot
+  enabled to `aether login:`.
+- VMware Workstation 26.0.1, with Secure Boot enabled and the Aether db appended,
+  booted both the signed ISO and the installed disk through the signed chain to
+  their live/installed LightDM markers and `aether login:`.
+- VirtualBox 7.2.22, with EFI Secure Boot enabled and Aether's db enrolled in
+  NVRAM, booted both images to the same markers.
+- The same final ISO booted under legacy BIOS to the live session as well.
+
+One initial VMware installed-disk run panicked before root mount
+(`EXT4-fs (sda3): Could not load journal inode`); its VMDK had been converted
+from a truncated intermediate. Rebuilding the VMDK directly and verifying the
+root filesystem produced the passing run above. The hypervisor tests enrolled
+keys in NVRAM directly; the installer's GUI enrollment action was not run.
+
+This is virtual-machine evidence only. Physical firmware, firmware other than
+OVMF/VMware/VirtualBox, and production revocation/rotation remain untested. The
+encrypted OVMF rerun used source-built cryptsetup/LVM with labelled host-library
+fallbacks; see
+[the encrypted OVMF record](verification/20261113/encrypted-ovmf.json). A
+disposable OVMF fixture now exercises signed dbx and SBAT revocation with test
+keys, but it is not physical or production evidence.
+
 ## Repairs that were needed
 
 These are recorded because they explain why naive instructions will not work:
@@ -97,14 +148,13 @@ These are recorded because they explain why naive instructions will not work:
 |---|---|
 | **Physical hardware** | Not tested at all. Every result is virtualised/emulated. |
 | **ARM64 / i686 / Raspberry Pi** | Not built, not updated, not tested. |
-| **Secure Boot** | Unsupported. Kernel module signatures are *not enforced*. |
 | **BIOS unlock automation** | Intermittent — **not** marked as passing. |
 | **VMware clipboard / drag-drop** | Only partially verified. |
-| **VirtualBox integration** | Guest components present; hypervisor-specific validation outstanding. |
+| **VirtualBox integration** | Boot and Secure Boot validated; clipboard/shared-folder integration outstanding. |
 | **Suspend / resume** | Hibernation disabled pending an encrypted-resume design. |
 | **HDR / VRR** | Not tested. |
 | **Accessibility workflows** | Not tested end to end. |
-| **Removable / encrypted media** | Not tested. |
+| **Removable / encrypted media** | Removable media not tested. Encrypted installed root has OVMF lab evidence only. |
 | **Plug-and-play devices** | udev device policy, the Aether Devices manager, hotplug notifications, `lspci`/`lsusb` and the extra kernel driver classes are implemented in source but **not compiled or boot-tested**; no physical-hardware claim. |
 | **Multi-user lock boundaries** | Not tested. |
 | **Aether Server edition** | Catalog/backend unit tests only. No compile, ISO, role software, adcli or booted server. |
@@ -148,8 +198,8 @@ From the 0.3 Nimbrel release:
 
 ## Still outstanding
 
-Release signing ownership and trust enrollment; signed UKIs and revocation; TPM
-enrollment and attestation; an authenticated production repository with
+Release signing ownership and trust enrollment; Secure Boot key custody,
+production rotation and revocation; TPM enrollment and attestation; an authenticated production repository with
 maintained automatic security updates; firmware/microcode update coverage; broad
 MAC and application sandbox coverage; a maintained browser; Flatpak permission
 UI; tested multi-user lock/suspend/accessibility boundaries; FIDO, central

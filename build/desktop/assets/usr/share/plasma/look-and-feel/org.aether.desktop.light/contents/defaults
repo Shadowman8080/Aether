@@ -1,9 +1,10 @@
 [kdeglobals][KDE]
 widgetStyle=Breeze
+AnimationDurationFactor=0.6
 [kdeglobals][General]
 ColorScheme=AetherLight
-[kdeglobals][Icons]
-Theme=breeze
+AccentColor=75,94,219
+font=Liberation Sans,10,-1,5,50,0,0,0,0,0
 [plasmarc][Theme]
 name=default
 [kwinrc][org.kde.kdecoration2]
@@ -11,8 +12,15 @@ library=org.kde.breeze
 theme=Breeze
 ButtonsOnLeft=XIA
 ButtonsOnRight=
+BorderSize=None
+BorderSizeAuto=false
 [kwinrc][Windows]
-BorderlessMaximizedWindows=false
+BorderlessMaximizedWindows=true
+[kwinrc][Effect-Blur]
+BlurStrength=11
+NoiseStrength=3
+[kwinrc][Plugins]
+blurEnabled=true
 [Wallpaper]
 Image=AetherAurora
 [kcminputrc][Mouse]

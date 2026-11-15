@@ -43,12 +43,12 @@
   <main id="main">
     <section class="hero wrap">
       <div class="hero-copy">
-        <p class="eyebrow"><span class="dot"></span> Development snapshot · 0.3.2</p>
+        <p class="eyebrow"><span class="dot"></span> <span data-release-eyebrow>Development snapshot · 0.3.2</span></p>
         <h1>A desktop that keeps your data <em>yours.</em></h1>
         <p class="lede">Aether is an independent x86_64 Linux desktop built on KDE Plasma, with a signed UEFI boot chain, LUKS2 encrypted storage and an assistant that runs on your machine.</p>
         <div class="hero-actions">
-          <a class="button button-primary" href="https://github.com/Shadowman8080/Aether/releases/download/0.3.2-dev.20261006/aether-0.3.2-dev-20261006-x86_64.iso">
-            Download ISO <span class="button-note">1.88 GiB</span>
+          <a class="button button-primary" data-release-link="iso" href="https://github.com/Shadowman8080/Aether/releases/download/0.3.2-dev.20261006/aether-0.3.2-dev-20261006-x86_64.iso">
+            Download ISO <span class="button-note" data-release-size="iso">1.88 GiB</span>
           </a>
           <a class="button button-ghost" href="https://github.com/Shadowman8080/Aether">View source <span aria-hidden="true">↗</span></a>
         </div>
@@ -65,21 +65,21 @@
         </div>
         <div class="release-card">
           <div>
-            <p class="release-label">Latest development build</p>
-            <p class="release-name">0.3.2-dev.20261006</p>
+            <p class="release-label" data-release-label>Latest development build</p>
+            <p class="release-name" data-release-tag>0.3.2-dev.20261006</p>
           </div>
-          <div class="release-status"><span></span> development</div>
+          <div class="release-status"><span></span> <span data-release-kind>development</span></div>
         </div>
       </div>
     </section>
 
     <section class="release-strip" aria-label="Release">
       <div class="wrap release-strip-inner">
-        <p><strong>Development release.</strong> Aether is usable, but it is not a finished product. Read the limits before you erase a disk.</p>
+        <p><strong data-release-headline>Development release.</strong> Aether is usable, but it is not a finished product. Read the limits before you erase a disk.</p>
         <div class="release-links">
-          <a href="https://github.com/Shadowman8080/Aether/releases/tag/0.3.2-dev.20261006">Release notes</a>
-          <a href="https://github.com/Shadowman8080/Aether/releases/download/0.3.2-dev.20261006/SHA256SUMS">Checksums</a>
-          <a href="https://github.com/Shadowman8080/Aether/releases/tag/0.3.2-dev.20261006">All downloads</a>
+          <a data-release-link="release" href="https://github.com/Shadowman8080/Aether/releases/tag/0.3.2-dev.20261006">Release notes</a>
+          <a data-release-link="checksums" href="https://github.com/Shadowman8080/Aether/releases/download/0.3.2-dev.20261006/SHA256SUMS">Checksums</a>
+          <a data-release-link="release" href="https://github.com/Shadowman8080/Aether/releases/tag/0.3.2-dev.20261006">All downloads</a>
         </div>
       </div>
     </section>
@@ -130,6 +130,53 @@
       </div>
     </section>
 
+    <section id="showcase" class="section wrap">
+      <div class="section-heading">
+        <p class="eyebrow">In use</p>
+        <h2>Ask, search, and move through your desktop.</h2>
+        <p>These are the parts of Aether you touch every day: a local assistant, a launcher that searches more than applications, and a file manager that stays out of the way.</p>
+      </div>
+
+      <div class="showcase-grid">
+        <article class="showcase-feature">
+          <img src="assets/screenshots/03-nimbrel-ai.png" width="1718" height="920" loading="lazy" alt="Nimbrel answering a question on-device in the Aether desktop">
+          <div class="showcase-copy">
+            <p class="showcase-kicker">Nimbrel · on-device AI</p>
+            <h3>Ask your machine.</h3>
+            <p>Nimbrel answers locally through a Unix socket. No account, no cloud round-trip, and the interface labels its answers for checking. The model is small, and the page does not pretend otherwise.</p>
+          </div>
+        </article>
+
+        <article class="showcase-feature">
+          <img src="assets/screenshots/02-aurasearch.png" width="1280" height="800" loading="lazy" alt="AuraSearch launcher showing an inline calculation">
+          <div class="showcase-copy">
+            <p class="showcase-kicker">AuraSearch · one launcher</p>
+            <h3>Find more than an app.</h3>
+            <p>Search applications, files and settings from one place. AuraSearch also handles inline calculations, so a quick sum does not need a separate calculator window.</p>
+          </div>
+        </article>
+      </div>
+
+      <div class="showcase-mini-grid">
+        <figure class="showcase-mini">
+          <img src="assets/screenshots/04-aurasearch-results.png" width="1280" height="800" loading="lazy" alt="AuraSearch results spanning applications, files and settings">
+          <figcaption><strong>Search results</strong> across apps, files and settings.</figcaption>
+        </figure>
+        <figure class="showcase-mini">
+          <img src="assets/screenshots/07-vector-file-manager.png" width="1280" height="800" loading="lazy" alt="Vector file manager browsing the Aether home directory">
+          <figcaption><strong>Vector</strong> browsing the home directory.</figcaption>
+        </figure>
+        <figure class="showcase-mini">
+          <img src="assets/screenshots/06-login-greeter.png" width="1280" height="800" loading="lazy" alt="The Aether login greeter with an empty password field">
+          <figcaption><strong>Greeter</strong> before sign-in, with the password field empty.</figcaption>
+        </figure>
+        <figure class="showcase-mini">
+          <img src="assets/screenshots/25-desktop-panels.png" width="1280" height="800" loading="lazy" alt="The Aether desktop panel layout">
+          <figcaption><strong>Panels</strong> — the default Aether desktop layout.</figcaption>
+        </figure>
+      </div>
+    </section>
+
     <section id="screenshots" class="section section-tinted">
       <div class="wrap">
         <div class="section-heading">
@@ -163,6 +210,14 @@
             <img src="assets/screenshots/29-boot-menu.png" width="1280" height="800" loading="lazy" alt="The Aether UEFI GRUB boot menu">
             <figcaption><strong>Boot menu</strong> — the signed UEFI path in action.</figcaption>
           </figure>
+          <figure class="shot wide">
+            <img src="assets/screenshots/28-screensavers.png" width="960" height="220" loading="lazy" alt="A row of Aether screen saver previews">
+            <figcaption><strong>Screen savers</strong> — the built-in previews in Aether Settings.</figcaption>
+          </figure>
+          <figure class="shot">
+            <img src="assets/screenshots/32-kate-editor.png" width="1280" height="800" loading="lazy" alt="Kate text editor open on an Aether desktop">
+            <figcaption><strong>Kate</strong> — a familiar editor on the Aether desktop.</figcaption>
+          </figure>
         </div>
 
         <p class="gallery-link"><a href="https://github.com/Shadowman8080/Aether/blob/main/docs/screenshots.md">See the full screenshot gallery <span aria-hidden="true">→</span></a></p>
@@ -179,7 +234,7 @@
           <ol class="steps">
             <li>
               <span class="step-number">01</span>
-              <div><strong>Download the ISO</strong><p>Get the 1.88 GiB image and the matching <code>SHA256SUMS</code> from the release.</p></div>
+              <div><strong>Download the ISO</strong><p>Get the <span data-release-size="iso">1.88 GiB</span> image and the matching <code>SHA256SUMS</code> from the release.</p></div>
             </li>
             <li>
               <span class="step-number">02</span>
@@ -197,28 +252,28 @@
         <div class="download-panel">
           <div class="download-panel-head">
             <span class="release-label">Release</span>
-            <span class="version">0.3.2-dev.20261006</span>
+            <span class="version" data-release-tag>0.3.2-dev.20261006</span>
           </div>
 
-          <a class="download-row" href="https://github.com/Shadowman8080/Aether/releases/download/0.3.2-dev.20261006/aether-0.3.2-dev-20261006-x86_64.iso">
+          <a class="download-row" data-release-link="iso" data-release-row="iso" href="https://github.com/Shadowman8080/Aether/releases/download/0.3.2-dev.20261006/aether-0.3.2-dev-20261006-x86_64.iso">
             <span class="file-icon" aria-hidden="true">ISO</span>
-            <span><strong>Aether desktop ISO</strong><small>x86_64 · 1.88 GiB</small></span>
+            <span><strong>Aether desktop ISO</strong><small>x86_64 · <span data-release-size="iso">1.88 GiB</span></small></span>
             <span class="row-arrow" aria-hidden="true">↓</span>
           </a>
-          <a class="download-row" href="https://github.com/Shadowman8080/Aether/releases/download/0.3.2-dev.20261006/aether-0.3.2-dev-20261006-x86_64-vm.tar.xz">
+          <a class="download-row" data-release-link="vm" data-release-row="vm" href="https://github.com/Shadowman8080/Aether/releases/download/0.3.2-dev.20261006/aether-0.3.2-dev-20261006-x86_64-vm.tar.xz">
             <span class="file-icon" aria-hidden="true">VM</span>
-            <span><strong>Virtual machine image</strong><small>x86_64 · 1.84 GiB</small></span>
+            <span><strong>Virtual machine image</strong><small>x86_64 · <span data-release-size="vm">1.84 GiB</span></small></span>
             <span class="row-arrow" aria-hidden="true">↓</span>
           </a>
-          <a class="download-row" href="https://github.com/Shadowman8080/Aether/releases/download/0.3.2-dev.20261006/SHA256SUMS">
+          <a class="download-row" data-release-link="checksums" href="https://github.com/Shadowman8080/Aether/releases/download/0.3.2-dev.20261006/SHA256SUMS">
             <span class="file-icon" aria-hidden="true">#</span>
             <span><strong>Checksums</strong><small>SHA-256 for every release asset</small></span>
             <span class="row-arrow" aria-hidden="true">↓</span>
           </a>
 
-          <div class="checksum">
-            <div class="checksum-head"><span>ISO SHA-256</span><button type="button" data-copy="a22925b29553522b7fcd40ce7fa24b86ee4ebbb18eebc5bc413d7f16fbdd27ad">Copy</button></div>
-            <code>a22925b29553522b7fcd40ce7fa24b86ee4ebbb18eebc5bc413d7f16fbdd27ad</code>
+          <div class="checksum" data-release-checksum-block>
+            <div class="checksum-head"><span>ISO SHA-256</span><button type="button" data-copy="a22925b29553522b7fcd40ce7fa24b86ee4ebbb18eebc5bc413d7f16fbdd27ad" data-release-copy>Copy</button></div>
+            <code data-release-checksum>a22925b29553522b7fcd40ce7fa24b86ee4ebbb18eebc5bc413d7f16fbdd27ad</code>
           </div>
 
           <p class="panel-note">Downloads are served by GitHub Releases. No account is required.</p>
@@ -266,17 +321,99 @@
   </footer>
 
   <script>
-    document.querySelectorAll('[data-copy]').forEach(function (button) {
-      button.addEventListener('click', function () {
-        var text = button.getAttribute('data-copy');
-        if (!text) return;
-        navigator.clipboard.writeText(text).then(function () {
-          var original = button.textContent;
-          button.textContent = 'Copied';
-          window.setTimeout(function () { button.textContent = original; }, 1600);
-        }).catch(function () {});
+    (function () {
+      'use strict';
+
+      function formatSize(bytes) {
+        if (!Number.isFinite(bytes) || bytes <= 0) return '';
+        var units = ['B', 'KiB', 'MiB', 'GiB'];
+        var value = bytes;
+        var unit = 0;
+        while (value >= 1024 && unit < units.length - 1) {
+          value /= 1024;
+          unit += 1;
+        }
+        return value.toFixed(unit === 0 ? 0 : 2).replace(/\.00$/, '') + ' ' + units[unit];
+      }
+
+      function setText(selector, value) {
+        if (!value) return;
+        document.querySelectorAll(selector).forEach(function (element) {
+          element.textContent = value;
+        });
+      }
+
+      function setLink(selector, url) {
+        if (!url) return;
+        document.querySelectorAll(selector).forEach(function (element) {
+          element.href = url;
+        });
+      }
+
+      function hide(selector) {
+        document.querySelectorAll(selector).forEach(function (element) {
+          element.hidden = true;
+        });
+      }
+
+      function applyRelease(release) {
+        if (!release || !release.assets || !release.assets.iso) return;
+        var iso = release.assets.iso;
+        var vm = release.assets.vm;
+        var checksums = release.assets.checksums;
+        var kind = release.prerelease ? 'development' : 'stable';
+        var kindLabel = release.prerelease ? 'Latest development build' : 'Latest stable release';
+        var eyebrow = (release.prerelease ? 'Development snapshot' : 'Stable release') + ' · ' + (release.display_version || release.tag);
+
+        setText('[data-release-tag]', release.tag);
+        setText('[data-release-eyebrow]', eyebrow);
+        setText('[data-release-label]', kindLabel);
+        setText('[data-release-kind]', kind);
+        setText('[data-release-headline]', kind.charAt(0).toUpperCase() + kind.slice(1) + ' release.');
+        setText('[data-release-size="iso"]', formatSize(iso.size));
+        setText('[data-release-size="vm"]', vm ? formatSize(vm.size) : '');
+        setLink('[data-release-link="release"]', release.html_url);
+        setLink('[data-release-link="iso"]', iso.download_url);
+        if (checksums) setLink('[data-release-link="checksums"]', checksums.download_url);
+
+        if (vm) {
+          setLink('[data-release-link="vm"]', vm.download_url);
+        } else {
+          hide('[data-release-row="vm"]');
+        }
+
+        if (iso.sha256) {
+          setText('[data-release-checksum]', iso.sha256);
+          document.querySelectorAll('[data-release-copy]').forEach(function (button) {
+            button.setAttribute('data-copy', iso.sha256);
+          });
+        } else {
+          hide('[data-release-checksum-block]');
+        }
+      }
+
+      fetch('release.json', { cache: 'no-store' })
+        .then(function (response) {
+          if (!response.ok) throw new Error('release metadata unavailable');
+          return response.json();
+        })
+        .then(applyRelease)
+        .catch(function () {
+          // The static values in the page remain the fallback.
+        });
+
+      document.querySelectorAll('[data-copy]').forEach(function (button) {
+        button.addEventListener('click', function () {
+          var text = button.getAttribute('data-copy');
+          if (!text) return;
+          navigator.clipboard.writeText(text).then(function () {
+            var original = button.textContent;
+            button.textContent = 'Copied';
+            window.setTimeout(function () { button.textContent = original; }, 1600);
+          }).catch(function () {});
+        });
       });
-    });
+    })();
   </script>
 </body>
 </html>

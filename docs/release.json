@@ -1,0 +1,27 @@
+{
+  "assets": {
+    "checksums": {
+      "download_url": "https://github.com/Shadowman8080/Aether/releases/download/0.3.2-dev.20261006/SHA256SUMS",
+      "name": "SHA256SUMS",
+      "size": 1024
+    },
+    "iso": {
+      "download_url": "https://github.com/Shadowman8080/Aether/releases/download/0.3.2-dev.20261006/aether-0.3.2-dev-20261006-x86_64.iso",
+      "name": "aether-0.3.2-dev-20261006-x86_64.iso",
+      "sha256": "a22925b29553522b7fcd40ce7fa24b86ee4ebbb18eebc5bc413d7f16fbdd27ad",
+      "size": 2017230848
+    },
+    "vm": {
+      "download_url": "https://github.com/Shadowman8080/Aether/releases/download/0.3.2-dev.20261006/aether-0.3.2-dev-20261006-x86_64-vm.tar.xz",
+      "name": "aether-0.3.2-dev-20261006-x86_64-vm.tar.xz",
+      "sha256": "f8f9d910ce89e1019f91b79d63cb8a528fa7add3ac3559331c14baddfb34f2ef",
+      "size": 1971077540
+    }
+  },
+  "display_version": "0.3.2",
+  "html_url": "https://github.com/Shadowman8080/Aether/releases/tag/0.3.2-dev.20261006",
+  "name": "Aether 0.3.2 development \u2014 Settings, on-demand AI and recovery",
+  "prerelease": true,
+  "published_at": "2026-10-07T06:33:21Z",
+  "tag": "0.3.2-dev.20261006"
+}

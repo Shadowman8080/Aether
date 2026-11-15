@@ -1,0 +1,56 @@
+name: Update download page release metadata
+
+on:
+  release:
+    types: [published]
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: 'Release tag to publish on the site (leave empty for the newest published release)'
+        required: false
+        type: string
+
+permissions:
+  contents: write
+
+concurrency:
+  group: update-download-page
+  cancel-in-progress: true
+
+jobs:
+  update:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - name: Check out main
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          ref: main
+          fetch-depth: 2
+
+      - name: Build the release manifest
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RELEASE_TAG: ${{ github.event.release.tag_name || inputs.tag }}
+        run: |
+          set -euo pipefail
+          if [ -n "${RELEASE_TAG:-}" ]; then
+            python3 .github/scripts/update-download-page.py --tag "$RELEASE_TAG"
+          else
+            python3 .github/scripts/update-download-page.py
+          fi
+
+      - name: Commit the page update
+        env:
+          RELEASE_TAG: ${{ github.event.release.tag_name || inputs.tag }}
+        run: |
+          set -euo pipefail
+          if [ -z "$(git status --porcelain -- docs/release.json)" ]; then
+            echo "The download page already matches this release."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add docs/release.json
+          git commit -m "docs: update download page for ${RELEASE_TAG:-the latest release}"
+          git push origin HEAD:main

@@ -2,7 +2,7 @@
 
 **A Linux distribution built from source. Work in progress — not release-ready.**
 
-[Documentation](docs/README.md) · [Development downloads](https://github.com/Shadowman8080/Aether/releases) · [October 6 progress](docs/modern-desktop-20261006.md) · [Image verification](docs/modern-desktop-20261006.md#validation)
+[Website](https://shadowman8080.github.io/Aether/) · [Documentation](docs/README.md) · [Development downloads](https://github.com/Shadowman8080/Aether/releases) · [October 6 progress](docs/modern-desktop-20261006.md) · [Image verification](docs/modern-desktop-20261006.md#validation)
 
 **New in the November 4 snapshot:** **Aether Beam** installs several
 applications at once — preparation is threaded, package transactions stay

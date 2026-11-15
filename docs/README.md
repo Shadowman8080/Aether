@@ -4,7 +4,7 @@ Welcome to Aether's documentation. Start here to try the desktop, understand its
 features, or work on the source. **Aether is a work in progress.** The current
 desktop release is 0.3.2 development for x86_64 (also called x64).
 
-[Project home](../README.md) · [Development downloads](https://github.com/Shadowman8080/Aether/releases/tag/0.3.2-dev.20261006)
+[Website](https://shadowman8080.github.io/Aether/) · [Project home](../README.md) · [Development downloads](https://github.com/Shadowman8080/Aether/releases/tag/0.3.2-dev.20261006)
 
 ## Start using Aether
 

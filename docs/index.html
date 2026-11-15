@@ -1,0 +1,282 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Aether Linux — a private desktop, built in the open</title>
+  <meta name="description" content="Aether is an independent x86_64 Linux desktop with signed UEFI boot, LUKS2 encrypted storage and on-device AI. Download the development image.">
+  <meta name="theme-color" content="#0b0e1a">
+  <meta property="og:title" content="Aether Linux">
+  <meta property="og:description" content="An independent x86_64 Linux desktop with signed UEFI boot, encrypted storage and on-device AI.">
+  <meta property="og:type" content="website">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop stop-color='%237c8cff'/%3E%3Cstop offset='1' stop-color='%23c08cff'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='64' height='64' rx='16' fill='%230b0e1a'/%3E%3Ccircle cx='32' cy='32' r='20' fill='none' stroke='url(%23g)' stroke-width='5'/%3E%3Ccircle cx='32' cy='32' r='7' fill='url(%23g)'/%3E%3C/svg%3E">
+  <link rel="stylesheet" href="assets/site.css">
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+
+  <header class="site-header">
+    <div class="wrap nav-wrap">
+      <a class="brand" href="./" aria-label="Aether home">
+        <svg class="brand-mark" viewBox="0 0 64 64" aria-hidden="true">
+          <defs>
+            <linearGradient id="mark-gradient" x1="0" y1="0" x2="1" y2="1">
+              <stop stop-color="#7c8cff"></stop>
+              <stop offset="1" stop-color="#c08cff"></stop>
+            </linearGradient>
+          </defs>
+          <circle cx="32" cy="32" r="20" fill="none" stroke="url(#mark-gradient)" stroke-width="5"></circle>
+          <circle cx="32" cy="32" r="7" fill="url(#mark-gradient)"></circle>
+        </svg>
+        <span>Aether</span>
+      </a>
+      <nav class="nav" aria-label="Primary">
+        <a href="#features">Features</a>
+        <a href="#screenshots">Screenshots</a>
+        <a href="#install">Install</a>
+        <a href="https://github.com/Shadowman8080/Aether/blob/main/docs/README.md">Docs</a>
+        <a class="nav-source" href="https://github.com/Shadowman8080/Aether">GitHub <span aria-hidden="true">↗</span></a>
+      </nav>
+    </div>
+  </header>
+
+  <main id="main">
+    <section class="hero wrap">
+      <div class="hero-copy">
+        <p class="eyebrow"><span class="dot"></span> Development snapshot · 0.3.2</p>
+        <h1>A desktop that keeps your data <em>yours.</em></h1>
+        <p class="lede">Aether is an independent x86_64 Linux desktop built on KDE Plasma, with a signed UEFI boot chain, LUKS2 encrypted storage and an assistant that runs on your machine.</p>
+        <div class="hero-actions">
+          <a class="button button-primary" href="https://github.com/Shadowman8080/Aether/releases/download/0.3.2-dev.20261006/aether-0.3.2-dev-20261006-x86_64.iso">
+            Download ISO <span class="button-note">1.88 GiB</span>
+          </a>
+          <a class="button button-ghost" href="https://github.com/Shadowman8080/Aether">View source <span aria-hidden="true">↗</span></a>
+        </div>
+        <p class="fine-print">x86_64 · UEFI recommended · <a href="#install">Read before installing</a></p>
+      </div>
+
+      <div class="hero-visual">
+        <div class="browser-frame">
+          <div class="browser-bar" aria-hidden="true">
+            <span></span><span></span><span></span>
+            <small>aether — plasma desktop</small>
+          </div>
+          <img src="assets/screenshots/01-desktop.png" width="1280" height="800" alt="Aether desktop running KDE Plasma with the Aether wallpaper, panel and application menu">
+        </div>
+        <div class="release-card">
+          <div>
+            <p class="release-label">Latest development build</p>
+            <p class="release-name">0.3.2-dev.20261006</p>
+          </div>
+          <div class="release-status"><span></span> development</div>
+        </div>
+      </div>
+    </section>
+
+    <section class="release-strip" aria-label="Release">
+      <div class="wrap release-strip-inner">
+        <p><strong>Development release.</strong> Aether is usable, but it is not a finished product. Read the limits before you erase a disk.</p>
+        <div class="release-links">
+          <a href="https://github.com/Shadowman8080/Aether/releases/tag/0.3.2-dev.20261006">Release notes</a>
+          <a href="https://github.com/Shadowman8080/Aether/releases/download/0.3.2-dev.20261006/SHA256SUMS">Checksums</a>
+          <a href="https://github.com/Shadowman8080/Aether/releases/tag/0.3.2-dev.20261006">All downloads</a>
+        </div>
+      </div>
+    </section>
+
+    <section id="features" class="section wrap">
+      <div class="section-heading">
+        <p class="eyebrow">What makes it Aether</p>
+        <h2>Security and desktop features, without the cloud.</h2>
+        <p>Every claim here is backed by code and a documented test — and the limits are documented too.</p>
+      </div>
+
+      <div class="feature-grid">
+        <article class="feature">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 4.5 6v5.2c0 4.6 3.2 8.6 7.5 9.8 4.3-1.2 7.5-5.2 7.5-9.8V6L12 3Z"></path><path d="m8.8 12 2.1 2.1 4.5-4.6"></path></svg>
+          <h3>Signed UEFI boot</h3>
+          <p>Firmware verifies a signed shim, shim verifies GRUB, and GRUB launches a signed unified kernel image. Verified under QEMU/OVMF, VMware and VirtualBox; physical firmware is not yet certified.</p>
+        </article>
+
+        <article class="feature">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="10" width="16" height="10" rx="2"></rect><path d="M8 10V7a4 4 0 0 1 8 0v3"></path><path d="M12 14v2"></path></svg>
+          <h3>Encrypted root storage</h3>
+          <p>LUKS2 with an optional LVM layout and a separate recovery passphrase. The EFI system partition and <code>/boot</code> remain unencrypted; encrypted <code>/boot</code> needs a boot-chain redesign.</p>
+        </article>
+
+        <article class="feature">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v4M12 17v4M3 12h4M17 12h4"></path><circle cx="12" cy="12" r="5"></circle><path d="m5.6 5.6 2.8 2.8M15.6 15.6l2.8 2.8M18.4 5.6l-2.8 2.8M8.4 15.6l-2.8 2.8"></path></svg>
+          <h3>On-device AI</h3>
+          <p>Nimbrel answers locally through a small model. No account, no cloud round-trip, and no pretence that a 0.8B model is an oracle. The interface labels its answers for checking.</p>
+        </article>
+
+        <article class="feature">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="18" height="13" rx="2"></rect><path d="M8 21h8M12 17v4"></path></svg>
+          <h3>A real desktop</h3>
+          <p>KDE Plasma with Aether’s own theme, layout, AuraSearch launcher, Vector file manager, Settings, lock screen and power flow. Not a shell mock-up.</p>
+        </article>
+
+        <article class="feature">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 12h4l2-6 4 12 2-6h6"></path></svg>
+          <h3>Built for recovery</h3>
+          <p>Aether Security Center shows what is protected, unverified and unsupported. Root-readable backups, USB protection and signed update tooling are part of the system, with their own limits stated.</p>
+        </article>
+
+        <article class="feature">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m8 5-5 7 5 7M16 5l5 7-5 7M14 4l-4 16"></path></svg>
+          <h3>Open source, end to end</h3>
+          <p>GPL-3.0-or-later source, build recipes and verification records live in the repository. The signed public boot assets are included; private signing keys never are.</p>
+        </article>
+      </div>
+    </section>
+
+    <section id="screenshots" class="section section-tinted">
+      <div class="wrap">
+        <div class="section-heading">
+          <p class="eyebrow">Screenshots</p>
+          <h2>Captured from a running Aether VM.</h2>
+          <p>No mockups, no compositing, no staged dialogs. The full gallery and provenance notes are in the repository.</p>
+        </div>
+
+        <div class="screenshot-grid">
+          <figure class="shot wide">
+            <img src="assets/screenshots/24-installed-desktop.png" width="1280" height="800" loading="lazy" alt="Aether after its first boot from the installed disk">
+            <figcaption><strong>First boot</strong> from an installed Aether disk.</figcaption>
+          </figure>
+          <figure class="shot">
+            <img src="assets/screenshots/21-security-center.png" width="1024" height="768" loading="lazy" alt="Aether Security Center listing protected, unverified and unsupported controls">
+            <figcaption><strong>Security Center</strong> — what is protected, and what is not.</figcaption>
+          </figure>
+          <figure class="shot">
+            <img src="assets/screenshots/22-encrypted-unlock.png" width="1280" height="800" loading="lazy" alt="LUKS2 passphrase prompt during Aether boot">
+            <figcaption><strong>Encrypted root</strong> — the LUKS2 unlock prompt at boot.</figcaption>
+          </figure>
+          <figure class="shot">
+            <img src="assets/screenshots/15-installer.png" width="1280" height="800" loading="lazy" alt="Aether installer welcome page stating the whole-disk limitation">
+            <figcaption><strong>Installer</strong> — the whole-disk limitation is stated up front.</figcaption>
+          </figure>
+          <figure class="shot">
+            <img src="assets/screenshots/08-vector-applications.png" width="1280" height="800" loading="lazy" alt="Vector showing the installed Aether applications">
+            <figcaption><strong>Vector</strong> — the installed application grid.</figcaption>
+          </figure>
+          <figure class="shot">
+            <img src="assets/screenshots/29-boot-menu.png" width="1280" height="800" loading="lazy" alt="The Aether UEFI GRUB boot menu">
+            <figcaption><strong>Boot menu</strong> — the signed UEFI path in action.</figcaption>
+          </figure>
+        </div>
+
+        <p class="gallery-link"><a href="https://github.com/Shadowman8080/Aether/blob/main/docs/screenshots.md">See the full screenshot gallery <span aria-hidden="true">→</span></a></p>
+      </div>
+    </section>
+
+    <section id="install" class="section wrap">
+      <div class="install-grid">
+        <div class="install-copy">
+          <p class="eyebrow">Get started</p>
+          <h2>Download, verify, then install.</h2>
+          <p class="install-lede">The installer erases the selected whole disk. Back up anything you care about first. Aether currently requires a 16 GiB disk or larger and is designed for UEFI systems.</p>
+
+          <ol class="steps">
+            <li>
+              <span class="step-number">01</span>
+              <div><strong>Download the ISO</strong><p>Get the 1.88 GiB image and the matching <code>SHA256SUMS</code> from the release.</p></div>
+            </li>
+            <li>
+              <span class="step-number">02</span>
+              <div><strong>Check the checksum</strong><p>Run <code>sha256sum -c SHA256SUMS</code> before writing the image to a USB drive.</p></div>
+            </li>
+            <li>
+              <span class="step-number">03</span>
+              <div><strong>Boot and install</strong><p>Use UEFI. The live session starts the graphical installer; the disk selection and <code>ERASE</code> confirmation are deliberate.</p></div>
+            </li>
+          </ol>
+
+          <p class="fine-print">Prefer a VM? The release also includes a VMware/VirtualBox image and a <code>.vmx</code> file. <a href="https://github.com/Shadowman8080/Aether/blob/main/docs/getting-started.md">Read the getting-started guide</a>.</p>
+        </div>
+
+        <div class="download-panel">
+          <div class="download-panel-head">
+            <span class="release-label">Release</span>
+            <span class="version">0.3.2-dev.20261006</span>
+          </div>
+
+          <a class="download-row" href="https://github.com/Shadowman8080/Aether/releases/download/0.3.2-dev.20261006/aether-0.3.2-dev-20261006-x86_64.iso">
+            <span class="file-icon" aria-hidden="true">ISO</span>
+            <span><strong>Aether desktop ISO</strong><small>x86_64 · 1.88 GiB</small></span>
+            <span class="row-arrow" aria-hidden="true">↓</span>
+          </a>
+          <a class="download-row" href="https://github.com/Shadowman8080/Aether/releases/download/0.3.2-dev.20261006/aether-0.3.2-dev-20261006-x86_64-vm.tar.xz">
+            <span class="file-icon" aria-hidden="true">VM</span>
+            <span><strong>Virtual machine image</strong><small>x86_64 · 1.84 GiB</small></span>
+            <span class="row-arrow" aria-hidden="true">↓</span>
+          </a>
+          <a class="download-row" href="https://github.com/Shadowman8080/Aether/releases/download/0.3.2-dev.20261006/SHA256SUMS">
+            <span class="file-icon" aria-hidden="true">#</span>
+            <span><strong>Checksums</strong><small>SHA-256 for every release asset</small></span>
+            <span class="row-arrow" aria-hidden="true">↓</span>
+          </a>
+
+          <div class="checksum">
+            <div class="checksum-head"><span>ISO SHA-256</span><button type="button" data-copy="a22925b29553522b7fcd40ce7fa24b86ee4ebbb18eebc5bc413d7f16fbdd27ad">Copy</button></div>
+            <code>a22925b29553522b7fcd40ce7fa24b86ee4ebbb18eebc5bc413d7f16fbdd27ad</code>
+          </div>
+
+          <p class="panel-note">Downloads are served by GitHub Releases. No account is required.</p>
+        </div>
+      </div>
+
+      <aside class="limits" aria-labelledby="limits-title">
+        <div>
+          <p class="eyebrow">Read this first</p>
+          <h2 id="limits-title">A development snapshot, stated plainly.</h2>
+        </div>
+        <ul>
+          <li><strong>Whole disk only.</strong> The installer does not resize or preserve an existing OS.</li>
+          <li><strong>Physical hardware is not certified.</strong> Secure Boot and encrypted-root evidence comes from virtual machines.</li>
+          <li><strong><code>/boot</code> is not encrypted.</strong> LUKS2 currently covers the root filesystem.</li>
+          <li><strong>No production update feed.</strong> The update tooling exists, but public release trust is not configured.</li>
+        </ul>
+      </aside>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="wrap footer-grid">
+      <div>
+        <a class="brand" href="./" aria-label="Aether home">
+          <svg class="brand-mark" viewBox="0 0 64 64" aria-hidden="true">
+            <circle cx="32" cy="32" r="20" fill="none" stroke="url(#mark-gradient)" stroke-width="5"></circle>
+            <circle cx="32" cy="32" r="7" fill="url(#mark-gradient)"></circle>
+          </svg>
+          <span>Aether</span>
+        </a>
+        <p class="footer-note">An independent Linux desktop, built in the open. GPL-3.0-or-later.</p>
+      </div>
+      <div class="footer-links">
+        <a href="https://github.com/Shadowman8080/Aether">Source</a>
+        <a href="https://github.com/Shadowman8080/Aether/blob/main/docs/getting-started.md">Getting started</a>
+        <a href="https://github.com/Shadowman8080/Aether/blob/main/docs/secure-boot.md">Secure Boot</a>
+        <a href="https://github.com/Shadowman8080/Aether/blob/main/SECURITY.md">Security policy</a>
+      </div>
+    </div>
+    <div class="wrap footer-bottom">
+      <span>© 2026 Aether Linux contributors.</span>
+      <span>Built with KDE Plasma. Not affiliated with the KDE e.V.</span>
+    </div>
+  </footer>
+
+  <script>
+    document.querySelectorAll('[data-copy]').forEach(function (button) {
+      button.addEventListener('click', function () {
+        var text = button.getAttribute('data-copy');
+        if (!text) return;
+        navigator.clipboard.writeText(text).then(function () {
+          var original = button.textContent;
+          button.textContent = 'Copied';
+          window.setTimeout(function () { button.textContent = original; }, 1600);
+        }).catch(function () {});
+      });
+    });
+  </script>
+</body>
+</html>

@@ -41,8 +41,9 @@ grab/ungrab the mouse and set mouse optimization for games to **Never**. The
 supplied VMX enables clipboard and drag/drop; shared host folders are disabled.
 See [guest integration](guest-integration-status.md) for helper checks and limits.
 
-For VirtualBox, create a 64-bit Linux VM, attach the VMDK using SATA, enable EFI,
-select VMSVGA and a USB Tablet, and enable Mouse Integration. Enable bidirectional
+For VirtualBox, create a 64-bit Linux VM, attach the VMDK using SATA, leave the
+firmware on BIOS, select VMSVGA and a USB Tablet, and enable Mouse Integration.
+UEFI/OVMF graphical output is unconfirmed for this snapshot. Enable bidirectional
 clipboard/drag-and-drop explicitly if wanted. Native VirtualBox interactions
 have not been certified for this snapshot.
 
@@ -70,5 +71,5 @@ public OS update feed remains unconfigured pending release trust and base-packag
 inventory work. This is an explicit development limitation. Do not install
 publisher credentials or private signing keys on client machines.
 
-[Current testing and known limitations](modern-desktop-20261006.md) explain what
+[2026-11-16 release notes and known limitations](release-20261116.md) explain what
 has been verified. Keep your previous image and backups when evaluating a new build.

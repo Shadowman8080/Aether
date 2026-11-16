@@ -140,3 +140,7 @@ assets must match their source revision and verification checksums.
 - Aether Settings gained "Install apps in parallel" and "Aether Pilot" pages.
   They are compiled by the existing hosted desktop check; they have not been
   clicked through on a booted image.
+- Published the refreshed 2026-11-16 development download. It does not complete
+  items 1-7 or 9-12 above: there is still no deployed update repository or
+  production trust, no physical-hardware validation, and the UEFI graphical
+  session was not confirmed. The VM is deliberately BIOS-only for this snapshot.

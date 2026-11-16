@@ -8,7 +8,7 @@ another name for the same architecture.
 
 ## Choose a download
 
-Open the [0.3.2 development release](https://github.com/Shadowman8080/Aether/releases/tag/0.3.2-dev.20261006).
+Open the [0.3.2 development release](https://github.com/Shadowman8080/Aether/releases/tag/0.3.2-dev.20261116).
 
 - **ISO:** boot a live desktop or start the installer. Live-session changes are
   lost on shutdown unless you install to a disk.
@@ -23,12 +23,11 @@ Read the included `README-VM.txt` and `VERIFICATION.json`. Compare downloads wit
 
 1. Extract the VM bundle and open its `.vmx` in VMware. The supplied configuration
    requires a VMware version supporting virtual hardware 22.
-2. The supplied VM uses four virtual CPUs, 6 GiB RAM, NAT, UEFI and a 32 GiB virtual
-   disk. The supplied legacy VM has Secure Boot disabled; current UEFI media and
-   installs support it after Aether's key is enrolled. Separate test VMs booted
-   the signed ISO and installed disk under VMware Workstation 26.0.1 and
-   VirtualBox 7.2.22 with Secure Boot enabled. The build host is not needed to
-   run Aether.
+2. The supplied VM uses four virtual CPUs, 6 GiB RAM, NAT, BIOS and a 20 GiB
+   virtual disk. UEFI signed assets are present on the installed disk, but this
+   snapshot's UEFI graphical output is **not confirmed** and the supplied VMX
+   therefore uses BIOS. Secure Boot is not enabled. The build host is not needed
+   to run Aether.
 3. Start the VM and sign in with the public development credentials below.
 
 - Username: `aether`

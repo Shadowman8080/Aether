@@ -6,6 +6,15 @@
 Aether 0.3 is a development snapshot. This is what would have to happen before
 it could honestly be called a release, roughly in dependency order.
 
+## 2026-11-16 snapshot status
+
+The refreshed development download was published without claiming the four
+outstanding workstreams below. Its ISO BIOS session was captured, the installer
+passed its UEFI signed-asset check, and the clean VM disk passed an image compare.
+UEFI graphical output and the VM desktop were not confirmed, so the VM uses BIOS.
+Physical hardware, production update trust and the broader hardening items remain
+blocked in the same way as the previous snapshot.
+
 ## Blocking a first real release
 
 1. **A deployed, authenticated update repository.** The signing and TUF tooling

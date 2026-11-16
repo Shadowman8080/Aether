@@ -1,0 +1,58 @@
+{
+  "release": "0.3.2-dev.20261116",
+  "date": "2026-11-16",
+  "iso": {
+    "name": "aether-0.3.2-dev-20261116-x86_64.iso",
+    "sha256": "f8eabb694fe5089c7863d70ebb0c1d8502e8e495c38804c37e0a76ff8cbd5805",
+    "size": 1595990016,
+    "signed_live_uki": {
+      "result": "pass",
+      "command": "sbverify --cert db.crt aether-live.efi",
+      "output": "Signature verification OK"
+    },
+    "bios_live_boot": {
+      "result": "pass",
+      "evidence": "bios-live-desktop.png",
+      "observed": "Aether welcome dialog after LightDM autologin"
+    },
+    "uefi_live_boot": {
+      "result": "not confirmed",
+      "observed": "signed image reached the login prompt; framebuffer captures were black",
+      "not_a_claim": "UEFI desktop operation"
+    }
+  },
+  "installer_backend": {
+    "result": "pass",
+    "tests": [
+      "INSTALLER_UEFI_PASS",
+      "INSTALLER_BACKEND_PASS"
+    ],
+    "details": "Fresh 20 GiB unencrypted install; signed shim, GRUB and installed UKI verified; ESP chainloader present"
+  },
+  "virtual_machine": {
+    "format": "writable monolithicSparse VMDK",
+    "archive": {
+      "name": "aether-0.3.2-dev-20261116-x86_64-vm.tar.xz",
+      "sha256": "32d71f7385bdf971315114c099e770b8bd749e1c738668f79e2e6821aa060ef6",
+      "size": 1367487620
+    },
+    "virtual_size_bytes": 21474836480,
+    "firmware": "BIOS",
+    "vmdk_check": "No errors were found on the image.",
+    "raw_compare": "Images are identical.",
+    "bios_boot": {
+      "result": "bootloader reached",
+      "evidence": "vm-bios-grub.png",
+      "not_a_claim": "desktop login was not re-captured for this exact VMDK"
+    },
+    "secure_boot": "disabled for this supplied VM; signed UEFI assets are present but were not used"
+  },
+  "limitations": [
+    "UEFI graphical output is unconfirmed; use BIOS for this snapshot.",
+    "No physical hardware, firmware or encrypted-root hardware test was performed.",
+    "No deployed authenticated update repository or production signing trust exists.",
+    "The installer is whole-disk only; /boot and the EFI system partition are unencrypted.",
+    "Checksums are integrity records, not release signatures.",
+    "The VM was not exercised through the native VMware or VirtualBox UI."
+  ]
+}

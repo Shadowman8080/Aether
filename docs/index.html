@@ -31,16 +31,21 @@
         <span>Aether</span>
       </a>
       <nav class="nav" aria-label="Primary">
-        <a href="#features">Features</a>
-        <a href="#screenshots">Screenshots</a>
-        <a href="#install">Install</a>
-        <a href="https://github.com/Shadowman8080/Aether/blob/main/docs/README.md">Docs</a>
-        <a class="nav-source" href="https://github.com/Shadowman8080/Aether">GitHub <span aria-hidden="true">↗</span></a>
+        <details class="nav-disclosure" open>
+          <summary>Menu</summary>
+          <div class="nav-links">
+            <a href="#features">Features</a>
+            <a href="#screenshots">Screenshots</a>
+            <a href="#install">Install</a>
+            <a href="https://github.com/Shadowman8080/Aether/blob/main/docs/README.md">Docs</a>
+            <a class="nav-source" href="https://github.com/Shadowman8080/Aether">GitHub <span aria-hidden="true">↗</span></a>
+          </div>
+        </details>
       </nav>
     </div>
   </header>
 
-  <main id="main">
+  <main id="main" tabindex="-1">
     <section class="hero wrap">
       <div class="hero-copy">
         <p class="eyebrow"><span class="dot"></span> <span data-release-eyebrow>Development snapshot · 0.3.2</span></p>
@@ -210,13 +215,13 @@
             <img src="assets/screenshots/29-boot-menu.png" width="1280" height="800" loading="lazy" alt="The Aether UEFI GRUB boot menu">
             <figcaption><strong>Boot menu</strong> — the signed UEFI path in action.</figcaption>
           </figure>
-          <figure class="shot wide">
-            <img src="assets/screenshots/28-screensavers.png" width="960" height="220" loading="lazy" alt="A row of Aether screen saver previews">
-            <figcaption><strong>Screen savers</strong> — the built-in previews in Aether Settings.</figcaption>
-          </figure>
           <figure class="shot">
             <img src="assets/screenshots/32-kate-editor.png" width="1280" height="800" loading="lazy" alt="Kate text editor open on an Aether desktop">
             <figcaption><strong>Kate</strong> — a familiar editor on the Aether desktop.</figcaption>
+          </figure>
+          <figure class="shot wide">
+            <img src="assets/screenshots/28-screensavers.png" width="960" height="220" loading="lazy" alt="A row of Aether screen saver previews">
+            <figcaption><strong>Screen savers</strong> — the built-in previews in Aether Settings.</figcaption>
           </figure>
         </div>
 
@@ -411,6 +416,27 @@
             button.textContent = 'Copied';
             window.setTimeout(function () { button.textContent = original; }, 1600);
           }).catch(function () {});
+        });
+      });
+
+      var navDisclosure = document.querySelector('.nav-disclosure');
+      if (navDisclosure) {
+        var narrowNav = window.matchMedia('(max-width: 640px)');
+        var syncNav = function () {
+          navDisclosure.open = !narrowNav.matches;
+        };
+        syncNav();
+        if (narrowNav.addEventListener) {
+          narrowNav.addEventListener('change', syncNav);
+        } else if (narrowNav.addListener) {
+          narrowNav.addListener(syncNav);
+        }
+      }
+
+      document.querySelectorAll('.nav-disclosure .nav-links a').forEach(function (link) {
+        link.addEventListener('click', function () {
+          var menu = link.closest('details');
+          if (menu) menu.open = false;
         });
       });
     })();
